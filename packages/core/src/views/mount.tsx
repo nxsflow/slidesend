@@ -109,7 +109,7 @@ function Pending({ presentation, view }: { presentation: Presentation; view: str
   return (
     <main style={{ padding: "2rem" }}>
       <h1>{presentation.meta.title}</h1>
-      <p>The {view} view is not available yet.</p>
+      <p>{presentation.text("core.view.unavailable", { view })}</p>
     </main>
   );
 }

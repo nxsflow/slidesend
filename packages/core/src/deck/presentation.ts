@@ -1,5 +1,7 @@
 import type { z } from "zod";
 import type { Design } from "../design/define";
+import { createText, type Text } from "../messages/catalog";
+import { coreMessages } from "../messages/core-messages";
 import type { Plugin, SlideNodeOf } from "../nodes/define";
 import { createRegistry, formatNodePath, type Registry } from "../nodes/registry";
 import type { NodeIssue, ReferenceCheck } from "../nodes/slots";
@@ -72,7 +74,10 @@ export interface Presentation {
   plugins: readonly Plugin[];
   design: Design;
   platform?: Platform;
+  /** The talk's own overrides of UI strings, as configured. */
   messages: Messages;
+  /** Looks up a UI string in the talk's language, with the overrides applied (spec §6.5). */
+  text: Text;
 }
 
 /** One problem found in a deck. */
@@ -217,6 +222,14 @@ export function definePresentation<const Plugins extends readonly Plugin[]>(
     else add(where[index] as string)(result.issues);
   }
 
+  const { text, problems } = createText({
+    language: meta.success ? meta.data.language : "en",
+    catalogs: [coreMessages, ...plugins.map((plugin) => plugin.messages)],
+    overrides: config.messages,
+  });
+  for (const problem of problems)
+    issues.push({ where: "messages", path: [], message: problem.message });
+
   if (issues.length > 0 || !meta.success) throw new DeckValidationError(issues);
 
   const slides: ResolvedSlide[] = [];
@@ -261,5 +274,6 @@ export function definePresentation<const Plugins extends readonly Plugin[]>(
     design: config.design,
     platform: config.platform,
     messages: config.messages ?? {},
+    text,
   };
 }
