@@ -6,10 +6,7 @@ const key = blocksSecret;
 
 const current = (page: Page) => page.locator("[data-slide-id][data-presence]:not([aria-hidden])");
 
-async function deskOnSession(
-  browser: Browser,
-  request: Parameters<typeof test>[0] extends never ? never : any,
-) {
+async function deskOnSession(browser: Browser, request: APIRequestContext) {
   const rpc = async (method: string, params: unknown[]) => {
     const response = await request.post(`${base}/aws-blocks/api`, {
       data: { jsonrpc: "2.0", method: `slidesend.${method}`, params, id: 1 },

@@ -97,6 +97,26 @@ describe("commands", () => {
     expect(err[0]).toMatch(/"slidesend deploy" needs a platform, and none is configured/);
   });
 
+  it("prints what a failing platform command said, without a stack trace", async () => {
+    const platform = {
+      name: "test",
+      commands: {
+        bootstrap: {
+          description: "Checks.",
+          run: async () => {
+            throw new Error("4 check(s) failed.");
+          },
+        },
+      },
+    };
+    const { fake, err } = io({
+      loadPresentation: async () =>
+        ({ slides: [], steps: [], plannedMinutes: 0, platform }) as never,
+    });
+    expect(await runCommand(fake, parseCommandLine(["bootstrap"]))).toBe(1);
+    expect(err.at(-1)).toBe("4 check(s) failed.");
+  });
+
   it("delegates a platform command to the configured platform", async () => {
     const calls: unknown[] = [];
     const platform = {
