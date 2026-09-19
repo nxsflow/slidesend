@@ -14,6 +14,7 @@ export {
   type ServerMethod,
   session,
 } from "./server/api";
+export { createDevBridge, type DevBridgeOptions, slidesendDev } from "./server/dev-bridge";
 export {
   type CoreApi,
   createRuntime,
@@ -35,3 +36,8 @@ export {
   sessionInputSchema,
   sessionPatchSchema,
 } from "./server/sessions";
+export {
+  createMemoryPlatform,
+  type MemoryConnection,
+  type MemoryPlatform,
+} from "./testing/memory-platform";

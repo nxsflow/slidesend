@@ -134,6 +134,7 @@ export {
   splitListPrefix,
   splitStoreKey,
 } from "./platform/contract";
+export { type HttpPlatformClientOptions, httpPlatformClient } from "./platform/http-client";
 export type {
   Platform,
   PlatformCommand,
@@ -181,6 +182,18 @@ export {
   stageWidth,
   stepIndexOf,
 } from "./stage/navigation";
+export {
+  backoffMs,
+  browserEnvironment,
+  type CursorTransport,
+  type HostedTransportOptions,
+  hostedTransport,
+  type LocalTransportOptions,
+  localTransport,
+  pulseMs,
+  type SyncEnvironment,
+  sendDebounceMs,
+} from "./sync/transport";
 export { takeControlSecret } from "./views/access";
 export { Block, type BlockViewProps } from "./views/Block";
 export { nodeData, PresentationContext, usePresentation } from "./views/context";
