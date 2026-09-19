@@ -30,16 +30,24 @@ describe("slidesend", () => {
     ]);
   });
 
-  it("explains that deploy needs a platform", () => {
-    const result = slidesend("deploy");
+  it("explains that deploy needs a platform when none is configured", () => {
+    const result = slidesend("deploy", "--config", "fixtures/local/presentation.config.ts");
     expect(result.status).toBe(1);
     expect(result.stderr).toMatch(/needs a platform, and none is configured/);
+  });
+
+  it("names the platform when it lacks a command", () => {
+    const result = slidesend("destroy");
+    expect(result.status).toBe(1);
+    expect(result.stderr).toMatch(/The platform "aws" has no command "destroy"/);
   });
 
   it("dev prints stage and desk links that work, in local mode", async () => {
     if (!existsSync(cli)) throw new Error("Build first: pnpm build (the CLI runs from dist).");
     const port = "5306";
-    const child = spawn(process.execPath, [cli, "dev", "--port", port], { cwd: gravity });
+    const child = spawn(process.execPath, [cli, "dev", "--local", "--port", port], {
+      cwd: gravity,
+    });
     try {
       const output = await new Promise<string>((resolve, reject) => {
         let text = "";

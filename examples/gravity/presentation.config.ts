@@ -1,3 +1,4 @@
+import { aws } from "@slidesend/aws";
 import { basics } from "@slidesend/basics";
 import { definePresentation } from "@slidesend/core";
 import { deck } from "./src/deck";
@@ -8,5 +9,6 @@ import { gravityPlugin } from "./src/plugin";
 export default definePresentation({
   deck,
   design: gravityDesign,
+  platform: aws({ region: "eu-central-1" }),
   plugins: [basics(), gravityPlugin],
 });

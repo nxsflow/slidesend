@@ -7,7 +7,15 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!.claude", "!.nxs", "!.nxf", "!.nxs-personas"]
+    "includes": [
+      "**",
+      "!.claude",
+      "!.nxs",
+      "!.nxf",
+      "!.nxs-personas",
+      "!**/aws-blocks/client.js",
+      "!**/.bb-data"
+    ]
   },
   "formatter": {
     "enabled": true,
