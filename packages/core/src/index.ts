@@ -222,7 +222,16 @@ export {
 export { activityById, type VisibleActivity, visibleActivities } from "./views/activities";
 export { Block, type BlockViewProps } from "./views/Block";
 export { nodeData, PresentationContext, usePresentation, useText } from "./views/context";
+export {
+  type ClockTone,
+  formatDuration,
+  lateMs,
+  onTimeMs,
+  type TalkClock,
+  talkClock,
+} from "./views/desk/clock";
 export { DeskView, type DeskViewProps } from "./views/desk/DeskView";
+export { PresentTab, type PresentTabProps } from "./views/desk/Present";
 export {
   type Desk,
   type DeskOptions,
@@ -236,7 +245,7 @@ export { type Navigation, type NavigationOptions, useNavigation, useStageFit } f
 export { type MountOptions, mount, StageView, type StageViewProps } from "./views/mount";
 export { PhoneView, type PhoneViewProps, sessionPollMs } from "./views/PhoneView";
 export { defaultLeaveMs, SlideHost } from "./views/SlideHost";
-export { Stage } from "./views/Stage";
+export { Stage, StageSurface, stageSurfaceStyle } from "./views/Stage";
 export {
   joinUrl,
   SessionContext,
