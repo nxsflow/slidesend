@@ -11,6 +11,11 @@ export function usePresentation(): Presentation {
   return presentation;
 }
 
+/** The UI strings of the surrounding presentation, in the talk's language (spec §6.5). */
+export function useText() {
+  return usePresentation().text;
+}
+
 /** A node's data as its component receives it: the node without core's envelope keys. */
 export function nodeData(node: object, envelope: readonly string[]): Record<string, unknown> {
   const data: Record<string, unknown> = {};
