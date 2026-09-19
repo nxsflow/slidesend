@@ -100,7 +100,8 @@ export function createDevBridge(options: DevBridgeOptions) {
         "cache-control": "no-cache",
         connection: "keep-alive",
       });
-      response.write(": connected\n\n");
+      // Ask the browser to reconnect after one second instead of its default of about three.
+      response.write("retry: 1000\n: connected\n\n");
       const connection = memory.connect(server.api);
       const stop = connection.client.subscribe(channel, topic, (message) => {
         response.write(`data: ${JSON.stringify(message)}\n\n`);

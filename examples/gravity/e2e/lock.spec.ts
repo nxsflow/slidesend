@@ -26,7 +26,11 @@ test("a locked phone catches up with the talk when it returns", async ({ browser
     if (!body.ok) throw new Error(body.error.message);
     return body.result;
   };
-  const session = await call("sessionCreate", [hostedSecret, { kind: "live", name: "Lock test" }]);
+  // A rehearsal, so that repeated and parallel runs never meet the one-open-live-session rule.
+  const session = await call("sessionCreate", [
+    hostedSecret,
+    { kind: "rehearsal", name: "Lock test" },
+  ]);
   await call("sessionOpen", [hostedSecret, session.id]);
 
   const stage = await (await browser.newContext()).newPage();
@@ -72,4 +76,5 @@ test("a locked phone catches up with the talk when it returns", async ({ browser
   await stage.keyboard.press("ArrowRight");
   await expect.poll(() => position(phone)).toBe(await position(stage));
   expect(errors).toEqual([]);
+  await call("sessionClose", [hostedSecret, session.id]);
 });

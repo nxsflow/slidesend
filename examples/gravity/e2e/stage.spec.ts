@@ -1,14 +1,5 @@
 import { expect, type Page, test } from "@playwright/test";
-
-/** The six formats of the original stage test. */
-const viewports: [number, number, string][] = [
-  [1512, 982, 'MacBook 14"'],
-  [1920, 1080, "Full HD"],
-  [1440, 900, "MacBook Air"],
-  [2560, 1440, "WQHD"],
-  [1280, 1024, "5:4 projector"],
-  [3840, 1080, "very wide"],
-];
+import { viewports } from "./viewports";
 
 const current = (page: Page) => page.locator("[data-slide-id][data-presence]:not([aria-hidden])");
 
@@ -36,37 +27,39 @@ test("the example talk renders on /stage/local and steers with the keyboard", as
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/stage/local");
   await expect(page.getByRole("heading", { name: "How does gravity work?" })).toBeVisible();
-  await expect(current(page)).toHaveAttribute("data-slide-id", "intro-1");
+  await expect(current(page)).toHaveAttribute("data-slide-id", "why");
 
   await page.keyboard.press("ArrowRight");
-  await expect(current(page)).toHaveAttribute("data-slide-id", "everyday");
-  await expect(current(page)).toHaveAttribute("data-step", "0");
+  await page.keyboard.press("ArrowRight");
+  await expect(current(page)).toHaveAttribute("data-step", "2");
   await page.keyboard.press("PageDown");
   await page.keyboard.press(" ");
-  await expect(current(page)).toHaveAttribute("data-step", "2");
+  await expect(current(page)).toHaveAttribute("data-step", "4");
   await expect(page.locator("[data-point='2']")).toHaveCSS("opacity", "1");
 
   await page.keyboard.press("ArrowRight");
   await expect(current(page)).toHaveAttribute("data-slide-id", "falling-1");
   await page.keyboard.press("ArrowLeft");
-  await expect(current(page)).toHaveAttribute("data-slide-id", "everyday");
-  await expect(current(page)).toHaveAttribute("data-step", "2");
+  await expect(current(page)).toHaveAttribute("data-slide-id", "why");
+  await expect(current(page)).toHaveAttribute("data-step", "4");
   await expect(current(page)).toHaveAttribute("data-presence", "present");
   expect(errors).toEqual([]);
 });
 
 test("keeps the leaving slide mounted while the next one enters", async ({ page }) => {
-  await page.goto("/stage/local");
+  await page.goto("/stage/local?slide=why&step=5");
   await expect(current(page)).toHaveAttribute("data-presence", "present");
   await page.keyboard.press("ArrowRight");
-  await expect(page.locator('[data-slide-id="intro-1"][data-presence="leaving"]')).toBeAttached();
-  await expect(page.locator('[data-slide-id="everyday"][data-presence="entering"]')).toBeAttached();
-  await expect(page.locator('[data-slide-id="intro-1"]')).not.toBeAttached();
+  await expect(page.locator('[data-slide-id="why"][data-presence="leaving"]')).toBeAttached();
+  await expect(
+    page.locator('[data-slide-id="falling-1"][data-presence="entering"]'),
+  ).toBeAttached();
+  await expect(page.locator('[data-slide-id="why"]')).not.toBeAttached();
   await expect(current(page)).toHaveAttribute("data-presence", "present");
 });
 
 test("opens a deep link to a slide and step", async ({ page }) => {
-  await page.goto("/stage/local?slide=everyday&step=2");
-  await expect(current(page)).toHaveAttribute("data-slide-id", "everyday");
-  await expect(current(page)).toHaveAttribute("data-step", "1");
+  await page.goto("/stage/local?slide=why&step=3");
+  await expect(current(page)).toHaveAttribute("data-slide-id", "why");
+  await expect(current(page)).toHaveAttribute("data-step", "2");
 });
