@@ -1,4 +1,5 @@
 const storageKey = "slidesend.control";
+const labelKey = "slidesend.device-label";
 
 /**
  * Takes the control secret from the address fragment (`#key=...`), keeps it in this browser and
@@ -21,5 +22,41 @@ export function takeControlSecret(): string | undefined {
   } catch {
     // Storage can be blocked; then the secret lives only as long as this page.
     return fromAddress ?? undefined;
+  }
+}
+
+/** Keeps a control secret this browser was given by hand. */
+export function storeControlSecret(secret: string): void {
+  try {
+    window.localStorage.setItem(storageKey, secret);
+  } catch {
+    // Without storage the secret lives as long as the page; nothing else to do.
+  }
+}
+
+/** Forgets the control secret, e.g. when handing the desk to someone else. */
+export function forgetControlSecret(): void {
+  try {
+    window.localStorage.removeItem(storageKey);
+  } catch {
+    // See above.
+  }
+}
+
+/** This desk's readable label, which warnings on other desks name (spec §9). */
+export function deviceLabel(): string {
+  try {
+    return window.localStorage.getItem(labelKey) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/** Renames this desk. */
+export function setDeviceLabel(label: string): void {
+  try {
+    window.localStorage.setItem(labelKey, label);
+  } catch {
+    // See above.
   }
 }

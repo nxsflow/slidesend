@@ -1,7 +1,5 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { expect, type Page, test } from "@playwright/test";
-import { blocksPort } from "../playwright.config";
+import { blocksPort, blocksSecret } from "../playwright.config";
 
 const base = `http://localhost:${blocksPort}`;
 const position = (page: Page) =>
@@ -13,19 +11,13 @@ const position = (page: Page) =>
   });
 
 /** The control secret the Blocks mocks created for this project. */
-function controlSecret(): string {
-  const settings = JSON.parse(readFileSync(join(".bb-data", "settings.json"), "utf8"));
-  const entry = Object.entries(settings).find(([key]) => key.endsWith("-sd-control"));
-  if (typeof entry?.[1] !== "string") throw new Error("no control secret in .bb-data");
-  return entry[1];
-}
 
 // `slidesend dev` with platform aws(): the example talk on the AWS Blocks dev server.
 test("stage and two phones follow one session on the AWS Blocks dev server", async ({
   browser,
   request,
 }) => {
-  const key = controlSecret();
+  const key = blocksSecret;
   const rpc = async (method: string, params: unknown[]) => {
     const response = await request.post(`${base}/aws-blocks/api`, {
       data: { jsonrpc: "2.0", method: `slidesend.${method}`, params, id: 1 },
@@ -38,10 +30,12 @@ test("stage and two phones follow one session on the AWS Blocks dev server", asy
   await rpc("sessionOpen", [key, session.id]);
 
   const errors: string[] = [];
+  const contexts: { close(): Promise<void> }[] = [];
   const open = async (url: string, mobile = false) => {
     const context = await browser.newContext(
       mobile ? { viewport: { width: 393, height: 852 }, isMobile: true } : {},
     );
+    contexts.push(context);
     const page = await context.newPage();
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(url);
@@ -78,7 +72,9 @@ test("stage and two phones follow one session on the AWS Blocks dev server", asy
   await rpc("sessionClose", [key, live.id]);
 
   const desk = await open(`${base}/desk#key=${key}`);
-  await expect(desk.getByText("The desk view is not available yet.")).toBeVisible();
+  await expect(desk.locator("[data-desk]")).toHaveAttribute("data-control", "true");
   expect(errors).toEqual([]);
   await rpc("sessionClose", [key, session.id]);
+  // Close the windows: a desk left running keeps announcing itself on the newest session.
+  for (const context of contexts) await context.close();
 });

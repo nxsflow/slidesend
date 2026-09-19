@@ -8,6 +8,7 @@ import { parseRoute, positionOf, stepIndexOf } from "../stage/navigation";
 import { type CursorTransport, hostedTransport, localTransport } from "../sync/transport";
 import { takeControlSecret } from "./access";
 import { PresentationContext, usePresentation } from "./context";
+import { DeskView } from "./desk/DeskView";
 import { useNavigation } from "./hooks";
 import { PhoneView } from "./PhoneView";
 import { Stage } from "./Stage";
@@ -138,6 +139,9 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
         {...(options.platform ? { platform: options.platform } : {})}
       />
     );
+  }
+  if (route.view === "desk") {
+    view = <DeskView {...(options.platform ? { platform: options.platform } : {})} />;
   }
   if (route.view === "stage") {
     const deepLink = route.slide ? stepIndexOf(presentation, route.slide, route.step) : undefined;

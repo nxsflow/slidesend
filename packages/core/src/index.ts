@@ -212,10 +212,24 @@ export {
   useActivityScope,
   useResponseStore,
 } from "./views/ActivityHost";
-export { takeControlSecret } from "./views/access";
+export {
+  deviceLabel,
+  forgetControlSecret,
+  setDeviceLabel,
+  storeControlSecret,
+  takeControlSecret,
+} from "./views/access";
 export { activityById, type VisibleActivity, visibleActivities } from "./views/activities";
 export { Block, type BlockViewProps } from "./views/Block";
 export { nodeData, PresentationContext, usePresentation, useText } from "./views/context";
+export { DeskView, type DeskViewProps } from "./views/desk/DeskView";
+export {
+  type Desk,
+  type DeskOptions,
+  deskPollMs,
+  deskWarnings,
+  useDesk,
+} from "./views/desk/useDesk";
 export { deviceId } from "./views/device";
 export { FitBox, type FitBoxProps } from "./views/FitBox";
 export { type Navigation, type NavigationOptions, useNavigation, useStageFit } from "./views/hooks";
