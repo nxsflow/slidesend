@@ -18,7 +18,6 @@ export {
   DeckValidationError,
   type Design,
   definePresentation,
-  type Platform,
   type Presentation,
   type PresentationConfig,
   type ResolvedSlide,
@@ -83,3 +82,24 @@ export type {
   SlideProps,
   StepDescription,
 } from "./nodes/types";
+export {
+  type Channel,
+  type DeleteOptions,
+  type ListOptions,
+  maxValueBytes,
+  type PlatformClient,
+  PlatformDisconnectedError,
+  type PlatformServer,
+  type PutOptions,
+  type Store,
+  StoreConditionError,
+  type StoreEntry,
+  serializedBytes,
+  splitListPrefix,
+  splitStoreKey,
+} from "./platform/contract";
+export type {
+  Platform,
+  PlatformCommand,
+  PlatformCommandContext,
+} from "./platform/package";

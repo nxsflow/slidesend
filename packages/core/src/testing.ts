@@ -1,5 +1,18 @@
 /**
- * Test helpers of `@slidesend/core` for consumers and plugin authors, such as the in-memory
- * platform and the reusable browser checks.
+ * Test helpers of `@slidesend/core` for consumers and plugin authors: the in-memory platform
+ * that every server-logic test runs against, and the conformance suite every platform must pass.
  */
-export const packageName = "@slidesend/core";
+export {
+  conformanceApi,
+  describePlatformConformance,
+  type HarnessConnection,
+  type PlatformHarness,
+} from "./testing/conformance";
+export {
+  createMemoryPlatform,
+  type MemoryClock,
+  type MemoryConnection,
+  type MemoryPlatform,
+  type MemoryPlatformOptions,
+  type ServerApi,
+} from "./testing/memory-platform";

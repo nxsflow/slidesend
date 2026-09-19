@@ -3,6 +3,7 @@ import type { Plugin, SlideNodeOf } from "../nodes/define";
 import { createRegistry, formatNodePath, type Registry } from "../nodes/registry";
 import type { NodeIssue, ReferenceCheck } from "../nodes/slots";
 import type { Messages, SlideNode, StepDescription } from "../nodes/types";
+import type { Platform } from "../platform/package";
 import { chapterSchema, type Deck, metaSchema } from "./deck";
 
 /**
@@ -10,14 +11,6 @@ import { chapterSchema, type Deck, metaSchema } from "./deck";
  * the design contract adds tokens, fonts and frames.
  */
 export interface Design {
-  readonly name: string;
-}
-
-/**
- * A hosting platform (spec §8): at most one per presentation. Without one, the talk runs in local
- * mode. This is the part `definePresentation` needs; the platform contract adds the rest.
- */
-export interface Platform {
   readonly name: string;
 }
 

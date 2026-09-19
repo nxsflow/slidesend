@@ -35,3 +35,25 @@ export async function serverImportsOfBrowserEntry(packageDir: string): Promise<s
   }
   return leaks;
 }
+
+/**
+ * Every package outside the bundle that a source file reaches, following its imports within the
+ * package: the import paths of all external modules.
+ */
+export async function externalImportsOf(entry: string): Promise<string[]> {
+  const result = await build({
+    entryPoints: [entry],
+    bundle: true,
+    write: false,
+    metafile: true,
+    packages: "external",
+    platform: "neutral",
+    format: "esm",
+    logLevel: "silent",
+  });
+  const paths = new Set<string>();
+  for (const { imports } of Object.values(result.metafile.inputs)) {
+    for (const { path, external } of imports) if (external) paths.add(path);
+  }
+  return [...paths].sort();
+}
