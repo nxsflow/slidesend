@@ -5,11 +5,12 @@
 
 > **You have already been given the index below** — all of it, or as much of it as a session start could carry. It is the same index `nxm prime` replays, which stops at the byte budget the host delivers and says so when it does (`nxm index` prints the whole of it), so there is nothing to gain by reading it again here. Underneath it stands the FULL TEXT of each memory — that is what `nxm recall <key>` serves, and it is meant to be read one memory at a time, when the index tells you a particular one matters. Reading this file end to end is the expensive way to obtain what you already have.
 
-## Index (3)
+## Index (4)
 
 - **english-only**: Write everything in this repo in English: code, identifiers, schema fields, comments, docs, commits AND nxf tickets and notes, even when the conversation with Carsten is in German.
 - **pr-workflow**: Merge your own PRs when CI is green, close the item and continue with nxf next; still ask before spec changes, AWS deploys or destructive steps.
 - **typescript-6-pin**: Keep TypeScript on 6.0.x: TS 7 has no compiler API for tsup's DTS build; tsup configs need ignoreDeprecations 6.0.
+- **pnpm-peer-suffix**: If a newly added dependency is a dangling symlink, run 'pnpm --filter <pkg> update <dep>'; pnpm 12 sometimes drops the peer suffix.
 
 ## Full text
 
@@ -28,3 +29,9 @@ Workflow agreed with Carsten (2026-09-19): every ticket is one branch and one pu
 ### `typescript-6-pin`
 
 TypeScript is pinned to ~6.0.x, not 7.x. TypeScript 7 is the native (Go) compiler and its npm package exposes no classic compiler API, which tsup's declaration build requires. tsup also injects 'baseUrl' into its DTS build, which TypeScript 6 reports as deprecated (TS5101), so every packages/*/tsup.config.ts sets dts.compilerOptions.ignoreDeprecations to '6.0'. Revisit when moving off tsup (e.g. to tsdown) or when tsup supports TypeScript 7.
+
+---
+
+### `pnpm-peer-suffix`
+
+pnpm 12 in this workspace sometimes links a newly added dependency of a workspace package WITHOUT its peer suffix (e.g. node_modules/.pnpm/vite@8.3.0 instead of vite@8.3.0_@types+node@...), which leaves a dangling symlink and 'Cannot find module' errors in tsc. It happened for react-dom/@types/react-dom and vite in @slidesend/core. Fix: 'pnpm --filter <package> update <dep> [<dep>...]', which rewrites the lockfile entry with the peer suffix. Reinstalling from scratch does not help.

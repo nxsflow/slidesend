@@ -13,7 +13,7 @@
     "format": "biome check --write .",
     "test": "vitest run",
     "test:browser": "pnpm --filter gravity test:browser",
-    "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm test:browser",
+    "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm --filter gravity check:deck && pnpm test:browser",
     "changeset": "changeset"
   },
   "devDependencies": {
