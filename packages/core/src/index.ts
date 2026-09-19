@@ -103,3 +103,18 @@ export type {
   PlatformCommand,
   PlatformCommandContext,
 } from "./platform/package";
+export { effectiveSession, openWindow, phonePage, plannedStartMs } from "./sessions/effective";
+export {
+  LimitError,
+  NotAuthorizedError,
+  SessionClosedError,
+  SessionStateError,
+} from "./sessions/errors";
+export type {
+  PhonePage,
+  PhoneSession,
+  Session,
+  SessionKind,
+  SessionRecord,
+  SessionState,
+} from "./sessions/types";
