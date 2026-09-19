@@ -1,16 +1,7 @@
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { type Browser, expect, type Page, test } from "@playwright/test";
-import { blocksPort } from "../playwright.config";
+import { blocksPort, blocksSecret } from "../playwright.config";
 
 const base = `http://localhost:${blocksPort}`;
-
-function controlSecret(): string {
-  const settings = JSON.parse(readFileSync(join(".bb-data", "settings.json"), "utf8"));
-  const entry = Object.entries(settings).find(([key]) => key.endsWith("-sd-control"));
-  if (typeof entry?.[1] !== "string") throw new Error("no control secret in .bb-data");
-  return entry[1];
-}
 
 const openPhone = async (browser: Browser, url: string): Promise<Page> => {
   const context = await browser.newContext({
@@ -29,7 +20,7 @@ test("two phones answer a poll and the matrix on the stage counts them", async (
   browser,
   request,
 }) => {
-  const key = controlSecret();
+  const key = blocksSecret;
   const rpc = async (method: string, params: unknown[]) => {
     const response = await request.post(`${base}/aws-blocks/api`, {
       data: { jsonrpc: "2.0", method: `slidesend.${method}`, params, id: 1 },

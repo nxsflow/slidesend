@@ -7,9 +7,15 @@ export const hostedPort = 5198;
 export const hostedSecret = "e2e-control-secret";
 /** The AWS Blocks dev server with its local mocks, started by `slidesend dev`; Vite runs on +100. */
 export const blocksPort = 3400;
+/** The control secret the checks seed for the Blocks dev server; see e2e/global-setup.ts. */
+export const blocksSecret = "e2e-blocks-secret";
 
 export default defineConfig({
   testDir: "e2e",
+  // One dev server means one set of sessions, and only one live session may be open at a time,
+  // so the checks run one after another.
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   reporter: process.env.CI ? "github" : "list",
   use: { baseURL: `http://localhost:${localPort}` },
@@ -27,9 +33,16 @@ export default defineConfig({
       env: { VITE_SLIDESEND_PLATFORM: "dev", SLIDESEND_DEV_SECRET: hostedSecret },
     },
     {
-      command: `node ../../packages/core/dist/cli.js dev --port ${blocksPort}`,
+      // A fresh store for every run: a previous run's open live session would block a new one.
+      // The control secret is seeded the way an AppSetting mock reads it, by its full id.
+      command: [
+        "rm -rf .bb-data .blocks-sandbox",
+        "mkdir -p .bb-data",
+        `printf '{"gravity-sd-control": "${blocksSecret}"}' > .bb-data/settings.json`,
+        `node ../../packages/core/dist/cli.js dev --port ${blocksPort}`,
+      ].join(" && "),
       url: `http://localhost:${blocksPort}`,
-      reuseExistingServer: !process.env.CI,
+      reuseExistingServer: false,
       timeout: 120_000,
     },
   ],
