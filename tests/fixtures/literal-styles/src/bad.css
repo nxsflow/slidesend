@@ -1,0 +1,11 @@
+.title {
+  color: #1a2b3c;
+  background: rgb(0 0 0 / 50%);
+  border: 1px solid white;
+  font-family: "Comic Sans MS", cursive;
+}
+
+.good {
+  color: var(--slidesend-color-text);
+  font-family: var(--slidesend-font-display);
+}

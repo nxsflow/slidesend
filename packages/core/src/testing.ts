@@ -16,4 +16,5 @@ export {
   type MemoryPlatform,
   type MemoryPlatformOptions,
 } from "./testing/memory-platform";
+export { plainDesign } from "./testing/plain-design";
 export { type RecordedServer, recordWrites } from "./testing/write-recorder";
