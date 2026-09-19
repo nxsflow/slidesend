@@ -70,7 +70,9 @@ for (const [width, height, name] of viewports) {
       ["observations", 1],
       ["observations", 2],
       ["falling-1", 1],
+      ["falling-1", 2],
       ["together", 6],
+      ["together", 9],
     ] as const) {
       await page.goto(`/stage/local?slide=${slide}&step=${step}`);
       await settled(page);

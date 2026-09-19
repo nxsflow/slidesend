@@ -54,3 +54,12 @@ export function visibleActivities(
     ...kept.filter((entry) => activityId(entry.activity) !== id),
   ];
 }
+
+/** The activity with this id anywhere in the deck, e.g. for a stage block that shows it. */
+export function activityById(presentation: Presentation, id: string): ActivityNode | undefined {
+  for (const step of presentation.steps) {
+    const activity = step.activity;
+    if (activity && activityId(activity) === id) return activity;
+  }
+  return undefined;
+}

@@ -12,8 +12,8 @@ import { basics, defaultDesign, defaultTokens, section, sectionPosition } from "
 
 const Nothing = () => null;
 
-const poll = defineActivity({
-  type: "poll",
+const probe = defineActivity({
+  type: "probe",
   schema: z.object({ id: z.string(), ...activityMeta }),
   Participant: Nothing,
 });
@@ -40,13 +40,13 @@ const build = defineBlock({
 const ask = defineBlock({
   type: "ask",
   schema: z.object({ id: z.string() }),
-  describe: (data) => ({ label: "ask", steps: [{ activity: poll({ id: data.id }) }] }),
+  describe: (data) => ({ label: "ask", steps: [{ activity: probe({ id: data.id }) }] }),
   Component: Nothing,
 });
 
 const registry = createRegistry([
   basics(),
-  definePlugin({ name: "fixture", blocks: [note, build, ask], activities: [poll] }),
+  definePlugin({ name: "fixture", blocks: [note, build, ask], activities: [probe] }),
 ]);
 
 const described = (node: ReturnType<typeof section>) => registry.describe(node).steps;
@@ -125,10 +125,10 @@ describe("section describe", () => {
       title: "Quiz",
       panels: [
         { content: ask({ id: "mood" }) },
-        { content: ask({ id: "other" }), activity: poll({ id: "own" }) },
+        { content: ask({ id: "other" }), activity: probe({ id: "own" }) },
         {
           content: build({ items: [{ text: "a" }, { text: "b" }] }),
-          activity: poll({ id: "kept" }),
+          activity: probe({ id: "kept" }),
         },
       ],
     });

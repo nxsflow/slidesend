@@ -53,9 +53,9 @@ test("a phone joins, answers, comes back after a reload and follows the talk", a
   // It answers, and sees its own answer again after a reload.
   await phone.getByLabel("What falls faster: a hammer or a feather?").fill("Both the same");
   await phone.getByRole("button", { name: "Send" }).click();
-  await expect(phone.locator("[data-sent]")).toHaveText("Both the same");
+  await expect(phone.locator("[data-own] li")).toHaveText("Both the same");
   await phone.reload();
-  await expect(phone.locator("[data-sent]")).toHaveText("Both the same");
+  await expect(phone.locator("[data-own] li")).toHaveText("Both the same");
   await expect(phone.getByLabel("What falls faster: a hammer or a feather?")).toHaveValue(
     "Both the same",
   );
@@ -69,7 +69,7 @@ test("a phone joins, answers, comes back after a reload and follows the talk", a
   await expect(phone.locator('[data-activity="question"]')).toBeVisible();
   await expect(phone.locator('[data-activity="guess"]')).toHaveCount(0);
   await expect(phone.getByLabel("What would you still like to know?")).toHaveValue("");
-  await expect(phone.locator("[data-sent]")).toHaveCount(0);
+  await expect(phone.locator("[data-own]")).toHaveCount(0);
 
   // When the session closes, the phone says goodbye.
   await rpc("sessionClose", [key, session.id]);

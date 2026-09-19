@@ -2,15 +2,20 @@ import {
   diff,
   image,
   list,
+  poll,
+  pollList,
+  pollMatrix,
   qr,
   quote,
   reveal,
   section,
   statement,
+  text,
+  textList,
   timeline,
 } from "@slidesend/basics";
 import { defineDeck } from "@slidesend/core";
-import { ask, fact, sequence } from "./plugin";
+import { fact, sequence } from "./plugin";
 
 /** "How does gravity work?", written for a school class that answers questions in between. */
 export const deck = defineDeck({
@@ -38,9 +43,9 @@ export const deck = defineDeck({
           content: qr({ caption: "Answer on your phone" }),
           centered: true,
           cue: "Wait for phones",
-          activity: ask({
+          activity: text({
             id: "guess",
-            question: "What falls faster: a hammer or a feather?",
+            prompt: "What falls faster: a hammer or a feather?",
             message: "The talk has just started — take a guess.",
             keep: { until: "together" },
           }),
@@ -95,6 +100,35 @@ export const deck = defineDeck({
           minutes: 2,
         },
         {
+          // An inline poll: the block asks it and shows the answers as a matrix.
+          content: pollMatrix({
+            id: "mood",
+            message: "Two quick questions about falling.",
+            questions: [
+              {
+                id: "weight",
+                text: "Does something heavy fall faster?",
+                short: "Heavy falls faster",
+                options: [
+                  { id: "yes", label: "Yes" },
+                  { id: "no", label: "No" },
+                ],
+              },
+              {
+                id: "air",
+                text: "Does the air change the answer?",
+                short: "Air matters",
+                options: [
+                  { id: "yes", label: "Yes" },
+                  { id: "no", label: "No" },
+                ],
+              },
+            ],
+          }),
+          minutes: 2,
+          cue: "Wait for the phones",
+        },
+        {
           content: quote({
             text: "How different things fall is a question about the air, *not* about weight.",
             source: "What the experiment shows",
@@ -109,10 +143,12 @@ export const deck = defineDeck({
       title: "What to remember",
       panels: [
         {
-          activity: ask({
+          // A split question: asked here, shown two panels later.
+          activity: text({
             id: "question",
-            question: "What would you still like to know?",
+            prompt: "What would you still like to know?",
             message: "Ask anything about gravity.",
+            multiple: true,
           }),
           content: reveal({
             items: [
@@ -129,6 +165,28 @@ export const deck = defineDeck({
           }),
           minutes: 2,
         },
+        { content: textList({ of: "question", limit: 6 }), minutes: 2 },
+        {
+          // A poll asked here and shown on the next panel, the split form.
+          activity: poll({
+            id: "after",
+            message: "One last question.",
+            questions: [
+              {
+                id: "surprise",
+                text: "What surprised you most?",
+                short: "Surprise",
+                options: [
+                  { id: "moon", label: "That the Moon is falling" },
+                  { id: "feather", label: "That a feather keeps up" },
+                ],
+              },
+            ],
+          }),
+          content: fact({ text: "One last question on your phone." }),
+          minutes: 1,
+        },
+        { content: pollList({ of: "after" }), minutes: 1 },
       ],
     }),
   ],
