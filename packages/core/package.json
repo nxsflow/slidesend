@@ -25,5 +25,14 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --project tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "react": "^19.3.0",
+    "zod": "^4.6.5"
   }
 }
