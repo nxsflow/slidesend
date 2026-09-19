@@ -159,41 +159,60 @@ export function defineActivity<const Type extends string, Schema extends NodeSch
 }
 
 /** Everything `definePlugin` takes (spec §6.5). */
-export interface PluginOptions {
+export interface PluginOptions<
+  Slides extends readonly AnySlideTemplate[] = readonly AnySlideTemplate[],
+> {
   /** The plugin's name, unique among the installed plugins. */
   name: string;
   /** Slide templates the plugin provides. */
-  slides?: readonly AnySlideTemplate[];
+  slides?: Slides;
   /** Blocks the plugin provides. */
   blocks?: readonly AnyBlockDefinition[];
   /** Activities the plugin provides. */
   activities?: readonly AnyActivityDefinition[];
+  /**
+   * Ids the plugin provides for references of other kinds than slides and activities, by kind,
+   * e.g. `{ agent: ["raw", "advisor"] }` for `ref("agent")` fields.
+   */
+  provides?: Readonly<Record<string, readonly string[]>>;
   /** UI strings the plugin ships, by language. English is expected. */
   messages?: Messages;
   /** The plugin's server half, keyed by platform name. */
   server?: Readonly<Record<string, unknown>>;
 }
 
-/** The installable unit: any number of nodes of all three groups (spec §6.5). */
-export interface Plugin {
+/**
+ * The installable unit: any number of nodes of all three groups (spec §6.5). `Slides` keeps the
+ * slide templates' types, so that a presentation can check its deck against them.
+ */
+export interface Plugin<Slides extends readonly AnySlideTemplate[] = readonly AnySlideTemplate[]> {
   readonly name: string;
-  readonly slides: readonly AnySlideTemplate[];
+  readonly slides: Slides;
   readonly blocks: readonly AnyBlockDefinition[];
   readonly activities: readonly AnyActivityDefinition[];
+  readonly provides: Readonly<Record<string, readonly string[]>>;
   readonly messages: Messages;
   readonly server: Readonly<Record<string, unknown>>;
 }
+
+/** The slide nodes the given plugins can build. */
+export type SlideNodeOf<Plugins extends readonly Plugin[]> = ReturnType<
+  Plugins[number]["slides"][number]
+>;
 
 /**
  * Defines a plugin (spec §6.5). Throws if a definition is listed under the wrong group, e.g. a
  * block under `slides`. Duplicate types across plugins are rejected by `createRegistry`.
  */
-export function definePlugin(options: PluginOptions): Plugin {
-  const plugin: Plugin = {
+export function definePlugin<const Slides extends readonly AnySlideTemplate[] = []>(
+  options: PluginOptions<Slides>,
+): Plugin<Slides> {
+  const plugin: Plugin<Slides> = {
     name: options.name,
-    slides: options.slides ?? [],
+    slides: options.slides ?? ([] as unknown as Slides),
     blocks: options.blocks ?? [],
     activities: options.activities ?? [],
+    provides: options.provides ?? {},
     messages: options.messages ?? {},
     server: options.server ?? {},
   };

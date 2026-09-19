@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { AnyDefinition, Plugin } from "./define";
-import { type NodeIssue, type SlotResolver, withSlotResolver } from "./slots";
+import { type NodeIssue, type ParseContext, type ReferenceCheck, withParseContext } from "./slots";
 import type {
   Description,
   GroupNodes,
@@ -34,6 +34,12 @@ export class NodeValidationError extends Error {
   }
 }
 
+/** Options of `Registry.parse` and `Registry.safeParse`. */
+export interface ParseOptions {
+  /** Checks every reference (`ref`, `slideRef`, `activityRef`); without it, all are accepted. */
+  reference?: ReferenceCheck;
+}
+
 /** The result of `Registry.safeParse`. */
 export type NodeParseResult<Group extends NodeGroup> =
   | { ok: true; value: GroupNodes[Group] }
@@ -52,9 +58,17 @@ export interface Registry extends NodeContext {
    * Validates a node of the given group, including every node in its slots, and returns it with
    * defaults applied. Throws a `NodeValidationError` listing every problem with its path.
    */
-  parse<Group extends NodeGroup>(group: Group, node: unknown): GroupNodes[Group];
+  parse<Group extends NodeGroup>(
+    group: Group,
+    node: unknown,
+    options?: ParseOptions,
+  ): GroupNodes[Group];
   /** Like `parse`, but returns the problems instead of throwing. */
-  safeParse<Group extends NodeGroup>(group: Group, node: unknown): NodeParseResult<Group>;
+  safeParse<Group extends NodeGroup>(
+    group: Group,
+    node: unknown,
+    options?: ParseOptions,
+  ): NodeParseResult<Group>;
 }
 
 /** Keys core adds to a node next to its type's data: `type` always, `chapter` and `id` on slides. */
@@ -120,12 +134,11 @@ export function createRegistry(plugins: readonly Plugin[]): Registry {
   /** The data of every node this registry has parsed, without its envelope keys. */
   const parsedData = new WeakMap<object, Record<string, unknown>>();
 
-  const resolver: SlotResolver = (group, node) => {
-    const result = safeParse(group, node);
-    return result.ok ? { ok: true, value: result.value } : result;
-  };
-
-  function safeParse<Group extends NodeGroup>(group: Group, node: unknown): NodeParseResult<Group> {
+  function safeParse<Group extends NodeGroup>(
+    group: Group,
+    node: unknown,
+    options: ParseOptions = {},
+  ): NodeParseResult<Group> {
     if (typeof node !== "object" || node === null || typeof (node as Node).type !== "string") {
       return { ok: false, issues: [{ path: [], message: `Expected ${article[group]} node.` }] };
     }
@@ -153,7 +166,14 @@ export function createRegistry(plugins: readonly Plugin[]): Registry {
       else issues.push(...result.error.issues.map(({ path, message }) => ({ path, message })));
     }
 
-    const result = withSlotResolver(resolver, () => definition.schema.safeParse(data));
+    const context: ParseContext = {
+      resolve: (nestedGroup, nested) => {
+        const inner = safeParse(nestedGroup, nested, options);
+        return inner.ok ? { ok: true, value: inner.value } : inner;
+      },
+      reference: options.reference,
+    };
+    const result = withParseContext(context, () => definition.schema.safeParse(data));
     if (!result.success) {
       issues.push(
         ...result.error.issues.map(({ path, message }: NodeIssue) => ({ path, message })),
@@ -167,8 +187,12 @@ export function createRegistry(plugins: readonly Plugin[]): Registry {
     return { ok: true, value: value as unknown as GroupNodes[Group] };
   }
 
-  function parse<Group extends NodeGroup>(group: Group, node: unknown): GroupNodes[Group] {
-    const result = safeParse(group, node);
+  function parse<Group extends NodeGroup>(
+    group: Group,
+    node: unknown,
+    options?: ParseOptions,
+  ): GroupNodes[Group] {
+    const result = safeParse(group, node, options);
     if (!result.ok) throw new NodeValidationError(result.issues);
     return result.value;
   }
