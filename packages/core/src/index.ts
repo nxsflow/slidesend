@@ -205,12 +205,22 @@ export {
   type SyncEnvironment,
   sendDebounceMs,
 } from "./sync/transport";
+export {
+  ActivityHost,
+  type ActivityHostProps,
+  type ActivityScope,
+  useActivityScope,
+  useResponseStore,
+} from "./views/ActivityHost";
 export { takeControlSecret } from "./views/access";
+export { type VisibleActivity, visibleActivities } from "./views/activities";
 export { Block, type BlockViewProps } from "./views/Block";
 export { nodeData, PresentationContext, usePresentation, useText } from "./views/context";
+export { deviceId } from "./views/device";
 export { FitBox, type FitBoxProps } from "./views/FitBox";
 export { type Navigation, type NavigationOptions, useNavigation, useStageFit } from "./views/hooks";
 export { type MountOptions, mount, StageView, type StageViewProps } from "./views/mount";
+export { PhoneView, type PhoneViewProps, sessionPollMs } from "./views/PhoneView";
 export { defaultLeaveMs, SlideHost } from "./views/SlideHost";
 export { Stage } from "./views/Stage";
 export {

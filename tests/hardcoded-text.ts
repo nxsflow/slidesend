@@ -5,6 +5,8 @@ import { join, relative } from "node:path";
 const textProps = /\b(alt|title|placeholder|aria-label)=["']([^"']{3,})["']/g;
 /** Text between JSX tags, e.g. `<p>Hello</p>`. */
 const jsxText = />([^<>{}]*[A-Za-z]{3,}[^<>{}]*)</g;
+/** Code, not text: generics and calls also put words between `>` and `<`. */
+const looksLikeCode = /[();=`$]|=>/;
 const allowMarker = "slidesend-allow-hardcoded-text";
 
 /**
@@ -28,7 +30,9 @@ export function findHardcodedText(root: string): string[] {
         for (const pattern of [textProps, jsxText]) {
           for (const match of line.matchAll(pattern)) {
             const found = (match[2] ?? match[1] ?? "").trim();
-            if (found) findings.push(`${relative(root, path)}:${index + 1}: ${found}`);
+            if (!found) continue;
+            if (pattern === jsxText && looksLikeCode.test(found)) continue;
+            findings.push(`${relative(root, path)}:${index + 1}: ${found}`);
           }
         }
       });

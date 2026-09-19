@@ -17,5 +17,6 @@ export {
 } from "./blocks/text-blocks";
 export { defaultDesign } from "./design";
 export { defaultTokens } from "./design-tokens";
+export { basicsMessages } from "./messages";
 export { basics } from "./plugin";
 export { section, sectionMotionMs, sectionPosition } from "./section";

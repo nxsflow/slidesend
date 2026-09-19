@@ -10,7 +10,7 @@ import {
   timeline,
 } from "@slidesend/basics";
 import { defineDeck } from "@slidesend/core";
-import { fact, sequence } from "./plugin";
+import { ask, fact, sequence } from "./plugin";
 
 /** "How does gravity work?", written for a school class that answers questions in between. */
 export const deck = defineDeck({
@@ -38,6 +38,12 @@ export const deck = defineDeck({
           content: qr({ caption: "Answer on your phone" }),
           centered: true,
           cue: "Wait for phones",
+          activity: ask({
+            id: "guess",
+            question: "What falls faster: a hammer or a feather?",
+            message: "The talk has just started — take a guess.",
+            keep: { until: "together" },
+          }),
         },
         {
           content: list({
@@ -103,6 +109,11 @@ export const deck = defineDeck({
       title: "What to remember",
       panels: [
         {
+          activity: ask({
+            id: "question",
+            question: "What would you still like to know?",
+            message: "Ask anything about gravity.",
+          }),
           content: reveal({
             items: [
               { text: "Gravity pulls **everything** towards everything.", minutes: 1 },

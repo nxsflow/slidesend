@@ -46,10 +46,25 @@ export const gravityDesign = defineDesign({
       />
     </>
   ),
-  PhoneFrame: ({ children }) => <>{children}</>,
-  StartPage: ({ title }) => <h1>{title}</h1>,
-  ClosedPage: ({ title }) => <p>Thanks for joining “{title}”.</p>,
-  IdlePage: () => <p>Nothing is happening right now.</p>,
+  PhoneFrame: ({ chapter, children }) => (
+    <div style={{ minHeight: "100dvh", padding: 20, color: token.text }}>
+      {chapter && (
+        <header style={{ color: accent, fontWeight: 600, marginBottom: 16 }}>
+          {chapter.title}
+        </header>
+      )}
+      {children}
+    </div>
+  ),
+  StartPage: ({ title, subtitle }) => (
+    <div data-page="start">
+      <h1 style={{ fontFamily: token.display }}>{title}</h1>
+      {subtitle && <p style={{ color: token.muted }}>{subtitle}</p>}
+      <p style={{ color: token.muted }}>Questions appear here.</p>
+    </div>
+  ),
+  ClosedPage: ({ title }) => <p data-page="closed">Thanks for joining “{title}”.</p>,
+  IdlePage: () => <p data-page="idle">Nothing is happening right now.</p>,
 });
 
 /** Colors of the design, for components that need a token by name. */
