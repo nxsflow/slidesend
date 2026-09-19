@@ -16,6 +16,7 @@ import {
 } from "../access";
 import { usePresentation, useText } from "../context";
 import { deviceId } from "../device";
+import { PresentTab } from "./Present";
 import { type Desk, deskWarnings, shownSessions, sortSessions, useDesk } from "./useDesk";
 
 const color = (name: Parameters<typeof cssVariable>[1]) => `var(${cssVariable("color", name)})`;
@@ -402,6 +403,13 @@ export function DeskView({ platform }: DeskViewProps) {
   }, []);
 
   const accents = presentation.design.tokens.base.accents;
+  const [tab, setTab] = useState<"prepare" | "present">("prepare");
+  const openStage = () => {
+    const sessionId = desk.selected?.id ?? "local";
+    const fragment = secret ? `#key=${encodeURIComponent(secret)}` : "";
+    window.open(`/stage/${sessionId}${fragment}`, "_blank", "noopener");
+  };
+  const canPresent = Boolean(platform && secret && desk.selected);
   return (
     <main
       data-desk
@@ -429,36 +437,61 @@ export function DeskView({ platform }: DeskViewProps) {
           {text("core.desk.title")} · {presentation.meta.title}
         </h1>
         <nav style={{ display: "flex", gap: 8 }}>
-          <span data-tab="prepare" data-active style={{ fontWeight: 600 }}>
-            {text("core.desk.tab.prepare")}
-          </span>
-          <span data-tab="present" style={{ color: "#5d616b" }}>
-            {text("core.desk.tab.present")}
-          </span>
+          {(["prepare", "present"] as const).map((name) => (
+            <button
+              key={name}
+              type="button"
+              data-tab={name}
+              data-active={tab === name || undefined}
+              onClick={() => setTab(name)}
+              disabled={name === "present" && !canPresent}
+              style={{
+                ...button,
+                fontWeight: tab === name ? 600 : 400,
+                background: tab === name ? "#ffffff" : "#f7f7f4",
+              }}
+            >
+              {text(`core.desk.tab.${name}`)}
+            </button>
+          ))}
           <span data-tab="review" style={{ color: "#5d616b" }}>
             {text("core.desk.tab.review")}
           </span>
         </nav>
       </header>
-      <div
-        style={{
-          display: "grid",
-          gap: 16,
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-          alignItems: "start",
-        }}
-      >
-        <ControlCard
-          desk={desk}
-          {...(secret ? { secret } : {})}
-          onSecret={(value) => setSecret(value)}
-        />
-        {platform && <SessionCard desk={desk} />}
-        <JoinCard desk={desk} {...(secret ? { secret } : {})} hosted={Boolean(platform)} />
-        <DeckCard {...(desk.selected ? { sessionMinutes: desk.selected.plannedMinutes } : {})} />
-      </div>
+      {tab === "prepare" ? (
+        <div
+          style={{
+            display: "grid",
+            gap: 16,
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            alignItems: "start",
+          }}
+        >
+          <ControlCard
+            desk={desk}
+            {...(secret ? { secret } : {})}
+            onSecret={(value) => setSecret(value)}
+          />
+          {platform && <SessionCard desk={desk} />}
+          <JoinCard desk={desk} {...(secret ? { secret } : {})} hosted={Boolean(platform)} />
+          <DeckCard {...(desk.selected ? { sessionMinutes: desk.selected.plannedMinutes } : {})} />
+        </div>
+      ) : (
+        platform &&
+        secret &&
+        desk.selected && (
+          <PresentTab
+            platform={platform}
+            secret={secret}
+            session={desk.selected}
+            {...(desk.presence ? { presence: desk.presence } : {})}
+            openStage={openStage}
+          />
+        )
+      )}
       <p style={{ margin: 0, color: "#5d616b" }}>
-        {text("core.desk.tab.unavailable", { tab: text("core.desk.tab.present") })}
+        {text("core.desk.tab.unavailable", { tab: text("core.desk.tab.review") })}
       </p>
     </main>
   );

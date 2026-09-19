@@ -45,13 +45,21 @@ export interface ActivityHostProps {
   sessionId: string;
   deviceId: string;
   platform?: PlatformClient;
+  /** Render the desk's live tile instead of the phone's component (spec §12). */
+  monitor?: boolean;
 }
 
 /**
  * Renders one activity on a phone with its own response store. The component is keyed by the
  * activity's id where it is used, so a new activity never inherits the previous one's state.
  */
-export function ActivityHost({ node, sessionId, deviceId, platform }: ActivityHostProps) {
+export function ActivityHost({
+  node,
+  sessionId,
+  deviceId,
+  platform,
+  monitor = false,
+}: ActivityHostProps) {
   const { registry } = usePresentation();
   const definition = registry.definition(node.type);
   const activityId = String((node as { id?: unknown }).id ?? node.type);
@@ -60,10 +68,11 @@ export function ActivityHost({ node, sessionId, deviceId, platform }: ActivityHo
     [sessionId, activityId, deviceId, platform],
   );
   if (definition?.group !== "activity") return null;
-  const { Participant } = definition;
+  const Component = monitor ? definition.Monitor : definition.Participant;
+  if (!Component) return null;
   return (
     <ActivityContext.Provider value={scope}>
-      <Participant data={nodeData(node, ["type"])} />
+      <Component data={nodeData(node, ["type"])} />
     </ActivityContext.Provider>
   );
 }

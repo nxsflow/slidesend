@@ -31,6 +31,22 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.presence.phones` | {count} phone(s) |
 | `core.desk.presence.stages` | {count} stage(s) |
 | `core.desk.presence.title` | Connected |
+| `core.desk.present.close` | Close |
+| `core.desk.present.elapsed` | elapsed {time} |
+| `core.desk.present.fullscreen` | Fullscreen |
+| `core.desk.present.jump` | Jump to a slide |
+| `core.desk.present.next` | Next |
+| `core.desk.present.noActivity` | No activity on this step. |
+| `core.desk.present.noCue` | No cue. |
+| `core.desk.present.noNotes` | No notes on this step. |
+| `core.desk.present.noStage` | No stage is connected. |
+| `core.desk.present.notStarted` | the talk clock starts with the first forward step |
+| `core.desk.present.onStage` | On stage |
+| `core.desk.present.phones` | Phones ({count}) |
+| `core.desk.present.planned` | plan {time} |
+| `core.desk.present.position` | {step} / {total} · {slide} |
+| `core.desk.present.previous` | Previous |
+| `core.desk.present.shortcuts` | → or space: next · ←: previous · G: jump · ?: this list · Esc: close |
 | `core.desk.sessions.arm` | Arm |
 | `core.desk.sessions.close` | Close |
 | `core.desk.sessions.closesAt` | Closes at {time} |

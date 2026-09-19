@@ -4,6 +4,7 @@ import { fontFaceCss, surfaceVariables } from "../design/css";
 import { cssVariable } from "../design/tokens";
 import type { PlatformClient } from "../platform/contract";
 import type { CoreApi } from "../server/runtime";
+import { heartbeatMs } from "../sessions/runtime-types";
 import type { PhoneSession } from "../sessions/types";
 import { stepIndexOf } from "../stage/navigation";
 import { browserEnvironment, hostedTransport } from "../sync/transport";
@@ -72,6 +73,17 @@ export function PhoneView({ joinToken, platform }: PhoneViewProps) {
       transport.close();
     };
   }, [platform, sessionId, presentation]);
+
+  // Phones are counted on the desk (spec §11); one small write every 20 s while open.
+  useEffect(() => {
+    if (!api || !sessionId) return;
+    const beat = () => {
+      api.presencePhone(sessionId, device).catch(() => {});
+    };
+    beat();
+    const timer = setInterval(beat, heartbeatMs);
+    return () => clearInterval(timer);
+  }, [api, sessionId, device]);
 
   const step = presentation.steps[stepIndex];
   const chapterIndex = presentation.chapters.findIndex((chapter) => chapter.id === step?.chapter);

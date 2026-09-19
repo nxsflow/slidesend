@@ -4,11 +4,13 @@ import { typedClient } from "../client/client";
 import type { Presentation } from "../deck/presentation";
 import type { PlatformClient } from "../platform/contract";
 import type { CoreApi } from "../server/runtime";
+import { heartbeatMs } from "../sessions/runtime-types";
 import { parseRoute, positionOf, stepIndexOf } from "../stage/navigation";
 import { type CursorTransport, hostedTransport, localTransport } from "../sync/transport";
 import { takeControlSecret } from "./access";
 import { PresentationContext, usePresentation } from "./context";
 import { DeskView } from "./desk/DeskView";
+import { deviceId } from "./device";
 import { useNavigation } from "./hooks";
 import { PhoneView } from "./PhoneView";
 import { Stage } from "./Stage";
@@ -35,6 +37,8 @@ export interface StageViewProps {
   session: SessionInfo;
   /** Asks the server how the audience joins; only a window with the control secret can. */
   loadJoin?(): Promise<Pick<SessionInfo, "kind" | "joinPath">>;
+  /** Announces this stage on the session, so the desk can see it; needs the control secret. */
+  beat?(): void;
 }
 
 /**
@@ -49,6 +53,7 @@ export function StageView({
   createTransport,
   session,
   loadJoin,
+  beat,
 }: StageViewProps) {
   const presentation = usePresentation();
   const [transport, setTransport] = useState<CursorTransport>();
@@ -81,6 +86,15 @@ export function StageView({
     return () => {
       current = false;
     };
+  }, [sessionId]);
+
+  // The desk shows whether a stage is connected (spec §12), which only a heartbeat can tell it.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: one heartbeat per session
+  useEffect(() => {
+    if (!beat) return;
+    beat();
+    const timer = setInterval(beat, heartbeatMs);
+    return () => clearInterval(timer);
   }, [sessionId]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: one transport per mount and session
@@ -154,7 +168,14 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
         canSteer={!platform || Boolean(secret)}
         deepLink={deepLink}
         session={{ sessionId, hosted: Boolean(platform), ...(platform ? { platform } : {}) }}
-        {...(api && secret ? { loadJoin: () => api.sessionJoin(secret, sessionId) } : {})}
+        {...(api && secret
+          ? {
+              loadJoin: () => api.sessionJoin(secret, sessionId),
+              beat: () => {
+                api.presenceBeat(secret, sessionId, "stage", deviceId(), "Stage").catch(() => {});
+              },
+            }
+          : {})}
         createTransport={() =>
           platform
             ? hostedTransport({ platform, sessionId, secret })
