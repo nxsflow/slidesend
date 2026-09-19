@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --project tsconfig.json",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "talk": "slidesend dev",
+    "check:deck": "slidesend check"
   },
   "dependencies": {
     "@slidesend/agent": "workspace:*",
