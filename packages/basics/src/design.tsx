@@ -4,6 +4,7 @@ import {
   defineDesign,
   type PhoneFrameProps,
   type StageFrameProps,
+  useText,
 } from "@slidesend/core";
 import { defaultTokens } from "./design-tokens";
 
@@ -87,20 +88,30 @@ export const defaultDesign = defineDesign({
   leaveMs: 820,
   StageFrame,
   PhoneFrame,
-  StartPage: ({ title, subtitle }) => (
-    <div data-page="start" style={page}>
-      <h1 style={{ fontFamily: `var(${cssVariable("font", "display")})` }}>{title}</h1>
-      {subtitle && <p style={{ color: color("textMuted") }}>{subtitle}</p>}
-    </div>
-  ),
-  ClosedPage: ({ title }) => (
-    <div data-page="closed" style={page}>
-      <p>Thank you for taking part in “{title}”.</p>
-    </div>
-  ),
-  IdlePage: () => (
-    <div data-page="idle" style={page}>
-      <p style={{ color: color("textMuted") }}>Nothing is happening here right now.</p>
-    </div>
-  ),
+  StartPage: ({ title, subtitle }) => {
+    const text = useText();
+    return (
+      <div data-page="start" style={page}>
+        <h1 style={{ fontFamily: `var(${cssVariable("font", "display")})` }}>{title}</h1>
+        {subtitle && <p style={{ color: color("textMuted") }}>{subtitle}</p>}
+        <p style={{ color: color("textMuted") }}>{text("basics.phone.waiting")}</p>
+      </div>
+    );
+  },
+  ClosedPage: ({ title }) => {
+    const text = useText();
+    return (
+      <div data-page="closed" style={page}>
+        <p>{text("basics.phone.thanks", { title })}</p>
+      </div>
+    );
+  },
+  IdlePage: () => {
+    const text = useText();
+    return (
+      <div data-page="idle" style={page}>
+        <p style={{ color: color("textMuted") }}>{text("basics.phone.idle")}</p>
+      </div>
+    );
+  },
 });

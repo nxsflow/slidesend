@@ -1,4 +1,4 @@
-import { StrictMode, useEffect, useState } from "react";
+import { StrictMode, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { typedClient } from "../client/client";
 import type { Presentation } from "../deck/presentation";
@@ -9,6 +9,7 @@ import { type CursorTransport, hostedTransport, localTransport } from "../sync/t
 import { takeControlSecret } from "./access";
 import { PresentationContext, usePresentation } from "./context";
 import { useNavigation } from "./hooks";
+import { PhoneView } from "./PhoneView";
 import { Stage } from "./Stage";
 import { SessionContext, type SessionInfo } from "./session-context";
 
@@ -51,13 +52,18 @@ export function StageView({
   const presentation = usePresentation();
   const [transport, setTransport] = useState<CursorTransport>();
   const [info, setInfo] = useState(session);
+  // This window's own last move. A deep link steers before the transport exists, and StrictMode
+  // throws the first transport away, so every new transport is told where this window stands.
+  const lastMove = useRef<Parameters<CursorTransport["send"]>[0]>(undefined);
   const [connected, setConnected] = useState(false);
   const navigation = useNavigation(presentation, {
     canSteer,
     deepLink,
     onMove(index) {
       const { slide, step } = positionOf(presentation, index);
-      transport?.send({ index, slideId: slide.id, step });
+      const target = { index, slideId: slide.id, step };
+      lastMove.current = target;
+      transport?.send(target);
     },
   });
   const { receive } = navigation;
@@ -80,6 +86,7 @@ export function StageView({
   useEffect(() => {
     const created = createTransport();
     setTransport(created);
+    if (canSteer && lastMove.current) created.send(lastMove.current);
     const stopCursor = created.onCursor((cursor) => {
       receive(stepIndexOf(presentation, cursor.slideId, cursor.step) ?? cursor.index);
     });
@@ -115,8 +122,8 @@ function Pending({ presentation, view }: { presentation: Presentation; view: str
 }
 
 /**
- * Renders the presentation's views by address (spec §9): `/stage/<sessionId>` for the stage;
- * the phone, desk and print views follow in their own tickets.
+ * Renders the presentation's views by address (spec §9): `/` and `/r/<joinToken>` for the
+ * phones, `/stage/<sessionId>` for the stage; desk and print follow in their own tickets.
  */
 export function mount(presentation: Presentation, options: MountOptions = {}): void {
   const element = options.root ?? document.getElementById("root");
@@ -124,6 +131,14 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
   const route = parseRoute(window.location.pathname, window.location.search);
   const secret = takeControlSecret();
   let view = <Pending presentation={presentation} view={route.view} />;
+  if (route.view === "phone") {
+    view = (
+      <PhoneView
+        {...(route.joinToken ? { joinToken: route.joinToken } : {})}
+        {...(options.platform ? { platform: options.platform } : {})}
+      />
+    );
+  }
   if (route.view === "stage") {
     const deepLink = route.slide ? stepIndexOf(presentation, route.slide, route.step) : undefined;
     const { platform } = options;
