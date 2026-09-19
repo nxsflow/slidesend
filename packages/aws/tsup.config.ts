@@ -1,7 +1,7 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/server.ts"],
+  entry: ["src/index.ts", "src/server.ts", "src/commands.ts"],
   format: ["esm"],
   target: "es2023",
   // tsup sets `baseUrl` for its declaration build, which TypeScript 6 deprecates.

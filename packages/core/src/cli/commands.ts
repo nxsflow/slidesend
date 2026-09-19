@@ -17,9 +17,9 @@ export const coreCommands: readonly CommandDefinition[] = [
   },
   {
     name: "dev",
-    usage: "slidesend dev [--config <file>] [--port <number>]",
+    usage: "slidesend dev [--config <file>] [--port <number>] [--local]",
     description:
-      "Starts the talk for development and prints the stage, desk and phone links. Without a platform the talk runs in local mode: stage and desk in one browser, no audience.",
+      "Starts the talk for development and prints its links: on the platform's dev backend if a platform is configured, otherwise (or with --local) in local mode, with stage and desk in one browser and no audience.",
   },
   {
     name: "help",
@@ -62,19 +62,23 @@ export interface CommandLine {
   args: string[];
   config: string;
   port?: number;
+  /** Run `dev` in local mode even when a platform is configured. */
+  local: boolean;
 }
 
-/** Reads `slidesend <command> [--config <file>] [--port <n>] [args]`. */
+/** Reads `slidesend <command> [--config <file>] [--port <n>] [--local] [args]`. */
 export function parseCommandLine(argv: readonly string[]): CommandLine {
   const args: string[] = [];
   let config = "presentation.config.ts";
   let port: number | undefined;
+  let local = false;
   const rest = [...argv];
   const command = rest.shift() ?? "help";
   while (rest.length > 0) {
     const arg = rest.shift() as string;
     if (arg === "--config") config = rest.shift() ?? config;
     else if (arg === "--port") port = Number(rest.shift());
+    else if (arg === "--local") local = true;
     else args.push(arg);
   }
   return {
@@ -82,6 +86,7 @@ export function parseCommandLine(argv: readonly string[]): CommandLine {
     args,
     config,
     port,
+    local,
   };
 }
 
@@ -133,12 +138,13 @@ export async function runCommand(io: CommandIo, line: CommandLine): Promise<numb
   }
 
   if (line.command === "dev") {
-    const url = (await io.startDevServer(line.port)).replace(/\/$/, "");
-    if (presentation.platform) {
-      io.log(
-        `The platform "${presentation.platform.name}" is configured; its dev backend is not started by this command yet.`,
-      );
+    const platformDev = presentation.platform?.commands?.dev;
+    if (platformDev && !line.local) {
+      const args = [...line.args, ...(line.port ? ["--port", String(line.port)] : [])];
+      await platformDev.run({ projectRoot: io.projectRoot, args, log: io.log });
+      return 0;
     }
+    const url = (await io.startDevServer(line.port)).replace(/\/$/, "");
     io.log(`  Stage  ${url}/stage/local`);
     io.log(`  Desk   ${url}/desk`);
     io.log(`  Phones ${url}/  (local mode: no audience can join)`);

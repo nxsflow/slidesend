@@ -23,13 +23,16 @@ describe("command line", () => {
       args: [],
       config: "presentation.config.ts",
       port: undefined,
+      local: false,
     });
     expect(parseCommandLine(["dev", "--port", "5300", "--config", "talk.config.ts", "x"])).toEqual({
       command: "dev",
       args: ["x"],
       config: "talk.config.ts",
       port: 5300,
+      local: false,
     });
+    expect(parseCommandLine(["dev", "--local"]).local).toBe(true);
     expect(parseCommandLine([]).command).toBe("help");
     expect(parseCommandLine(["--help"]).command).toBe("help");
   });
@@ -67,6 +70,25 @@ describe("commands", () => {
       "  Desk   http://localhost:5300/desk",
       "  Phones http://localhost:5300/  (local mode: no audience can join)",
     ]);
+  });
+
+  it("dev runs the platform's dev backend, unless --local asks for local mode", async () => {
+    const runs: unknown[] = [];
+    const platform = {
+      name: "test",
+      commands: {
+        dev: { description: "Dev.", run: async (context: unknown) => void runs.push(context) },
+      },
+    };
+    const { fake, out } = io({
+      loadPresentation: async () =>
+        ({ slides: [], steps: [], plannedMinutes: 0, platform }) as never,
+    });
+    expect(await runCommand(fake, parseCommandLine(["dev", "--port", "4000"]))).toBe(0);
+    expect(runs).toMatchObject([{ args: ["--port", "4000"] }]);
+    expect(await runCommand(fake, parseCommandLine(["dev", "--local"]))).toBe(0);
+    expect(runs).toHaveLength(1);
+    expect(out.at(-1)).toContain("local mode");
   });
 
   it("explains that a platform command needs a platform", async () => {

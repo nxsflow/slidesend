@@ -3,5 +3,12 @@
   "compilerOptions": {
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "e2e", "vite.config.ts", "playwright.config.ts", "presentation.config.ts"]
+  "include": [
+    "src",
+    "e2e",
+    "vite.config.ts",
+    "playwright.config.ts",
+    "presentation.config.ts",
+    "aws-blocks/index.ts"
+  ]
 }

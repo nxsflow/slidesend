@@ -13,7 +13,11 @@
       "types": "./dist/server.d.ts",
       "import": "./dist/server.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./commands": {
+      "types": "./dist/commands.d.ts",
+      "import": "./dist/commands.js"
+    }
   },
   "files": [
     "dist"
@@ -21,5 +25,17 @@
   "scripts": {
     "build": "tsup",
     "typecheck": "tsc --project tsconfig.json"
+  },
+  "peerDependencies": {
+    "@aws-blocks/blocks": "^0.6.0",
+    "@slidesend/core": "workspace:^",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@aws-blocks/blocks": "0.6.0",
+    "@slidesend/core": "workspace:*",
+    "zod": "^4.6.5",
+    "vitest": "^5.0.1",
+    "@types/node": "^24.0.0"
   }
 }
