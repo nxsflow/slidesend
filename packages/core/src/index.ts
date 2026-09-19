@@ -24,12 +24,40 @@ export {
   type DeckIssue,
   type DeckStep,
   DeckValidationError,
-  type Design,
   definePresentation,
   type Presentation,
   type PresentationConfig,
   type ResolvedSlide,
 } from "./deck/presentation";
+export { chapterAccent, fontFaceCss, stageFrameProps, surfaceVariables } from "./design/css";
+export {
+  type ClosedPageProps,
+  type ColorValues,
+  type Design,
+  type DesignTokens,
+  defineDesign,
+  type FontFile,
+  type IdlePageProps,
+  type PhoneFrameProps,
+  type StageFrameProps,
+  type StageProgress,
+  type StartPageProps,
+} from "./design/define";
+export {
+  accentVariable,
+  accentVariableAt,
+  type ColorToken,
+  colorTokens,
+  cssVariable,
+  type FontToken,
+  fontTokens,
+  type RadiusToken,
+  radiusTokens,
+  type Surface,
+  type TokenReference,
+  tokenReference,
+  tokenReferenceTable,
+} from "./design/tokens";
 export {
   type ActivityDefinition,
   type ActivityOptions,

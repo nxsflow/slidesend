@@ -1,18 +1,11 @@
 import type { z } from "zod";
+import type { Design } from "../design/define";
 import type { Plugin, SlideNodeOf } from "../nodes/define";
 import { createRegistry, formatNodePath, type Registry } from "../nodes/registry";
 import type { NodeIssue, ReferenceCheck } from "../nodes/slots";
 import type { Messages, SlideNode, StepDescription } from "../nodes/types";
 import type { Platform } from "../platform/package";
 import { chapterSchema, type Deck, metaSchema } from "./deck";
-
-/**
- * A design (spec §7): exactly one per presentation. This is the part `definePresentation` needs;
- * the design contract adds tokens, fonts and frames.
- */
-export interface Design {
-  readonly name: string;
-}
 
 /** Everything `definePresentation` takes (spec §4.1). */
 export interface PresentationConfig<Plugins extends readonly Plugin[]> {

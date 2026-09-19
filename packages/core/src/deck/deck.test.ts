@@ -17,9 +17,10 @@ import {
   type StepDescription,
   stepMeta,
 } from "../index";
+import { plainDesign } from "../testing";
 
 const Nothing = () => null;
-const design = { name: "plain" };
+const design = plainDesign;
 
 const poll = defineActivity({
   type: "poll",
