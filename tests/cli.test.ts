@@ -17,7 +17,7 @@ describe("slidesend", () => {
   it("check validates the example talk", () => {
     const result = slidesend("check");
     expect(result.status).toBe(0);
-    expect(result.stdout).toMatch(/^The deck is valid: 2 slides, 7 steps, 7 planned minutes\./);
+    expect(result.stdout).toMatch(/^The deck is valid: 4 slides, 14 steps, 16 planned minutes\./);
   });
 
   it("check exits non-zero and names every problem of a broken deck", () => {

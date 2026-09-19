@@ -7,7 +7,7 @@ import {
   SessionClosedError,
   SessionStateError,
 } from "../sessions/errors";
-import type { PhoneSession, Session, SessionRecord } from "../sessions/types";
+import type { PhoneSession, Session, SessionKind, SessionRecord } from "../sessions/types";
 import { type Access, control, type Guards, open, type ServerApi } from "./api";
 
 /** The name of the platform secret that grants control (spec §11). */
@@ -306,8 +306,18 @@ export function createSessions({ platform, defaultPlannedMinutes }: SessionsOpti
     },
   };
 
+  /** What a stage or desk needs to show how the audience joins (spec §12, Join card). */
+  async function joinInfo(id: string): Promise<{ kind: SessionKind; joinPath: string }> {
+    const session = await get(id);
+    return {
+      kind: session.kind,
+      joinPath: session.kind === "rehearsal" && session.joinToken ? `/r/${session.joinToken}` : "/",
+    };
+  }
+
   const api = {
     phoneSession: open((joinToken?: string) => resolvePhone(joinToken)),
+    sessionJoin: control(guards, (id: string) => joinInfo(id)),
     controlCheck: control(guards, () => true),
     sessionList: control(guards, () => list()),
     sessionCreate: control(guards, (input: unknown) => create(input)),
@@ -330,6 +340,7 @@ export function createSessions({ platform, defaultPlannedMinutes }: SessionsOpti
     extend,
     close,
     markStarted,
+    joinInfo,
     resolvePhone,
     guards,
     api,

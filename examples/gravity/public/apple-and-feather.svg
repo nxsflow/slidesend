@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" role="img" aria-label="An apple and a feather falling side by side">
+  <rect width="800" height="450" fill="#101735" />
+  <g stroke="#7aa2ff" stroke-width="3" stroke-dasharray="10 14" fill="none">
+    <path d="M260 60 V330" />
+    <path d="M540 60 V330" />
+  </g>
+  <circle cx="260" cy="330" r="46" fill="#c2413c" />
+  <path d="M260 284 q10 -26 30 -34" stroke="#5fd39a" stroke-width="8" fill="none" stroke-linecap="round" />
+  <path d="M540 292 q34 22 8 66 q-26 -6 -8 -66 Z" fill="#eef1f8" />
+  <path d="M120 392 H680" stroke="#2a3350" stroke-width="10" stroke-linecap="round" />
+</svg>

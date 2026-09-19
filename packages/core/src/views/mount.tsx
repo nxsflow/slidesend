@@ -1,13 +1,16 @@
 import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { typedClient } from "../client/client";
 import type { Presentation } from "../deck/presentation";
 import type { PlatformClient } from "../platform/contract";
+import type { CoreApi } from "../server/runtime";
 import { parseRoute, positionOf, stepIndexOf } from "../stage/navigation";
 import { type CursorTransport, hostedTransport, localTransport } from "../sync/transport";
 import { takeControlSecret } from "./access";
 import { PresentationContext, usePresentation } from "./context";
 import { useNavigation } from "./hooks";
 import { Stage } from "./Stage";
+import { SessionContext, type SessionInfo } from "./session-context";
 
 /** Options of `mount`. */
 export interface MountOptions {
@@ -26,6 +29,10 @@ export interface StageViewProps {
   deepLink?: number;
   /** Creates the session's transport; called once per mount, closed on unmount. */
   createTransport(): CursorTransport;
+  /** How the audience joins this session; a stage shows it as a QR code. */
+  session: SessionInfo;
+  /** Asks the server how the audience joins; only a window with the control secret can. */
+  loadJoin?(): Promise<Pick<SessionInfo, "kind" | "joinPath">>;
 }
 
 /**
@@ -33,9 +40,17 @@ export interface StageViewProps {
  * windows of the session by its transport. It shows whether it runs locally or hosted, and
  * whether it is connected, as `data-sync` and `data-connected`.
  */
-export function StageView({ sessionId, canSteer, deepLink, createTransport }: StageViewProps) {
+export function StageView({
+  sessionId,
+  canSteer,
+  deepLink,
+  createTransport,
+  session,
+  loadJoin,
+}: StageViewProps) {
   const presentation = usePresentation();
   const [transport, setTransport] = useState<CursorTransport>();
+  const [info, setInfo] = useState(session);
   const [connected, setConnected] = useState(false);
   const navigation = useNavigation(presentation, {
     canSteer,
@@ -46,6 +61,20 @@ export function StageView({ sessionId, canSteer, deepLink, createTransport }: St
     },
   });
   const { receive } = navigation;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: asked once per session
+  useEffect(() => {
+    setInfo(session);
+    if (!loadJoin) return;
+    let current = true;
+    loadJoin().then(
+      (join) => current && setInfo({ ...session, ...join }),
+      () => {},
+    );
+    return () => {
+      current = false;
+    };
+  }, [sessionId]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: one transport per mount and session
   useEffect(() => {
@@ -69,7 +98,9 @@ export function StageView({ sessionId, canSteer, deepLink, createTransport }: St
       data-sync={transport?.kind}
       data-connected={connected}
     >
-      <Stage index={navigation.index} />
+      <SessionContext.Provider value={info}>
+        <Stage index={navigation.index} />
+      </SessionContext.Provider>
     </div>
   );
 }
@@ -97,11 +128,14 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
     const deepLink = route.slide ? stepIndexOf(presentation, route.slide, route.step) : undefined;
     const { platform } = options;
     const sessionId = route.sessionId;
+    const api = platform ? typedClient<CoreApi>(platform) : undefined;
     view = (
       <StageView
         sessionId={sessionId}
         canSteer={!platform || Boolean(secret)}
         deepLink={deepLink}
+        session={{ sessionId, hosted: Boolean(platform) }}
+        {...(api && secret ? { loadJoin: () => api.sessionJoin(secret, sessionId) } : {})}
         createTransport={() =>
           platform
             ? hostedTransport({ platform, sessionId, secret })

@@ -1,10 +1,13 @@
 import { definePlugin } from "@slidesend/core";
+import { qr } from "./blocks/qr";
+import { diff, image, list, quote, reveal, statement, timeline } from "./blocks/text-blocks";
 import { section } from "./section";
 
-/**
- * The basics plugin: the `section` template, and the generic blocks and activities as they
- * arrive. Install it with `plugins: [basics(), ...]`.
- */
+/** Everything `@slidesend/basics` provides: the section template and the generic blocks. */
 export function basics() {
-  return definePlugin({ name: "basics", slides: [section] });
+  return definePlugin({
+    name: "basics",
+    slides: [section],
+    blocks: [statement, quote, list, timeline, diff, reveal, image, qr],
+  });
 }

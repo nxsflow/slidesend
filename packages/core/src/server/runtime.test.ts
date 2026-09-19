@@ -270,6 +270,7 @@ describe("guards", () => {
     const { server } = await setup();
     expect(accessOf(server.api)).toEqual({
       phoneSession: "open",
+      sessionJoin: "control",
       controlCheck: "control",
       sessionList: "control",
       sessionCreate: "control",
