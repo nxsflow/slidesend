@@ -6,7 +6,7 @@ import {
   type PlatformServer,
   StoreConditionError,
 } from "../platform/contract";
-import type { ServerApi } from "./memory-platform";
+import type { ServerApi } from "../server/api";
 
 /** One client connected through a harness. */
 export interface HarnessConnection {

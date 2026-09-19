@@ -14,13 +14,7 @@ import {
   splitListPrefix,
   splitStoreKey,
 } from "../platform/contract";
-
-/**
- * The server methods a client can call: each takes JSON-serializable arguments and returns a
- * JSON-serializable result, or a promise of one.
- */
-// biome-ignore lint/suspicious/noExplicitAny: methods take arbitrary JSON arguments
-export type ServerApi = Readonly<Record<string, (...args: any[]) => unknown>>;
+import type { ServerApi } from "../server/api";
 
 /** Options of `createMemoryPlatform`. */
 export interface MemoryPlatformOptions {
