@@ -213,7 +213,7 @@ export {
   useResponseStore,
 } from "./views/ActivityHost";
 export { takeControlSecret } from "./views/access";
-export { type VisibleActivity, visibleActivities } from "./views/activities";
+export { activityById, type VisibleActivity, visibleActivities } from "./views/activities";
 export { Block, type BlockViewProps } from "./views/Block";
 export { nodeData, PresentationContext, usePresentation, useText } from "./views/context";
 export { deviceId } from "./views/device";
@@ -227,5 +227,6 @@ export {
   joinUrl,
   SessionContext,
   type SessionInfo,
+  useResponses,
   useSessionInfo,
 } from "./views/session-context";

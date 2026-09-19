@@ -149,7 +149,7 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
         sessionId={sessionId}
         canSteer={!platform || Boolean(secret)}
         deepLink={deepLink}
-        session={{ sessionId, hosted: Boolean(platform) }}
+        session={{ sessionId, hosted: Boolean(platform), ...(platform ? { platform } : {}) }}
         {...(api && secret ? { loadJoin: () => api.sessionJoin(secret, sessionId) } : {})}
         createTransport={() =>
           platform

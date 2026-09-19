@@ -4,6 +4,17 @@
  */
 export const packageName = "@slidesend/basics";
 
+export {
+  countAnswers,
+  countMatrix,
+  type PollAnswer,
+  poll,
+  pollAnswers,
+  pollQuestion,
+  pollQuestions,
+} from "./activities/poll";
+export { link, text, textResponses, wait } from "./activities/simple";
+export { pollList, pollMatrix } from "./blocks/poll-blocks";
 export { qr } from "./blocks/qr";
 export { RichText, richTextSyntax } from "./blocks/rich-text";
 export {
@@ -15,6 +26,7 @@ export {
   statement,
   timeline,
 } from "./blocks/text-blocks";
+export { textList } from "./blocks/text-list";
 export { defaultDesign } from "./design";
 export { defaultTokens } from "./design-tokens";
 export { basicsMessages } from "./messages";
