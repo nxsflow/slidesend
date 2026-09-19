@@ -1,0 +1,50 @@
+name: copyright-year
+
+# Opens a pull request that extends the copyright notice to the new year. The license test fails
+# from 1 January 00:00 UTC until that pull request is merged. First run: 2027-01-01.
+on:
+  schedule:
+    - cron: "0 0 1 1 *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Extend the copyright notice
+        id: bump
+        run: |
+          year=$(date -u +%Y)
+          sed -i -E "s/Copyright 2026(-[0-9]{4})? Carsten Koch/Copyright 2026-${year} Carsten Koch/" \
+            LICENSE packages/*/LICENSE README.md
+          echo "year=${year}" >> "$GITHUB_OUTPUT"
+      - run: pnpm exec vitest run tests/license.test.ts
+      - name: Open the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          YEAR: ${{ steps.bump.outputs.year }}
+        run: |
+          if git diff --quiet; then
+            echo "The copyright notice already covers ${YEAR}."
+            exit 0
+          fi
+          branch="chore/copyright-${YEAR}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch --create "$branch"
+          git commit --all --message "chore: extend the copyright notice to ${YEAR}"
+          git push --force origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "chore: extend the copyright notice to ${YEAR}" \
+            --body "Extends the copyright notice in LICENSE, the package copies and README to ${YEAR}. The license test fails on main until this is merged. This pull request was opened with the workflow token, so checks do not start on their own: close and reopen it, or push to the branch, to run them."
