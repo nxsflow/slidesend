@@ -158,7 +158,14 @@ export async function runCommand(io: CommandIo, line: CommandLine): Promise<numb
     return 1;
   }
   if (command) {
-    await command.run({ projectRoot: io.projectRoot, args: line.args, log: io.log });
+    try {
+      await command.run({ projectRoot: io.projectRoot, args: line.args, log: io.log });
+    } catch (error) {
+      // A platform command that fails has already said why, in its own words; the person at the
+      // terminal gets that sentence and an exit code, not a stack trace from inside a package.
+      io.error(error instanceof Error ? error.message : String(error));
+      return 1;
+    }
     return 0;
   }
   if (!presentation.platform) {

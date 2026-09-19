@@ -36,6 +36,8 @@ function localSecret(projectRoot: string): string | undefined {
   return typeof entry?.[1] === "string" ? entry[1] : undefined;
 }
 
+export { bootstrap } from "./bootstrap/command";
+
 /**
  * `slidesend dev` on AWS: runs the project's `aws-blocks/index.ts` on the AWS Blocks dev server
  * with its local mocks, with Vite behind it, and prints the desk link with the control secret.

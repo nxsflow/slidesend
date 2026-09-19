@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { chapterAccent } from "../../design/css";
-import { accentVariable, accentVariableAt, cssVariable } from "../../design/tokens";
+import { accentVariable, accentVariableAt } from "../../design/tokens";
 import type { PlatformClient } from "../../platform/contract";
 import type { Session } from "../../sessions/types";
 import {
@@ -18,8 +18,6 @@ import { usePresentation, useText } from "../context";
 import { deviceId } from "../device";
 import { PresentTab } from "./Present";
 import { type Desk, deskWarnings, shownSessions, sortSessions, useDesk } from "./useDesk";
-
-const color = (name: Parameters<typeof cssVariable>[1]) => `var(${cssVariable("color", name)})`;
 
 /** Props of `DeskView`. */
 export interface DeskViewProps {
@@ -63,15 +61,7 @@ const field = {
   border: "1px solid #d8d9d4",
 } as const;
 
-function ControlCard({
-  desk,
-  secret,
-  onSecret,
-}: {
-  desk: Desk;
-  secret?: string;
-  onSecret(value?: string): void;
-}) {
+function ControlCard({ desk, onSecret }: { desk: Desk; onSecret(value?: string): void }) {
   const text = useText();
   const [draft, setDraft] = useState("");
   const [wrong, setWrong] = useState(false);
@@ -468,11 +458,7 @@ export function DeskView({ platform }: DeskViewProps) {
             alignItems: "start",
           }}
         >
-          <ControlCard
-            desk={desk}
-            {...(secret ? { secret } : {})}
-            onSecret={(value) => setSecret(value)}
-          />
+          <ControlCard desk={desk} onSecret={(value) => setSecret(value)} />
           {platform && <SessionCard desk={desk} />}
           <JoinCard desk={desk} {...(secret ? { secret } : {})} hosted={Boolean(platform)} />
           <DeckCard {...(desk.selected ? { sessionMinutes: desk.selected.plannedMinutes } : {})} />

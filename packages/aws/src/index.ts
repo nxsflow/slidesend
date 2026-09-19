@@ -38,6 +38,15 @@ export function aws(options: AwsOptions): AwsPlatform {
           "Runs the talk on the AWS Blocks dev server with local mocks and prints the desk link.",
         run: async (context) => (await commands()).dev(context),
       },
+      bootstrap: {
+        description:
+          "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider and the deploy role.",
+        run: async (context) =>
+          (await commands()).bootstrap(context, {
+            region: options.region,
+            ...(options.domain ? { domain: options.domain } : {}),
+          }),
+      },
     },
   };
 }
@@ -48,4 +57,8 @@ const commandsModule = "@slidesend/aws/commands";
 const commands = () =>
   import(/* @vite-ignore */ commandsModule) as Promise<{
     dev(context: PlatformCommandContext): Promise<void>;
+    bootstrap(
+      context: PlatformCommandContext,
+      defaults: { region?: string; domain?: string },
+    ): Promise<void>;
   }>;
