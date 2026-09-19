@@ -4,6 +4,17 @@
  */
 export const packageName = "@slidesend/basics";
 
+export { qr } from "./blocks/qr";
+export { RichText, richTextSyntax } from "./blocks/rich-text";
+export {
+  diff,
+  image,
+  list,
+  quote,
+  reveal,
+  statement,
+  timeline,
+} from "./blocks/text-blocks";
 export { defaultDesign } from "./design";
 export { defaultTokens } from "./design-tokens";
 export { basics } from "./plugin";

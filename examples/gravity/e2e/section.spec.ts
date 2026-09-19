@@ -37,15 +37,8 @@ test("the hero title starts centered, travels up, and the panels move like a car
   const second = await box(page, "[data-panel='1']");
   expect(Math.abs(second.x - first.x)).toBeLessThan(2);
 
-  // A block that builds up stays in place.
-  await page.keyboard.press("ArrowRight");
-  await settled(page);
-  const building = await box(page, "[data-panel='1']");
-  expect(Math.abs(building.x - second.x)).toBeLessThan(2);
-  await expect(page.locator("[data-point='1']")).toHaveCSS("opacity", "1");
-
   // Carousel backward, and back to the hero.
-  for (let press = 0; press < 2; press++) await page.keyboard.press("ArrowLeft");
+  await page.keyboard.press("ArrowLeft");
   await settled(page);
   await expect(page.locator("[data-panel='0']")).toHaveAttribute("data-active", "true");
   await page.keyboard.press("ArrowLeft");
@@ -54,14 +47,30 @@ test("the hero title starts centered, travels up, and the panels move like a car
   expect(Math.abs(centerY(again) - centerY(stage))).toBeLessThan(stage.height * 0.1);
 });
 
+test("a block with its own steps builds up in place", async ({ page }) => {
+  await page.goto("/stage/local?slide=together&step=1");
+  await settled(page);
+  const before = await box(page, "[data-panel='0']");
+  await expect(page.locator("[data-item='1'][data-shown]")).toHaveCount(0);
+  await page.keyboard.press("ArrowRight");
+  await settled(page);
+  await expect(page.locator("[data-item='1'][data-shown]")).toHaveCount(1);
+  const after = await box(page, "[data-panel='0']");
+  expect(Math.abs(after.x - before.x)).toBeLessThan(2);
+  await expect(page.locator("[data-panel='0']")).toHaveAttribute("data-active", "true");
+});
+
 for (const [width, height, name] of viewports) {
   test(`no content overflows the stage: ${name} ${width}×${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
     for (const [slide, step] of [
       // Steps count from 1 in a deep link; "why" step 1 is the hero title.
       ["why", 2],
-      ["why", 5],
-      ["falling-1", 2],
+      ["why", 4],
+      ["observations", 1],
+      ["observations", 2],
+      ["falling-1", 1],
+      ["together", 6],
     ] as const) {
       await page.goto(`/stage/local?slide=${slide}&step=${step}`);
       await settled(page);

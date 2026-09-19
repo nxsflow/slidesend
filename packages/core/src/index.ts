@@ -202,3 +202,9 @@ export { type Navigation, type NavigationOptions, useNavigation, useStageFit } f
 export { type MountOptions, mount, StageView, type StageViewProps } from "./views/mount";
 export { defaultLeaveMs, SlideHost } from "./views/SlideHost";
 export { Stage } from "./views/Stage";
+export {
+  joinUrl,
+  SessionContext,
+  type SessionInfo,
+  useSessionInfo,
+} from "./views/session-context";

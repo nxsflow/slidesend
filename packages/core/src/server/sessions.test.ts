@@ -241,6 +241,7 @@ describe("guards", () => {
     const { sessions } = setup();
     expect(accessOf(sessions.api)).toEqual({
       phoneSession: "open",
+      sessionJoin: "control",
       controlCheck: "control",
       sessionList: "control",
       sessionCreate: "control",
@@ -260,6 +261,7 @@ describe("guards", () => {
     const { api } = sessions;
     const calls: Record<string, (key: string) => Promise<unknown>> = {
       controlCheck: (key) => api.controlCheck(key),
+      sessionJoin: (key) => api.sessionJoin(key, id),
       sessionList: (key) => api.sessionList(key),
       sessionCreate: (key) => api.sessionCreate(key, { kind: "live", name: "Sneaky" }),
       sessionUpdate: (key) => api.sessionUpdate(key, id, { name: "Sneaky" }),

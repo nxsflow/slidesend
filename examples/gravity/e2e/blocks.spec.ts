@@ -62,6 +62,21 @@ test("stage and two phones follow one session on the AWS Blocks dev server", asy
   for (const phone of phones) await expect.poll(() => position(phone)).toBe("why/3");
   expect((await rpc("cursorRead", [key, session.id])).step).toBe(3);
 
+  // The QR block shows this session's own join address: a rehearsal's token link.
+  await stage.goto(`${base}/stage/${session.id}?slide=why&step=3#key=${key}`);
+  await expect(stage.locator('[data-block="qr"]')).toHaveAttribute(
+    "data-join",
+    `${base}/r/${session.joinToken}`,
+  );
+  await expect(stage.locator('[data-block="qr"] img')).toBeVisible();
+
+  // A live session joins at the root.
+  const live = await rpc("sessionCreate", [key, { kind: "live", name: "Blocks live" }]);
+  await rpc("sessionOpen", [key, live.id]);
+  const liveStage = await open(`${base}/stage/${live.id}?slide=why&step=3#key=${key}`);
+  await expect(liveStage.locator('[data-block="qr"]')).toHaveAttribute("data-join", `${base}/`);
+  await rpc("sessionClose", [key, live.id]);
+
   const desk = await open(`${base}/desk#key=${key}`);
   await expect(desk.getByText("The desk view is not available yet.")).toBeVisible();
   expect(errors).toEqual([]);
