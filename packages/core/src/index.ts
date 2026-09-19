@@ -5,6 +5,25 @@
 export const packageName = "@slidesend/core";
 
 export {
+  type Chapter,
+  chapterSchema,
+  type Deck,
+  defineDeck,
+  type Meta,
+  metaSchema,
+} from "./deck/deck";
+export {
+  type DeckIssue,
+  type DeckStep,
+  DeckValidationError,
+  type Design,
+  definePresentation,
+  type Platform,
+  type Presentation,
+  type PresentationConfig,
+  type ResolvedSlide,
+} from "./deck/presentation";
+export {
   type ActivityDefinition,
   type ActivityOptions,
   type AnyActivityDefinition,
@@ -21,6 +40,7 @@ export {
   type Plugin,
   type PluginOptions,
   type SlideInput,
+  type SlideNodeOf,
   type SlideOptions,
   type SlideTemplate,
 } from "./nodes/define";
@@ -29,14 +49,19 @@ export {
   formatNodePath,
   type NodeParseResult,
   NodeValidationError,
+  type ParseOptions,
   type Registry,
 } from "./nodes/registry";
 export {
   activityMeta,
+  activityRef,
   activitySlot,
   blockSlot,
   type NodeIssue,
   printRule,
+  type ReferenceCheck,
+  ref,
+  slideRef,
   stepMeta,
 } from "./nodes/slots";
 export type {

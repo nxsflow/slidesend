@@ -7,25 +7,37 @@ export interface NodeIssue {
   message: string;
 }
 
-/** Validates a nested node against its type's schema; supplied by the registry during a parse. */
-export type SlotResolver = (
-  group: NodeGroup,
-  node: unknown,
-) => { ok: true; value: object } | { ok: false; issues: NodeIssue[] };
+/**
+ * Checks one reference while a node is parsed. Returns `undefined` if the id resolves, or the
+ * message to report.
+ */
+export type ReferenceCheck = (kind: string, id: string) => string | undefined;
 
-let activeResolver: SlotResolver | undefined;
+/** What slots and references need while a registry parses a node. */
+export interface ParseContext {
+  /** Validates a nested node against its type's schema. */
+  resolve(
+    group: NodeGroup,
+    node: unknown,
+  ): { ok: true; value: object } | { ok: false; issues: NodeIssue[] };
+  /** Checks references; without it, every reference is accepted. */
+  reference?: ReferenceCheck;
+}
+
+let active: ParseContext | undefined;
 
 /**
- * Runs `parse` with `resolver` validating every slot it meets. Parsing is synchronous, so the
- * resolver of the parse in progress is simply the active one; nested parses restore the outer.
+ * Runs `parse` with `context` serving every slot and reference it meets. Parsing is synchronous,
+ * so the context of the parse in progress is simply the active one; nested parses restore the
+ * outer one.
  */
-export function withSlotResolver<T>(resolver: SlotResolver, parse: () => T): T {
-  const outer = activeResolver;
-  activeResolver = resolver;
+export function withParseContext<T>(context: ParseContext, parse: () => T): T {
+  const outer = active;
+  active = context;
   try {
     return parse();
   } finally {
-    activeResolver = outer;
+    active = outer;
   }
 }
 
@@ -41,14 +53,14 @@ function slot<Group extends NodeGroup>(group: Group) {
   return z
     .custom<GroupNodes[Group]>(isNodeLike, { message: `Expected a ${group} node.` })
     .transform((node, context) => {
-      if (!activeResolver) {
+      if (!active) {
         context.addIssue({
           code: "custom",
           message: `A ${group} slot can only be validated through createRegistry(...).parse().`,
         });
         return z.NEVER;
       }
-      const result = activeResolver(group, node);
+      const result = active.resolve(group, node);
       if (!result.ok) {
         for (const issue of result.issues) {
           context.addIssue({ code: "custom", message: issue.message, path: issue.path });
@@ -70,6 +82,31 @@ export function blockSlot(): z.ZodType<BlockNode, BlockNode> {
 /** A slot for one activity. It accepts an activity of any installed plugin. */
 export function activitySlot(): z.ZodType<ActivityNode, ActivityNode> {
   return slot("activity");
+}
+
+/**
+ * A reference to an id of the given kind, checked when the deck loads (spec §5.2). Core resolves
+ * the kinds `slide` and `activity`; other kinds, such as `agent`, resolve against the ids a plugin
+ * lists under `provides`.
+ */
+export function ref(kind: string): z.ZodString {
+  return z
+    .string()
+    .min(1)
+    .superRefine((id, context) => {
+      const problem = active?.reference?.(kind, id);
+      if (problem) context.addIssue({ code: "custom", message: problem });
+    });
+}
+
+/** A reference to a slide id, e.g. `keep: { until: "summary" }`. */
+export function slideRef(): z.ZodString {
+  return ref("slide");
+}
+
+/** A reference to an activity id, e.g. a matrix that shows a poll asked earlier: `of: "mood"`. */
+export function activityRef(): z.ZodString {
+  return ref("activity");
 }
 
 /** The print rule of one step (spec §6.3); see `PrintRule`. */
@@ -115,5 +152,5 @@ export const activityMeta = {
    * Keeps the activity available after its step: `true` for the rest of the talk, or until the
    * slide with the given id.
    */
-  keep: z.union([z.literal(true), z.object({ until: z.string().min(1) })]).optional(),
+  keep: z.union([z.literal(true), z.object({ until: slideRef() })]).optional(),
 };

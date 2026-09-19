@@ -5,9 +5,10 @@
 
 > **You have already been given the index below** — all of it, or as much of it as a session start could carry. It is the same index `nxm prime` replays, which stops at the byte budget the host delivers and says so when it does (`nxm index` prints the whole of it), so there is nothing to gain by reading it again here. Underneath it stands the FULL TEXT of each memory — that is what `nxm recall <key>` serves, and it is meant to be read one memory at a time, when the index tells you a particular one matters. Reading this file end to end is the expensive way to obtain what you already have.
 
-## Index (2)
+## Index (3)
 
 - **english-only**: Write everything in this repo in English: code, identifiers, schema fields, comments, docs, commits AND nxf tickets and notes, even when the conversation with Carsten is in German.
+- **pr-workflow**: Merge your own PRs when CI is green, close the item and continue with nxf next; still ask before spec changes, AWS deploys or destructive steps.
 - **typescript-6-pin**: Keep TypeScript on 6.0.x: TS 7 has no compiler API for tsup's DTS build; tsup configs need ignoreDeprecations 6.0.
 
 ## Full text
@@ -15,6 +16,12 @@
 ### `english-only`
 
 Everything in this repository is written in English, without exception: function names, type names, schema fields, plugin contracts, code comments, commit messages, README and all other documentation, and test descriptions. This also applies to board items: nxf titles, descriptions, definitions of done, notes and close reasons are written in English. It applies even when the conversation with Carsten happens in German. The conversation language is not the repository language. Reason (Carsten, 2026-09-19): the tool is meant to be cloned and used by strangers for their own talks and companies, so nothing in it may require German. The ECR talk repository that this tool was extracted from is German; when porting code from there, translate identifiers, comments and field names instead of copying them.
+
+---
+
+### `pr-workflow`
+
+Workflow agreed with Carsten (2026-09-19): every ticket is one branch and one pull request against main. When CI on the PR is green, the agent merges it itself (rebase merge, delete the branch), closes the board item and continues with the next item from 'nxf next' without asking. Anything that needs a decision by Carsten (spec changes, AWS deployments to a real account, anything destructive or outward-facing beyond the repo) still waits for him.
 
 ---
 
