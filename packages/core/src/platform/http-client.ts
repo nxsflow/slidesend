@@ -46,11 +46,40 @@ export function httpPlatformClient(options: HttpPlatformClientOptions = {}): Pla
     },
     subscribe(channel, topic, handler) {
       const url = `${base}/events?${new URLSearchParams({ channel, topic })}`;
-      const source = new EventSource(url);
-      source.onmessage = (event) => handler(JSON.parse(event.data));
-      source.onopen = () => setStatus(true);
-      source.onerror = () => setStatus(false);
-      return () => source.close();
+      let source: EventSource | undefined;
+      let stopped = false;
+      let attempt = 0;
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      // A browser gives an event stream up for good when reconnecting fails, e.g. while offline;
+      // this reopens it after a pause, and at once when the network returns.
+      const open = () => {
+        if (stopped) return;
+        clearTimeout(timer);
+        source?.close();
+        source = new EventSource(url);
+        source.onmessage = (event) => handler(JSON.parse(event.data));
+        source.onopen = () => {
+          attempt = 0;
+          setStatus(true);
+        };
+        source.onerror = () => {
+          setStatus(false);
+          if (source?.readyState === EventSource.CLOSED) {
+            timer = setTimeout(open, Math.min(8000, 1000 * 2 ** attempt++));
+          }
+        };
+      };
+      const onOnline = () => {
+        if (source?.readyState !== EventSource.OPEN) open();
+      };
+      window.addEventListener("online", onOnline);
+      open();
+      return () => {
+        stopped = true;
+        clearTimeout(timer);
+        window.removeEventListener("online", onOnline);
+        source?.close();
+      };
     },
     onStatus(handler) {
       statusHandlers.add(handler);
