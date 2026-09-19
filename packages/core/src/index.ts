@@ -166,3 +166,26 @@ export type {
   SessionRecord,
   SessionState,
 } from "./sessions/types";
+export {
+  clampStep,
+  keyAction,
+  type NavigationAction,
+  type NavigationState,
+  navigate,
+  parseRoute,
+  positionOf,
+  type Route,
+  type StageFit,
+  stageFit,
+  stageHeight,
+  stageWidth,
+  stepIndexOf,
+} from "./stage/navigation";
+export { takeControlSecret } from "./views/access";
+export { Block, type BlockViewProps } from "./views/Block";
+export { nodeData, PresentationContext, usePresentation } from "./views/context";
+export { FitBox, type FitBoxProps } from "./views/FitBox";
+export { type Navigation, type NavigationOptions, useNavigation, useStageFit } from "./views/hooks";
+export { type MountOptions, mount, StageView, type StageViewProps } from "./views/mount";
+export { defaultLeaveMs, SlideHost } from "./views/SlideHost";
+export { Stage } from "./views/Stage";
