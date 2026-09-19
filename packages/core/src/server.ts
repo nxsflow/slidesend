@@ -15,6 +15,16 @@ export {
   session,
 } from "./server/api";
 export {
+  type CoreApi,
+  createRuntime,
+  createServer,
+  maxResponsesPerDevice,
+  maxStructuredResponseChars,
+  presenceTtlMs,
+  type ServerOptions,
+  type SessionExport,
+} from "./server/runtime";
+export {
   controlSecretName,
   createSessions,
   limits,

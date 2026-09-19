@@ -5,6 +5,14 @@
 export const packageName = "@slidesend/core";
 
 export {
+  type CoreClient,
+  type ResponseStore,
+  type ResponseStoreOptions,
+  responseStore,
+  type TypedClient,
+  typedClient,
+} from "./client/client";
+export {
   type Chapter,
   chapterSchema,
   type Deck,
@@ -103,6 +111,7 @@ export type {
   PlatformCommand,
   PlatformCommandContext,
 } from "./platform/package";
+export type { CoreApi } from "./server/runtime";
 export { effectiveSession, openWindow, phonePage, plannedStartMs } from "./sessions/effective";
 export {
   LimitError,
@@ -110,6 +119,17 @@ export {
   SessionClosedError,
   SessionStateError,
 } from "./sessions/errors";
+export {
+  type ActivityResponse,
+  type Cursor,
+  type CursorTarget,
+  channels,
+  type DeviceRole,
+  heartbeatMs,
+  type Presence,
+  type PresenceEntry,
+  type StepTiming,
+} from "./sessions/runtime-types";
 export type {
   PhonePage,
   PhoneSession,
