@@ -1,0 +1,28 @@
+{
+  "name": "slidesend-workspace",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.3.4",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "pnpm --recursive --filter \"./packages/*\" build",
+    "typecheck": "pnpm --recursive typecheck && tsc --project tsconfig.json",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "test": "vitest run",
+    "test:browser": "pnpm --filter gravity test:browser",
+    "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm test:browser",
+    "changeset": "changeset"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.14",
+    "@changesets/cli": "^3.0.3",
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "tsup": "^8.5.1",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.1"
+  }
+}
