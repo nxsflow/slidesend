@@ -1,8 +1,9 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import type { Presentation } from "../deck/presentation";
 import type { PlatformClient } from "../platform/contract";
-import { parseRoute, stepIndexOf } from "../stage/navigation";
+import { parseRoute, positionOf, stepIndexOf } from "../stage/navigation";
+import { type CursorTransport, hostedTransport, localTransport } from "../sync/transport";
 import { takeControlSecret } from "./access";
 import { PresentationContext, usePresentation } from "./context";
 import { useNavigation } from "./hooks";
@@ -23,14 +24,51 @@ export interface StageViewProps {
   canSteer: boolean;
   /** The step index a deep link asks for. */
   deepLink?: number;
+  /** Creates the session's transport; called once per mount, closed on unmount. */
+  createTransport(): CursorTransport;
 }
 
-/** The stage view at `/stage/<sessionId>`: the stage plus navigation. */
-export function StageView({ sessionId, canSteer, deepLink }: StageViewProps) {
+/**
+ * The stage view at `/stage/<sessionId>`: the stage plus navigation, kept in step with the other
+ * windows of the session by its transport. It shows whether it runs locally or hosted, and
+ * whether it is connected, as `data-sync` and `data-connected`.
+ */
+export function StageView({ sessionId, canSteer, deepLink, createTransport }: StageViewProps) {
   const presentation = usePresentation();
-  const navigation = useNavigation(presentation, { canSteer, deepLink });
+  const [transport, setTransport] = useState<CursorTransport>();
+  const [connected, setConnected] = useState(false);
+  const navigation = useNavigation(presentation, {
+    canSteer,
+    deepLink,
+    onMove(index) {
+      const { slide, step } = positionOf(presentation, index);
+      transport?.send({ index, slideId: slide.id, step });
+    },
+  });
+  const { receive } = navigation;
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: one transport per mount and session
+  useEffect(() => {
+    const created = createTransport();
+    setTransport(created);
+    const stopCursor = created.onCursor((cursor) => {
+      receive(stepIndexOf(presentation, cursor.slideId, cursor.step) ?? cursor.index);
+    });
+    const stopStatus = created.onStatus(setConnected);
+    return () => {
+      stopCursor();
+      stopStatus();
+      created.close();
+    };
+  }, [sessionId]);
+
   return (
-    <div data-session={sessionId} data-steering={canSteer || undefined}>
+    <div
+      data-session={sessionId}
+      data-steering={canSteer || undefined}
+      data-sync={transport?.kind}
+      data-connected={connected}
+    >
       <Stage index={navigation.index} />
     </div>
   );
@@ -57,11 +95,18 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
   let view = <Pending presentation={presentation} view={route.view} />;
   if (route.view === "stage") {
     const deepLink = route.slide ? stepIndexOf(presentation, route.slide, route.step) : undefined;
+    const { platform } = options;
+    const sessionId = route.sessionId;
     view = (
       <StageView
-        sessionId={route.sessionId}
-        canSteer={!options.platform || Boolean(secret)}
+        sessionId={sessionId}
+        canSteer={!platform || Boolean(secret)}
         deepLink={deepLink}
+        createTransport={() =>
+          platform
+            ? hostedTransport({ platform, sessionId, secret })
+            : localTransport({ sessionId })
+        }
       />
     );
   }
