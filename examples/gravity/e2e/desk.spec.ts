@@ -81,7 +81,7 @@ test("creating, arming, opening and closing a session works from the desk", asyn
 
   // The Join card shows this rehearsal's own address, and the deck card its plan.
   await expect(desk.locator("[data-join]")).toHaveAttribute("href", /\/r\/[0-9a-f]+$/);
-  await expect(desk.getByText("4 slides, 19 steps.")).toBeVisible();
+  await expect(desk.getByText("4 slides, 22 steps.")).toBeVisible();
 
   // The desk is usable at 1280×800 without scrolling sideways.
   const overflow = await desk.evaluate(

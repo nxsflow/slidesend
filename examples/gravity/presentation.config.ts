@@ -8,6 +8,7 @@ import { gravityDesign } from "./src/design";
 import { gravityPlugin } from "./src/plugin";
 
 /** The example talk's configuration: deck, design and plugins, by explicit composition. */
+// snippet: presentation-config
 export default definePresentation({
   deck,
   design: gravityDesign,
@@ -16,3 +17,4 @@ export default definePresentation({
   // the chat appears is the deck's business (see `askNewton` in src/deck.ts).
   plugins: [basics(), gravityPlugin, agent({ agents })],
 });
+// end snippet

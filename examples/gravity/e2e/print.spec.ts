@@ -12,7 +12,7 @@ test("the print view prints a page per printed step, and what the room made true
   await expect(page.locator("[data-print-page]")).toHaveCount(9);
   // The cover says which talk this stack is.
   await expect(page.locator("[data-cover] h1")).toHaveText("How does gravity work?");
-  await expect(page.locator("[data-cover]")).toContainText("4 slides · 18 steps");
+  await expect(page.locator("[data-cover]")).toContainText("4 slides · 21 steps");
 
   const pages = page.locator("[data-print-page]:not([data-cover])");
   await expect(pages).toHaveCount(8);

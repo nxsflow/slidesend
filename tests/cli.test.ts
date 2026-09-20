@@ -17,7 +17,7 @@ describe("slidesend", () => {
   it("check validates the example talk", () => {
     const result = slidesend("check");
     expect(result.status).toBe(0);
-    expect(result.stdout).toMatch(/^The deck is valid: 4 slides, 18 steps, 22 planned minutes\./);
+    expect(result.stdout).toMatch(/^The deck is valid: 4 slides, 21 steps, 12 planned minutes\./);
   });
 
   it("check exits non-zero and names every problem of a broken deck", () => {
@@ -36,7 +36,7 @@ describe("slidesend", () => {
     // On a failure the whole output is the message: a render pass that goes wrong elsewhere is
     // otherwise a line of dev-server noise and nothing to go on.
     const told = `status ${good.status}\nstdout:\n${good.stdout}\nstderr:\n${good.stderr}`;
-    expect(told).toContain("Every step fits the stage: 18 checked.");
+    expect(told).toContain("Every step fits the stage: 21 checked.");
     expect(good.status).toBe(0);
 
     const bad = slidesend(

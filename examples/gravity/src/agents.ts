@@ -7,6 +7,7 @@ import { defineAgents } from "@slidesend/agent";
  * The chat is OFF unless the talk is started with `SLIDESEND_AGENT=1`. An agent costs money per
  * question, and a demo that a stranger clones should not start spending because they ran it.
  */
+// snippet: define-agents
 export const agents = defineAgents({
   newton: {
     label: "Newton",
@@ -20,6 +21,7 @@ export const agents = defineAgents({
     showPrompt: true,
   },
 });
+// end snippet
 
 /**
  * Whether this run of the talk offers the chat at all: `VITE_SLIDESEND_AGENT=1`.
