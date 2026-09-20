@@ -44,6 +44,9 @@ export default defineConfig({
       url: `http://localhost:${blocksPort}`,
       reuseExistingServer: false,
       timeout: 120_000,
+      // The agent chat is off by default in the example; the hosted checks switch it on, so the
+      // canned provider is exercised the way a talk would use it. The deck then has one step more.
+      env: { VITE_SLIDESEND_AGENT: "1" },
     },
   ],
 });

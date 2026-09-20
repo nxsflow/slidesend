@@ -1,3 +1,4 @@
+import { agentChat } from "@slidesend/agent";
 import {
   diff,
   image,
@@ -15,6 +16,7 @@ import {
   timeline,
 } from "@slidesend/basics";
 import { defineDeck } from "@slidesend/core";
+import { agentEnabled } from "./agents";
 import { fact, sequence } from "./plugin";
 
 /** "How does gravity work?", written for a school class that answers questions in between. */
@@ -195,6 +197,25 @@ export const deck = defineDeck({
           print: { text: "The last question: what surprised you most?" },
         },
         { content: pollList({ of: "after" }), minutes: 1 },
+        // Off unless the talk is started with VITE_SLIDESEND_AGENT=1: an agent costs money per
+        // question, and a demo that a stranger clones should not start spending on its own.
+        ...(agentEnabled
+          ? [
+              {
+                content: fact({ text: "Ask Newton himself." }),
+                activity: agentChat({
+                  id: "ask-newton",
+                  agent: "newton",
+                  message: "Newton is listening. Ask him one thing about falling.",
+                  singleTurn: true,
+                  suggestions: ["Why does the Moon not fall down?", "Do I pull the Earth too?"],
+                }),
+                minutes: 3,
+                cue: "Let two or three questions run",
+                print: { text: "The class could ask Newton one question each." },
+              },
+            ]
+          : []),
       ],
     }),
   ],
