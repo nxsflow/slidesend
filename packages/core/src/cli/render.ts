@@ -33,7 +33,8 @@ export async function renderCheck(
      */
     const visit = async (step: StepAddress) => {
       const url = `${baseUrl}${stepLink(step.slideId, step.step)}`;
-      for (let attempt = 0; ; attempt++) {
+      let last: unknown;
+      for (let attempt = 0; attempt < 4; attempt++) {
         try {
           await page.goto(url, { waitUntil: "networkidle" });
           await page.waitForSelector("[data-stage]", { timeout: 30_000 });
@@ -42,14 +43,25 @@ export async function renderCheck(
           await page.waitForTimeout(400);
           return await page.evaluate(measureOverflow);
         } catch (error) {
-          if (attempt >= 2) throw error;
+          last = error;
           await page.waitForTimeout(1000);
         }
       }
+      throw new Error(
+        `Could not measure slide "${step.slideId}" step ${step.step + 1}: ${
+          last instanceof Error ? last.message : String(last)
+        }`,
+      );
     };
 
-    // A warm-up, so the reload happens before anything is measured rather than during it.
-    if (steps[0]) await visit(steps[0]);
+    // A warm-up: the optimizer's reload happens here rather than in the middle of a
+    // measurement, and the extra load afterwards proves the page is stable before anything is
+    // believed.
+    if (steps[0]) {
+      await visit(steps[0]);
+      await page.waitForTimeout(500);
+      await visit(steps[0]);
+    }
     for (const step of steps) {
       const measured = await visit(step);
       if (overflows(measured)) findings.push({ ...step, ...measured });
