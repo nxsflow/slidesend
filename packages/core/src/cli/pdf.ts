@@ -37,7 +37,8 @@ export interface PlaywrightPage {
   setViewportSize?(size: { width: number; height: number }): Promise<void>;
   evaluate<T>(fn: () => T | Promise<T>): Promise<T>;
   pdf(options: Record<string, unknown>): Promise<void>;
-  on(event: string, handler: (error: Error) => void): void;
+  /** `pageerror` hands an error, `console` a message; both are only read for their text. */
+  on(event: string, handler: (event: never) => void): void;
 }
 
 /** Loads Playwright as the talk project resolves it; the tool does not ship a browser. */

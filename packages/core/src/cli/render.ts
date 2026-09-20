@@ -20,6 +20,13 @@ export async function renderCheck(
   const findings: OverflowFinding[] = [];
   try {
     const page = await browser.newPage();
+    // What the page itself said. A render pass that fails because the app did not start is
+    // otherwise a timeout with no cause, which is the worst thing to read in a build log.
+    const said: string[] = [];
+    page.on("pageerror", ((error: Error) => said.push(String(error))) as never);
+    page.on("console", ((message: { type(): string; text(): string }) => {
+      if (message.type() === "error") said.push(message.text());
+    }) as never);
     // The stage is a fixed surface that is scaled to its room, so one room is enough: what
     // fits here fits everywhere (the rooms themselves are checked by `stageChecks`).
     await page.setViewportSize?.({ width: 1920, height: 1080 });
@@ -48,9 +55,12 @@ export async function renderCheck(
         }
       }
       throw new Error(
-        `Could not measure slide "${step.slideId}" step ${step.step + 1}: ${
-          last instanceof Error ? last.message : String(last)
-        }`,
+        [
+          `Could not measure slide "${step.slideId}" step ${step.step + 1}: ${
+            last instanceof Error ? last.message : String(last)
+          }`,
+          ...said.slice(0, 3).map((line) => `  the page said: ${line.slice(0, 300)}`),
+        ].join("\n"),
       );
     };
 
