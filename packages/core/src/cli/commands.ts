@@ -1,6 +1,13 @@
+import { type OverflowFinding, overflowMessage } from "../checks/overflow";
 import type { Presentation } from "../deck/presentation";
 import { type PdfJob, pageCountProblem, pdfJobs } from "../print/pdf";
 import { printProblemMessage, printProblems } from "../print/rules";
+
+/** One step of the deck, as the render pass addresses it. */
+export interface StepAddress {
+  slideId: string;
+  step: number;
+}
 
 /** One command of `slidesend`, as the help and the command reference show it. */
 export interface CommandDefinition {
@@ -13,9 +20,9 @@ export interface CommandDefinition {
 export const coreCommands: readonly CommandDefinition[] = [
   {
     name: "check",
-    usage: "slidesend check [--config <file>]",
+    usage: "slidesend check [--config <file>] [--render]",
     description:
-      "Loads presentation.config.ts and validates the deck against the installed plugins; exits non-zero and names every problem by slide id and field path.",
+      "Loads presentation.config.ts and validates the deck against the installed plugins; exits non-zero and names every problem by slide id and field path. With --render it also opens every step on the stage and reports what does not fit.",
   },
   {
     name: "dev",
@@ -69,6 +76,11 @@ export interface CommandIo {
   writePdfs?(baseUrl: string, jobs: readonly PdfJob[]): Promise<PdfResult[]>;
   /** Stops what `startDevServer` started; `pdf` is done when its files are written. */
   stopDevServer?(): Promise<void>;
+  /**
+   * Opens every step on the stage and measures whether its content fits (spec §5.2). Only
+   * `check --render` needs it; a host without one says so instead of passing silently.
+   */
+  renderCheck?(baseUrl: string, steps: readonly StepAddress[]): Promise<OverflowFinding[]>;
 }
 
 /** What writing one document produced. */
@@ -154,6 +166,30 @@ export async function runCommand(io: CommandIo, line: CommandLine): Promise<numb
   if (!presentation) return 1;
 
   if (line.command === "check") {
+    // The render pass is opt-in: it needs a browser, and `check` must stay a second-long
+    // command that anyone can run in a pre-commit hook.
+    if (line.args.includes("--render")) {
+      if (!io.renderCheck) {
+        io.error("This host cannot render; run `slidesend check --render` from the talk project.");
+        return 1;
+      }
+      const url = (await io.startDevServer(line.port)).replace(/\/$/, "");
+      try {
+        const steps = presentation.steps.map((step) => ({
+          slideId: step.slideId,
+          step: step.step,
+        }));
+        const findings = await io.renderCheck(url, steps);
+        if (findings.length > 0) {
+          io.error(`${findings.length} step(s) do not fit the stage:`);
+          for (const finding of findings) io.error(`  ${overflowMessage(finding)}`);
+          return 1;
+        }
+        io.log(`Every step fits the stage: ${steps.length} checked.`);
+      } finally {
+        await io.stopDevServer?.();
+      }
+    }
     const minutes = Math.round(presentation.plannedMinutes * 10) / 10;
     // A deck can be valid and still print a lie. The honesty check is part of `check` rather
     // than a command of its own, because nobody runs the check they do not know about.

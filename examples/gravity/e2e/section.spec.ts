@@ -1,5 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
-import { viewports } from "./viewports";
+import { overflowChecks } from "@slidesend/core/checks";
+import presentation from "../presentation.config";
 
 const box = async (page: Page, selector: string) => {
   const found = await page.locator(selector).first().boundingBox();
@@ -60,30 +61,5 @@ test("a block with its own steps builds up in place", async ({ page }) => {
   await expect(page.locator("[data-panel='0']")).toHaveAttribute("data-active", "true");
 });
 
-for (const [width, height, name] of viewports) {
-  test(`no content overflows the stage: ${name} ${width}×${height}`, async ({ page }) => {
-    await page.setViewportSize({ width, height });
-    for (const [slide, step] of [
-      // Steps count from 1 in a deep link; "why" step 1 is the hero title.
-      ["why", 2],
-      ["why", 4],
-      ["observations", 1],
-      ["observations", 2],
-      ["falling-1", 1],
-      ["falling-1", 2],
-      ["together", 6],
-      ["together", 9],
-    ] as const) {
-      await page.goto(`/stage/local?slide=${slide}&step=${step}`);
-      await settled(page);
-      const stage = await box(page, "[data-stage]");
-      const panel = page.locator("[data-panel][data-active] > div > div").first();
-      const content = await panel.boundingBox();
-      if (!content) throw new Error("no active panel content");
-      expect(content.x).toBeGreaterThanOrEqual(stage.x - 1);
-      expect(content.y).toBeGreaterThanOrEqual(stage.y - 1);
-      expect(content.x + content.width).toBeLessThanOrEqual(stage.x + stage.width + 1);
-      expect(content.y + content.height).toBeLessThanOrEqual(stage.y + stage.height + 1);
-    }
-  });
-}
+// Nothing is cut off at any step of this talk; the check comes from the tool (spec §16).
+overflowChecks(presentation);
