@@ -12,7 +12,7 @@ export interface Repository {
   owner: string;
   /** The owner's numeric id, from `gh api users/<owner> --jq .id`. */
   ownerId: number;
-  /** The repository's name, e.g. `"presentation-software"`. */
+  /** The repository's name, e.g. `"slidesend"`. */
   name: string;
   /** The repository's numeric id, from `gh api repos/<owner>/<name> --jq .id`. */
   id: number;
