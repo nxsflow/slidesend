@@ -33,7 +33,10 @@ describe("slidesend", () => {
   it("check --render opens every step and names what does not fit", { timeout: 180_000 }, () => {
     // The render pass needs a browser and a dev server, so it is opt-in and slow on purpose.
     const good = slidesend("check", "--render");
-    expect(good.stdout).toContain("Every step fits the stage: 18 checked.");
+    // On a failure the whole output is the message: a render pass that goes wrong elsewhere is
+    // otherwise a line of dev-server noise and nothing to go on.
+    const told = `status ${good.status}\nstdout:\n${good.stdout}\nstderr:\n${good.stderr}`;
+    expect(told).toContain("Every step fits the stage: 18 checked.");
     expect(good.status).toBe(0);
 
     const bad = slidesend(
