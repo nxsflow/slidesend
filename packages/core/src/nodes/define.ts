@@ -60,6 +60,12 @@ export interface BlockOptions<Type extends string, Schema extends NodeSchema>
   Component: ComponentType<BlockProps<z.output<Schema>>>;
   /** Renders the block on paper. Defaults to the last step, rendered statically. */
   Print?: ComponentType<PrintProps<z.output<Schema>>>;
+  /**
+   * Whether this block only works while the room is there — a QR code into a session that is
+   * over, a live result, a countdown. Such a block does not forbid printing; it makes the deck's
+   * author say what paper should show instead (`slidesend check`, spec §4).
+   */
+  liveOnly?: boolean;
 }
 
 /** Everything `defineActivity` takes (spec §6.4). */

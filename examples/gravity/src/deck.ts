@@ -43,6 +43,11 @@ export const deck = defineDeck({
           content: qr({ caption: "Answer on your phone" }),
           centered: true,
           cue: "Wait for phones",
+          // On paper a code into a session that is over shows nothing; the question does.
+          print: {
+            replaceWith: statement({ text: "**Hammer or feather** — which one lands first?" }),
+            text: "The room answered this on their phones before we went on.",
+          },
           activity: text({
             id: "guess",
             prompt: "What falls faster: a hammer or a feather?",
@@ -127,6 +132,7 @@ export const deck = defineDeck({
           }),
           minutes: 2,
           cue: "Wait for the phones",
+          print: { text: "The class answered both questions here; the counts appeared live." },
         },
         {
           content: quote({
@@ -150,6 +156,7 @@ export const deck = defineDeck({
             message: "Ask anything about gravity.",
             multiple: true,
           }),
+          print: { text: "While these three points appeared, the class could ask anything." },
           content: reveal({
             items: [
               { text: "Gravity pulls **everything** towards everything.", minutes: 1 },
@@ -185,6 +192,7 @@ export const deck = defineDeck({
           }),
           content: fact({ text: "One last question on your phone." }),
           minutes: 1,
+          print: { text: "The last question: what surprised you most?" },
         },
         { content: pollList({ of: "after" }), minutes: 1 },
       ],

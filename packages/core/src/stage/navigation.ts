@@ -132,7 +132,8 @@ export type Route =
   | { view: "phone"; joinToken?: string }
   | { view: "stage"; sessionId: string; slide?: string; step?: number }
   | { view: "desk" }
-  | { view: "print" };
+  | { view: "print" }
+  | { view: "storyboard" };
 
 /**
  * Reads the view from an address. A stage takes a deep link `?slide=<id>&step=<n>`, with `n`
@@ -155,6 +156,7 @@ export function parseRoute(pathname: string, search = ""): Route {
   }
   if (path === "/desk") return { view: "desk" };
   if (path === "/print") return { view: "print" };
+  if (path === "/storyboard") return { view: "storyboard" };
   const rehearsal = /^\/r\/([\w-]{1,64})$/.exec(path);
   if (rehearsal) return { view: "phone", joinToken: rehearsal[1] as string };
   return { view: "phone" };

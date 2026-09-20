@@ -6,9 +6,11 @@
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { parseCommandLine, runCommand } from "./cli/commands";
+import { writePdfs } from "./cli/pdf";
 import type { Presentation } from "./deck/presentation";
 
 const projectRoot = process.cwd();
+let devServer: { close(): Promise<void> } | undefined;
 
 async function vite() {
   try {
@@ -52,8 +54,14 @@ const exitCode = await runCommand(
       const { createServer } = await vite();
       const server = await createServer({ root: projectRoot, server: { port } });
       await server.listen();
+      devServer = server;
       return server.resolvedUrls?.local[0] ?? `http://localhost:${port ?? 5173}/`;
     },
+    async stopDevServer() {
+      await devServer?.close();
+      devServer = undefined;
+    },
+    writePdfs: (baseUrl, jobs) => writePdfs(projectRoot, baseUrl, jobs),
   },
   parseCommandLine(process.argv.slice(2)),
 );

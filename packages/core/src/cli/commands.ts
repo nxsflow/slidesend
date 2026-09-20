@@ -1,4 +1,6 @@
 import type { Presentation } from "../deck/presentation";
+import { type PdfJob, pageCountProblem, pdfJobs } from "../print/pdf";
+import { printProblemMessage, printProblems } from "../print/rules";
 
 /** One command of `slidesend`, as the help and the command reference show it. */
 export interface CommandDefinition {
@@ -20,6 +22,12 @@ export const coreCommands: readonly CommandDefinition[] = [
     usage: "slidesend dev [--config <file>] [--port <number>] [--local]",
     description:
       "Starts the talk for development and prints its links: on the platform's dev backend if a platform is configured, otherwise (or with --local) in local mode, with stage and desk in one browser and no audience.",
+  },
+  {
+    name: "pdf",
+    usage: "slidesend pdf [--config <file>] [--out <dir>]",
+    description:
+      "Writes the talk and its storyboard as PDFs with real text, from the same views the browser shows, and fails if a document loses pages or a slide overflows its page.",
   },
   {
     name: "help",
@@ -54,6 +62,22 @@ export interface CommandIo {
   loadPresentation(configFile: string): Promise<Presentation>;
   /** Starts the Vite dev server and resolves with its local URL. */
   startDevServer(port?: number): Promise<string>;
+  /**
+   * Prints the given views to PDF with the talk project's browser, and reports what it found.
+   * Only `pdf` needs it; a host without one says so instead of failing halfway.
+   */
+  writePdfs?(baseUrl: string, jobs: readonly PdfJob[]): Promise<PdfResult[]>;
+  /** Stops what `startDevServer` started; `pdf` is done when its files are written. */
+  stopDevServer?(): Promise<void>;
+}
+
+/** What writing one document produced. */
+export interface PdfResult {
+  job: PdfJob;
+  /** How many pages the written file has. */
+  pages: number;
+  /** Pages whose content did not fit the sheet, 1-based. */
+  overflowing: number[];
 }
 
 /** The parsed command line. */
@@ -131,10 +155,50 @@ export async function runCommand(io: CommandIo, line: CommandLine): Promise<numb
 
   if (line.command === "check") {
     const minutes = Math.round(presentation.plannedMinutes * 10) / 10;
+    // A deck can be valid and still print a lie. The honesty check is part of `check` rather
+    // than a command of its own, because nobody runs the check they do not know about.
+    const problems = printProblems(presentation);
+    if (problems.length > 0) {
+      io.error(`${problems.length} step(s) would print as they never were:`);
+      for (const problem of problems) io.error(`  ${printProblemMessage(problem)}`);
+      return 1;
+    }
     io.log(
       `The deck is valid: ${presentation.slides.length} slides, ${presentation.steps.length} steps, ${minutes} planned minutes.`,
     );
     return 0;
+  }
+
+  if (line.command === "pdf") {
+    if (!io.writePdfs) {
+      io.error("This host cannot print; run `slidesend pdf` from the talk project.");
+      return 1;
+    }
+    const out = line.args[line.args.indexOf("--out") + 1];
+    const jobs = pdfJobs(presentation, line.args.includes("--out") && out ? out : undefined);
+    const url = (await io.startDevServer(line.port)).replace(/\/$/, "");
+    try {
+      const results = await io.writePdfs(url, jobs);
+      let failed = false;
+      for (const result of results) {
+        const problem = pageCountProblem(result.job, result.pages);
+        if (problem) {
+          io.error(problem);
+          failed = true;
+        }
+        if (result.overflowing.length > 0) {
+          // A slide that overflows its sheet is cut off on paper, silently. Say which.
+          io.error(
+            `${result.job.file}: page(s) ${result.overflowing.join(", ")} do not fit the sheet.`,
+          );
+          failed = true;
+        }
+        if (!problem) io.log(`  ${result.job.file}  ${result.pages} page(s)`);
+      }
+      return failed ? 1 : 0;
+    } finally {
+      await io.stopDevServer?.();
+    }
   }
 
   if (line.command === "dev") {

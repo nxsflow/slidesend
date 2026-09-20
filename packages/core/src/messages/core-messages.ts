@@ -84,6 +84,8 @@ export const coreMessages = defineMessages({
     "core.desk.deck.planned": "The deck plans {planned} minutes.",
     "core.desk.deck.session": "The session is {minutes} minutes long.",
     "core.desk.deck.over": "The deck plans {over} minutes more than the session.",
+    "core.print.counts": "{slides} slides · {steps} steps · {minutes} minutes planned",
+    "core.storyboard.steps": "{steps} step(s) · {minutes} min",
     "core.desk.review.title": "Review of “{session}”",
     "core.desk.review.totals":
       "planned {planned} · measured {measured} + audience {audience} = {total} · target {target} min",

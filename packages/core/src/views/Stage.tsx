@@ -1,20 +1,27 @@
+import type { ReactNode } from "react";
 import { fontFaceCss, stageFrameProps, surfaceVariables } from "../design/css";
 import { cssVariable } from "../design/tokens";
 import { type StageFit, stageHeight, stageWidth } from "../stage/navigation";
 import { usePresentation } from "./context";
 import { useStageFit } from "./hooks";
-import { SlideHost } from "./SlideHost";
+import { SlideHost, StillSlide } from "./SlideHost";
 
 /** The 1920 × 1080 surface itself, at the given fit: the stage and its previews share it. */
 export function StageSurface({
   index,
   fit,
   interactive = true,
+  still = false,
+  children,
 }: {
   index: number;
   fit: StageFit;
   /** A preview is not touched; it also must not take the pointer from the desk. */
   interactive?: boolean;
+  /** Paper has no animations: render the slide standing still (spec §4, print). */
+  still?: boolean;
+  /** Something else on the surface instead of the slide, e.g. a print rule's replacement. */
+  children?: ReactNode;
 }) {
   const presentation = usePresentation();
   const { design } = presentation;
@@ -39,7 +46,7 @@ export function StageSurface({
       }}
     >
       <StageFrame {...frame}>
-        <SlideHost index={index} />
+        {children ?? (still ? <StillSlide index={index} /> : <SlideHost index={index} />)}
       </StageFrame>
     </div>
   );

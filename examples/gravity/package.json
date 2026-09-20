@@ -9,7 +9,8 @@
     "typecheck": "tsc --project tsconfig.json",
     "test:browser": "playwright test",
     "talk": "slidesend dev",
-    "check:deck": "slidesend check"
+    "check:deck": "slidesend check",
+    "artifacts": "slidesend pdf"
   },
   "dependencies": {
     "@slidesend/agent": "workspace:*",
