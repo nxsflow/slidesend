@@ -3,6 +3,8 @@ import { createRoot } from "react-dom/client";
 import { typedClient } from "../client/client";
 import type { Presentation } from "../deck/presentation";
 import type { PlatformClient } from "../platform/contract";
+import { PrintView } from "../print/PrintView";
+import { StoryboardView } from "../print/StoryboardView";
 import type { CoreApi } from "../server/runtime";
 import { heartbeatMs } from "../sessions/runtime-types";
 import { parseRoute, positionOf, stepIndexOf } from "../stage/navigation";
@@ -138,7 +140,8 @@ function Pending({ presentation, view }: { presentation: Presentation; view: str
 
 /**
  * Renders the presentation's views by address (spec §9): `/` and `/r/<joinToken>` for the
- * phones, `/stage/<sessionId>` for the stage; desk and print follow in their own tickets.
+ * phones, `/stage/<sessionId>` for the stage, `/desk` for the control desk, `/print` for the
+ * talk on paper and `/storyboard` for the whole talk on one page.
  */
 export function mount(presentation: Presentation, options: MountOptions = {}): void {
   const element = options.root ?? document.getElementById("root");
@@ -154,6 +157,8 @@ export function mount(presentation: Presentation, options: MountOptions = {}): v
       />
     );
   }
+  if (route.view === "print") view = <PrintView />;
+  if (route.view === "storyboard") view = <StoryboardView />;
   if (route.view === "desk") {
     view = <DeskView {...(options.platform ? { platform: options.platform } : {})} />;
   }

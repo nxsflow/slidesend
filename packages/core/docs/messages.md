@@ -105,7 +105,9 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.warning.unknownDevice` | another device |
 | `core.error.title` | Something went wrong. |
 | `core.join.local` | Local mode: no audience can join. |
+| `core.print.counts` | {slides} slides · {steps} steps · {minutes} minutes planned |
 | `core.session.live` | Live |
 | `core.session.none` | No session is open. |
 | `core.session.rehearsal` | Rehearsal |
+| `core.storyboard.steps` | {steps} step(s) · {minutes} min |
 | `core.view.unavailable` | The {view} view is not available yet. |

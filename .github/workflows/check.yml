@@ -21,3 +21,11 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter gravity exec playwright install --with-deps chromium
       - run: pnpm check
+      # The artifacts are built from the same views the checks just exercised, and the command
+      # fails when a document loses pages or a slide overflows its sheet.
+      - run: pnpm --filter gravity artifacts
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gravity-print
+          path: examples/gravity/dist/*.pdf
+          if-no-files-found: error

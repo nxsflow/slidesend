@@ -151,6 +151,18 @@ export type {
   PlatformCommand,
   PlatformCommandContext,
 } from "./platform/package";
+export { PrintView, printScale } from "./print/PrintView";
+export {
+  type PrintProblem,
+  type PrintStep,
+  printedStepsOfSlide,
+  printProblemMessage,
+  printProblems,
+  printSteps,
+  type StoryboardEntry,
+  storyboard,
+} from "./print/rules";
+export { StoryboardView } from "./print/StoryboardView";
 export type { CoreApi } from "./server/runtime";
 export { effectiveSession, openWindow, phonePage, plannedStartMs } from "./sessions/effective";
 export {

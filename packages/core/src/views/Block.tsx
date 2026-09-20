@@ -4,6 +4,8 @@ import { nodeData, usePresentation } from "./context";
 /** Props of `Block`: the block node from a slot, and the state its template passes on. */
 export interface BlockViewProps extends Partial<Omit<SlideProps<unknown>, "data">> {
   node: BlockNode;
+  /** On paper: the block's `Print` component when it has one, its stage one otherwise. */
+  print?: boolean;
 }
 
 /**
@@ -16,11 +18,12 @@ export function Block({
   previousStep = null,
   direction = "forward",
   presence = "present",
+  print = false,
 }: BlockViewProps) {
   const { registry } = usePresentation();
   const definition = registry.definition(node.type);
   if (definition?.group !== "block") return null;
-  const { Component } = definition;
+  const Component = (print && definition.Print) || definition.Component;
   return (
     <Component
       data={nodeData(node, ["type"])}

@@ -44,6 +44,26 @@ function SlideLayer({ shown }: { shown: Shown }) {
 }
 
 /**
+ * The slide at a step, standing still: no entering, no leaving, no direction to animate along.
+ * Print and the storyboard use it — a page must never catch a slide halfway into view.
+ */
+export function StillSlide({ index }: { index: number }) {
+  const presentation = usePresentation();
+  const { slide, step } = positionOf(presentation, index);
+  return (
+    <SlideLayer
+      shown={{
+        slideIndex: slide.index,
+        step,
+        previousStep: step,
+        direction: "forward",
+        presence: "present",
+      }}
+    />
+  );
+}
+
+/**
  * Mounts the slide at the given step (spec §6.1). Within a slide it passes the new step, the
  * previous step and the direction. When the slide changes, the old one stays mounted as
  * `leaving` for its template's `leaveMs` while the new one is `entering`; after that the new one
