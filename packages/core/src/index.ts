@@ -6,6 +6,7 @@ export const packageName = "@slidesend/core";
 
 export {
   type CoreClient,
+  namespaced,
   type ResponseStore,
   type ResponseStoreOptions,
   responseStore,

@@ -8,11 +8,13 @@ import presentation from "../presentation.config";
 async function platform(): Promise<PlatformClient | undefined> {
   const mode = import.meta.env.VITE_SLIDESEND_PLATFORM;
   if (mode === "aws") {
-    const [{ awsClient }, { slidesend }] = await Promise.all([
+    const [{ awsClient }, blocks] = await Promise.all([
       import("@slidesend/aws"),
       import("aws-blocks"),
     ]);
-    return awsClient({ slidesend });
+    // Every API namespace the backend exports is handed over: core's `slidesend` and, when the
+    // talk runs its agent, the chat's own namespace (spec §4.1).
+    return awsClient(blocks as unknown as { slidesend: unknown });
   }
   return mode === "dev" ? httpPlatformClient() : undefined;
 }

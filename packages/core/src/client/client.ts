@@ -29,6 +29,20 @@ export function typedClient<Api extends ServerApi>(platform: PlatformClient): Ty
   });
 }
 
+/**
+ * The same platform, seen through one API namespace: `namespaced(platform, "agentChat").call("send", …)`
+ * calls the method `agentChat.send`.
+ *
+ * A plugin with a server half gets its own namespace on the backend (spec §4.1), and this is how
+ * its browser half reaches it without every plugin inventing its own calling convention.
+ */
+export function namespaced(platform: PlatformClient, namespace: string): PlatformClient {
+  return {
+    ...platform,
+    call: (method, args) => platform.call(`${namespace}.${method}`, args),
+  };
+}
+
 /** The typed client of core's server API. */
 export type CoreClient = TypedClient<CoreApi>;
 
