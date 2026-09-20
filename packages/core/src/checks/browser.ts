@@ -81,6 +81,9 @@ export function stageChecks(options: CheckOptions = {}): void {
  */
 export function overflowChecks(presentation: Presentation): void {
   test("no content overflows the stage", async ({ page }) => {
+    // One walk over the whole deck, so the default per-test timeout does not apply: a talk of
+    // forty steps is not a slow test, it is a long one.
+    test.setTimeout(30_000 + presentation.steps.length * 5_000);
     await page.setViewportSize({ width: 1920, height: 1080 });
     const problems: string[] = [];
     for (const step of presentation.steps) {
