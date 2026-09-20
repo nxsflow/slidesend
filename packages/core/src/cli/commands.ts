@@ -179,7 +179,15 @@ export async function runCommand(io: CommandIo, line: CommandLine): Promise<numb
           slideId: step.slideId,
           step: step.step,
         }));
-        const findings = await io.renderCheck(url, steps);
+        let findings: OverflowFinding[];
+        try {
+          findings = await io.renderCheck(url, steps);
+        } catch (error) {
+          io.error(
+            `The render pass could not run: ${error instanceof Error ? error.message : String(error)}`,
+          );
+          return 1;
+        }
         if (findings.length > 0) {
           io.error(`${findings.length} step(s) do not fit the stage:`);
           for (const finding of findings) io.error(`  ${overflowMessage(finding)}`);
