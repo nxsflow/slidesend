@@ -97,7 +97,10 @@ test("creating, arming, opening and closing a session works from the desk", asyn
     timeout: 30_000,
   });
 
+  // Closing a rehearsal asks whether it was a timed run before anything is closed (spec §13).
   await session.locator("[data-close]").click();
+  await expect(session).toHaveAttribute("data-state", "open");
+  await session.locator("[data-close-timed]").click();
   await expect(session).toHaveAttribute("data-state", "closed");
   await other.close();
   await first.close();

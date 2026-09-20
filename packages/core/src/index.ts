@@ -161,6 +161,7 @@ export {
 } from "./sessions/errors";
 export {
   type ActivityResponse,
+  type AdoptedPlan,
   type Cursor,
   type CursorTarget,
   channels,
@@ -232,6 +233,24 @@ export {
 } from "./views/desk/clock";
 export { DeskView, type DeskViewProps } from "./views/desk/DeskView";
 export { PresentTab, type PresentTabProps } from "./views/desk/Present";
+export { ReviewTab, type ReviewTabProps, secondsFrom } from "./views/desk/Review";
+export {
+  adoptPlan,
+  analysisPrompt,
+  asClock,
+  type Estimates,
+  effectiveMinutes,
+  effectivePlannedMinutes,
+  firstVisits,
+  planApplies,
+  preselected,
+  type ReviewRow,
+  type ReviewTotals,
+  reviewRows,
+  reviewTotals,
+  stepKey,
+  timingHash,
+} from "./views/desk/timings";
 export {
   type Desk,
   type DeskOptions,

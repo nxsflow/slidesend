@@ -233,13 +233,41 @@ describe("export and deletion", () => {
       await api.responseWrite(id, "mood", "phone-1", "yes");
       await api.presencePhone(id, "phone-1");
     }
+    const plan = { minutes: { "intro:0": 1 }, hash: "abc", adoptedAt: 1, sessionId: rehearsal };
+    await api.planAdopt(secret, plan);
     await expect(api.sessionDeleteData(secret, live)).rejects.toThrow("close it before deleting");
     await server.sessions.close(live);
     expect(await api.sessionDeleteData(secret, live)).toBe(4);
-    for (const store of Object.values(server.runtime.stores)) {
+    const { plan: planStore, ...sessionStores } = server.runtime.stores;
+    for (const store of Object.values(sessionStores)) {
       expect(await store.list(`${live}/`)).toEqual([]);
       expect((await store.list(`${rehearsal}/`)).length).toBeGreaterThan(0);
     }
+    // The plan belongs to the talk: deleting a session's data does not take it along.
+    expect(await api.planGet(secret)).toEqual(plan);
+    expect((await planStore.list("plan/")).length).toBe(1);
+  });
+
+  it("keeps one adopted plan, and lets it be cleared", async () => {
+    const { rehearsal, connect } = await setup();
+    const { api } = connect();
+    expect(await api.planGet(secret)).toBeUndefined();
+    await api.planAdopt(secret, {
+      minutes: { "intro:0": 1.5 },
+      hash: "abc",
+      adoptedAt: 1,
+      sessionId: rehearsal,
+    });
+    await api.planAdopt(secret, {
+      minutes: { "intro:0": 2 },
+      hash: "def",
+      adoptedAt: 2,
+      sessionId: rehearsal,
+    });
+    // Adopting again replaces; there is one plan, not a history of them.
+    expect(await api.planGet(secret)).toMatchObject({ hash: "def", minutes: { "intro:0": 2 } });
+    await api.planClear(secret);
+    expect(await api.planGet(secret)).toBeUndefined();
   });
 });
 
@@ -283,6 +311,9 @@ describe("guards", () => {
       cursorGet: "session",
       cursorRead: "control",
       cursorGoto: "control",
+      planGet: "control",
+      planAdopt: "control",
+      planClear: "control",
       responseWrite: "session",
       responsesMine: "session",
       responsesFor: "session",

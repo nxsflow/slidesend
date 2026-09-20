@@ -7,6 +7,8 @@ const textProps = /\b(alt|title|placeholder|aria-label)=["']([^"']{3,})["']/g;
 const jsxText = />([^<>{}]*[A-Za-z]{3,}[^<>{}]*)</g;
 /** Code, not text: generics and calls also put words between `>` and `<`. */
 const looksLikeCode = /[();=`$]|=>/;
+/** A generic call, e.g. `=> typedClient<CoreApi>(platform)`: the `<` opens a type, not a tag. */
+const generic = /^<[A-Z][A-Za-z0-9_]*(,\s*[A-Za-z][A-Za-z0-9_]*)*>/;
 const allowMarker = "slidesend-allow-hardcoded-text";
 
 /**
@@ -32,6 +34,10 @@ export function findHardcodedText(root: string): string[] {
             const found = (match[2] ?? match[1] ?? "").trim();
             if (!found) continue;
             if (pattern === jsxText && looksLikeCode.test(found)) continue;
+            // `>` … `<` also happens between an arrow and a generic call. The tag that would
+            // follow a real piece of text is not a type argument.
+            if (pattern === jsxText && generic.test(line.slice(match.index + match[0].length - 1)))
+              continue;
             findings.push(`${relative(root, path)}:${index + 1}: ${found}`);
           }
         }

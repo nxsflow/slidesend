@@ -17,6 +17,7 @@ import {
 import { usePresentation, useText } from "../context";
 import { deviceId } from "../device";
 import { PresentTab } from "./Present";
+import { ReviewTab } from "./Review";
 import { type Desk, deskWarnings, shownSessions, sortSessions, useDesk } from "./useDesk";
 
 /** Props of `DeskView`. */
@@ -131,6 +132,8 @@ function SessionCard({ desk }: { desk: Desk }) {
   const [kind, setKind] = useState<Session["kind"]>("live");
   const [plannedStart, setPlannedStart] = useState("");
   const [showAll, setShowAll] = useState(false);
+  // The rehearsal whose closing is waiting for the answer "was this a timed run?".
+  const [closing, setClosing] = useState<string>();
   const ordered = sortSessions(desk.sessions);
   const selected = desk.selected;
   const shown = showAll ? ordered : ordered.slice(0, shownSessions);
@@ -208,14 +211,48 @@ function SessionCard({ desk }: { desk: Desk }) {
                 <button type="button" style={button} onClick={() => desk.extend(session.id, 10)}>
                   {text("core.desk.sessions.extend")}
                 </button>
-                <button
-                  type="button"
-                  data-close
-                  style={button}
-                  onClick={() => desk.close(session.id)}
-                >
-                  {text("core.desk.sessions.close")}
-                </button>
+                {session.kind === "rehearsal" && closing === session.id ? (
+                  <>
+                    <span style={{ color: "#5d616b" }}>
+                      {text("core.desk.review.timed", { session: session.name })}
+                    </span>
+                    <button
+                      type="button"
+                      data-close-timed
+                      style={button}
+                      onClick={() => {
+                        setClosing(undefined);
+                        void desk.close(session.id, true);
+                      }}
+                    >
+                      {text("core.desk.review.timedYes")}
+                    </button>
+                    <button
+                      type="button"
+                      data-close-untimed
+                      style={button}
+                      onClick={() => {
+                        setClosing(undefined);
+                        void desk.close(session.id, false);
+                      }}
+                    >
+                      {text("core.desk.review.timedNo")}
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    data-close
+                    style={button}
+                    onClick={() =>
+                      session.kind === "rehearsal"
+                        ? setClosing(session.id)
+                        : void desk.close(session.id)
+                    }
+                  >
+                    {text("core.desk.sessions.close")}
+                  </button>
+                )}
               </>
             )}
           </li>
@@ -393,7 +430,7 @@ export function DeskView({ platform }: DeskViewProps) {
   }, []);
 
   const accents = presentation.design.tokens.base.accents;
-  const [tab, setTab] = useState<"prepare" | "present">("prepare");
+  const [tab, setTab] = useState<"prepare" | "present" | "review">("prepare");
   const openStage = () => {
     const sessionId = desk.selected?.id ?? "local";
     const fragment = secret ? `#key=${encodeURIComponent(secret)}` : "";
@@ -427,14 +464,14 @@ export function DeskView({ platform }: DeskViewProps) {
           {text("core.desk.title")} · {presentation.meta.title}
         </h1>
         <nav style={{ display: "flex", gap: 8 }}>
-          {(["prepare", "present"] as const).map((name) => (
+          {(["prepare", "present", "review"] as const).map((name) => (
             <button
               key={name}
               type="button"
               data-tab={name}
               data-active={tab === name || undefined}
               onClick={() => setTab(name)}
-              disabled={name === "present" && !canPresent}
+              disabled={name !== "prepare" && !canPresent}
               style={{
                 ...button,
                 fontWeight: tab === name ? 600 : 400,
@@ -444,9 +481,6 @@ export function DeskView({ platform }: DeskViewProps) {
               {text(`core.desk.tab.${name}`)}
             </button>
           ))}
-          <span data-tab="review" style={{ color: "#5d616b" }}>
-            {text("core.desk.tab.review")}
-          </span>
         </nav>
       </header>
       {tab === "prepare" ? (
@@ -463,6 +497,17 @@ export function DeskView({ platform }: DeskViewProps) {
           <JoinCard desk={desk} {...(secret ? { secret } : {})} hosted={Boolean(platform)} />
           <DeckCard {...(desk.selected ? { sessionMinutes: desk.selected.plannedMinutes } : {})} />
         </div>
+      ) : tab === "review" ? (
+        platform &&
+        secret &&
+        desk.selected && (
+          <ReviewTab
+            platform={platform}
+            secret={secret}
+            session={desk.selected}
+            onChanged={desk.refresh}
+          />
+        )
       ) : (
         platform &&
         secret &&
@@ -476,9 +521,6 @@ export function DeskView({ platform }: DeskViewProps) {
           />
         )
       )}
-      <p style={{ margin: 0, color: "#5d616b" }}>
-        {text("core.desk.tab.unavailable", { tab: text("core.desk.tab.review") })}
-      </p>
     </main>
   );
 }
