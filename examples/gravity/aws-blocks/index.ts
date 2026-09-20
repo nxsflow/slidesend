@@ -8,6 +8,7 @@ import { createAwsBackend } from "@slidesend/aws/server";
 import config from "../presentation.config";
 import { agents } from "../src/agents";
 
+// snippet: aws-backend
 const scope = new Scope("gravity");
 const backend = createAwsBackend(scope, config);
 export const slidesend = backend.api;
@@ -19,3 +20,4 @@ export const agentChat = createAgentChat(scope, {
   platform: backend.platform,
   guards: backend.server.sessions.guards,
 }).api;
+// end snippet

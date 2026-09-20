@@ -17,16 +17,17 @@ import {
 } from "@slidesend/basics";
 import { defineDeck } from "@slidesend/core";
 import { agentEnabled } from "./agents";
-import { fact, sequence } from "./plugin";
+import { fact, orbit, sequence } from "./plugin";
 
 /** "How does gravity work?", written for a school class that answers questions in between. */
 export const deck = defineDeck({
-  meta: { title: "How does gravity work?", language: "en", plannedMinutes: 20 },
+  meta: { title: "How does gravity work?", language: "en", plannedMinutes: 10 },
   chapters: [
     { id: "intro", title: "Why things fall" },
     { id: "falling", title: "Falling together" },
   ],
   slides: [
+    // snippet: hero-slide
     section({
       id: "why",
       chapter: "intro",
@@ -34,18 +35,19 @@ export const deck = defineDeck({
       subtitle: "A talk in which you answer too",
       hero: true,
       notes: "Welcome the class.",
-      minutes: 1,
+      minutes: 0.5,
       panels: [
         {
           content: statement({ text: "Everything falls — **even the Moon**." }),
           centered: true,
-          minutes: 1,
+          minutes: 0.5,
         },
         {
           content: qr({ caption: "Answer on your phone" }),
           centered: true,
           cue: "Wait for phones",
           // On paper a code into a session that is over shows nothing; the question does.
+          minutes: 1,
           print: {
             replaceWith: statement({ text: "**Hammer or feather** — which one lands first?" }),
             text: "The room answered this on their phones before we went on.",
@@ -65,10 +67,11 @@ export const deck = defineDeck({
               "The tides rise and fall.",
             ],
           }),
-          minutes: 2,
+          minutes: 1,
         },
       ],
     }),
+    // end snippet
     section({
       id: "observations",
       chapter: "intro",
@@ -82,7 +85,7 @@ export const deck = defineDeck({
               { label: "1915", text: "Einstein makes space itself bend." },
             ],
           }),
-          minutes: 2,
+          minutes: 1,
         },
         {
           content: image({
@@ -90,7 +93,7 @@ export const deck = defineDeck({
             alt: "An apple and a feather falling side by side",
             caption: "Dropped together, they land together — if the air stays out of it.",
           }),
-          minutes: 1,
+          minutes: 0.5,
         },
       ],
     }),
@@ -104,7 +107,7 @@ export const deck = defineDeck({
             after: { label: "On the Moon", text: "Both land at the same moment." },
             number: { value: "1.6", caption: "m/s² on the Moon" },
           }),
-          minutes: 2,
+          minutes: 0.8,
         },
         {
           // An inline poll: the block asks it and shows the answers as a matrix.
@@ -132,16 +135,30 @@ export const deck = defineDeck({
               },
             ],
           }),
-          minutes: 2,
+          minutes: 1.2,
           cue: "Wait for the phones",
           print: { text: "The class answered both questions here; the counts appeared live." },
         },
+        {
+          // The talk's own block, built in three clicks: what a plugin is for (spec §6.2).
+          // snippet: own-block
+          content: orbit({
+            captions: [
+              { text: "The Earth pulls." },
+              { text: "So the Moon falls towards it.", minutes: 0.4 },
+              { text: "And moves sideways fast enough to keep missing.", minutes: 0.4 },
+            ],
+          }),
+          minutes: 0.4,
+          notes: "Three clicks: the pull, the fall, the miss.",
+        },
+        // end snippet
         {
           content: quote({
             text: "How different things fall is a question about the air, *not* about weight.",
             source: "What the experiment shows",
           }),
-          minutes: 1,
+          minutes: 0.5,
         },
       ],
     }),
@@ -161,20 +178,23 @@ export const deck = defineDeck({
           print: { text: "While these three points appeared, the class could ask anything." },
           content: reveal({
             items: [
-              { text: "Gravity pulls **everything** towards everything.", minutes: 1 },
-              { text: "Heavier does not mean faster.", minutes: 1 },
-              { text: "The Moon is falling too — it keeps missing the Earth.", minutes: 1 },
+              { text: "Gravity pulls **everything** towards everything.", minutes: 0.3 },
+              { text: "Heavier does not mean faster.", minutes: 0.3 },
+              { text: "The Moon is falling too — it keeps missing the Earth.", minutes: 0.3 },
             ],
           }),
         },
-        { content: fact({ text: "So: you are falling as well." }), minutes: 1 },
+        { content: fact({ text: "So: you are falling as well." }), minutes: 0.4 },
         {
           content: sequence({
-            items: [{ text: "Ask your own question." }, { text: "Then look it up together." }],
+            items: [
+              { text: "Ask your own question." },
+              { text: "Then look it up together.", minutes: 0.4 },
+            ],
           }),
-          minutes: 2,
+          minutes: 0.6,
         },
-        { content: textList({ of: "question", limit: 6 }), minutes: 2 },
+        { content: textList({ of: "question", limit: 6 }), minutes: 0.6 },
         {
           // A poll asked here and shown on the next panel, the split form.
           activity: poll({
@@ -193,10 +213,10 @@ export const deck = defineDeck({
             ],
           }),
           content: fact({ text: "One last question on your phone." }),
-          minutes: 1,
+          minutes: 0.4,
           print: { text: "The last question: what surprised you most?" },
         },
-        { content: pollList({ of: "after" }), minutes: 1 },
+        { content: pollList({ of: "after" }), minutes: 0.5 },
         // Off unless the talk is started with VITE_SLIDESEND_AGENT=1: an agent costs money per
         // question, and a demo that a stranger clones should not start spending on its own.
         ...(agentEnabled
@@ -210,7 +230,7 @@ export const deck = defineDeck({
                   singleTurn: true,
                   suggestions: ["Why does the Moon not fall down?", "Do I pull the Earth too?"],
                 }),
-                minutes: 3,
+                minutes: 2,
                 cue: "Let two or three questions run",
                 print: { text: "The class could ask Newton one question each." },
               },

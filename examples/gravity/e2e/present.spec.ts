@@ -54,7 +54,7 @@ test("the Present tab steers the talk from the keyboard and shows the room", asy
   await desk.locator("[data-present]").click();
   await desk.keyboard.press("ArrowRight");
   await desk.keyboard.press("ArrowRight");
-  await expect(desk.locator("[data-position]")).toContainText("3 / 19");
+  await expect(desk.locator("[data-position]")).toContainText("3 / 22");
   await expect.poll(async () => current(stage).getAttribute("data-step")).toBe("2");
   await expect(phone.locator('[data-activity="guess"]')).toBeVisible();
   // The phone is counted on the desk.
