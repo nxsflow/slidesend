@@ -30,6 +30,23 @@ describe("slidesend", () => {
     ]);
   });
 
+  it("check --render opens every step and names what does not fit", { timeout: 180_000 }, () => {
+    // The render pass needs a browser and a dev server, so it is opt-in and slow on purpose.
+    const good = slidesend("check", "--render");
+    expect(good.stdout).toContain("Every step fits the stage: 18 checked.");
+    expect(good.status).toBe(0);
+
+    const bad = slidesend(
+      "check",
+      "--render",
+      "--config",
+      "fixtures/overfull/presentation.config.ts",
+    );
+    expect(bad.status).toBe(1);
+    expect(bad.stderr).toContain("1 step(s) do not fit the stage:");
+    expect(bad.stderr).toMatch(/slide "overfull" step 1: the content is \d+px tall too much/);
+  });
+
   it("explains that deploy needs a platform when none is configured", () => {
     const result = slidesend("deploy", "--config", "fixtures/local/presentation.config.ts");
     expect(result.status).toBe(1);

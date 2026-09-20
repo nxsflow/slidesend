@@ -7,9 +7,12 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { parseCommandLine, runCommand } from "./cli/commands";
 import { writePdfs } from "./cli/pdf";
+import { renderCheck } from "./cli/render";
 import type { Presentation } from "./deck/presentation";
 
 const projectRoot = process.cwd();
+const line = parseCommandLine(process.argv.slice(2));
+const configFile = line.config;
 let devServer: { close(): Promise<void> } | undefined;
 
 async function vite() {
@@ -52,6 +55,9 @@ const exitCode = await runCommand(
     },
     async startDevServer(port) {
       const { createServer } = await vite();
+      // Which deck the browser should mount. A talk that never checks a second config ignores
+      // it; the example uses it to render a deliberately overfull fixture.
+      process.env.VITE_SLIDESEND_CONFIG = configFile;
       const server = await createServer({ root: projectRoot, server: { port } });
       await server.listen();
       devServer = server;
@@ -62,8 +68,9 @@ const exitCode = await runCommand(
       devServer = undefined;
     },
     writePdfs: (baseUrl, jobs) => writePdfs(projectRoot, baseUrl, jobs),
+    renderCheck: (baseUrl, steps) => renderCheck(projectRoot, baseUrl, steps),
   },
-  parseCommandLine(process.argv.slice(2)),
+  line,
 );
 
 // `dev` keeps running with its server; every other command ends here.

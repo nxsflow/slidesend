@@ -23,24 +23,25 @@ import type { PdfResult } from "./commands";
 /** How long a view gets to settle after its first page appeared, for steps that build up. */
 const settleMs = 1200;
 
-interface Chromium {
+export interface Chromium {
   launch(options?: { headless?: boolean }): Promise<{
     newPage(): Promise<PlaywrightPage>;
     close(): Promise<void>;
   }>;
 }
 
-interface PlaywrightPage {
+export interface PlaywrightPage {
   goto(url: string, options?: { waitUntil?: string }): Promise<unknown>;
   waitForSelector(selector: string, options?: { timeout?: number }): Promise<unknown>;
   waitForTimeout(ms: number): Promise<void>;
+  setViewportSize?(size: { width: number; height: number }): Promise<void>;
   evaluate<T>(fn: () => T | Promise<T>): Promise<T>;
   pdf(options: Record<string, unknown>): Promise<void>;
   on(event: string, handler: (error: Error) => void): void;
 }
 
 /** Loads Playwright as the talk project resolves it; the tool does not ship a browser. */
-async function chromiumOf(projectRoot: string): Promise<Chromium> {
+export async function chromiumOf(projectRoot: string): Promise<Chromium> {
   const require = createRequire(join(projectRoot, "package.json"));
   let resolved: string;
   try {

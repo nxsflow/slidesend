@@ -1,26 +1,10 @@
 import { expect, type Page, test } from "@playwright/test";
-import { viewports } from "./viewports";
+import { currentSlide, stageChecks } from "@slidesend/core/checks";
 
-const current = (page: Page) => page.locator("[data-slide-id][data-presence]:not([aria-hidden])");
+const current = (page: Page) => currentSlide(page);
 
-for (const [width, height, name] of viewports) {
-  test(`the stage is complete and centered: ${name} ${width}×${height}`, async ({ page }) => {
-    await page.setViewportSize({ width, height });
-    await page.goto("/stage/local");
-    const stage = page.locator("[data-stage]");
-    await expect(stage).toBeVisible();
-    const box = await stage.boundingBox();
-    if (!box) throw new Error("no stage");
-    const left = box.x;
-    const right = width - (box.x + box.width);
-    const top = box.y;
-    const bottom = height - (box.y + box.height);
-    expect(Math.min(left, right, top, bottom)).toBeGreaterThanOrEqual(-1);
-    expect(Math.abs(left - right)).toBeLessThanOrEqual(1);
-    expect(Math.abs(top - bottom)).toBeLessThanOrEqual(1);
-    expect(box.width / box.height).toBeCloseTo(16 / 9, 2);
-  });
-}
+// The stage check comes from the tool, in every room a talk may meet (spec §16).
+stageChecks();
 
 test("the example talk renders on /stage/local and steers with the keyboard", async ({ page }) => {
   const errors: string[] = [];

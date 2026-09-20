@@ -152,7 +152,7 @@ describe("commands", () => {
 
   it("builds the command reference from the definitions", () => {
     const table = commandReferenceTable();
-    expect(table).toContain("| `check` | `slidesend check [--config <file>]` |");
+    expect(table).toContain("| `check` | `slidesend check [--config <file>] [--render]` |");
     expect(table).toContain("`deploy`, `bootstrap`, `open`, `destroy`");
   });
 });
