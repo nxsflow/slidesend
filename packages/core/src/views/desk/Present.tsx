@@ -3,9 +3,11 @@
  * colours are literal here: slidesend-allow-literal-styles.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { typedClient } from "../../client/client";
 import type { Presentation } from "../../deck/presentation";
 import type { PlatformClient } from "../../platform/contract";
-import type { Presence } from "../../sessions/runtime-types";
+import type { CoreApi } from "../../server/runtime";
+import type { AdoptedPlan, Presence } from "../../sessions/runtime-types";
 import type { Session } from "../../sessions/types";
 import { positionOf, stageFit, stepIndexOf } from "../../stage/navigation";
 import { type CursorTransport, hostedTransport } from "../../sync/transport";
@@ -15,6 +17,7 @@ import { deviceId } from "../device";
 import { useNavigation } from "../hooks";
 import { StageSurface, stageSurfaceStyle } from "../Stage";
 import { formatDuration, talkClock } from "./clock";
+import { startMinutesAt } from "./timings";
 
 const border = "1px solid #d8d9d4";
 const muted = "#5d616b";
@@ -144,8 +147,19 @@ export function PresentTab({ platform, secret, session, presence, openStage }: P
   const [jumping, setJumping] = useState(false);
   const [shortcuts, setShortcuts] = useState(false);
   const [now, setNow] = useState(() => Date.now());
+  const [plan, setPlan] = useState<AdoptedPlan>();
   const lastMove = useRef<Parameters<CursorTransport["send"]>[0]>(undefined);
   const stageBox = useRef<HTMLDivElement>(null);
+
+  // The plan a rehearsal adopted, read once: it only changes in the Review tab.
+  useEffect(() => {
+    typedClient<CoreApi>(platform)
+      .planGet(secret)
+      .then(
+        (found) => setPlan(found ?? undefined),
+        () => {},
+      );
+  }, [platform, secret]);
 
   const navigation = useNavigation(presentation, {
     canSteer: true,
@@ -201,7 +215,9 @@ export function PresentTab({ platform, secret, session, presence, openStage }: P
   const clock = talkClock({
     ...(session.startedAt !== undefined ? { startedAt: session.startedAt } : {}),
     now,
-    plannedMinutes: step?.startMinutes ?? 0,
+    // An adopted plan wins over the deck's minutes (spec §13), so the mark the clock measures
+    // against moves with it.
+    plannedMinutes: startMinutesAt(presentation, navigation.index, plan),
   });
   const activity = step?.activity;
   const monitorDefinition = activity ? presentation.registry.definition(activity.type) : undefined;

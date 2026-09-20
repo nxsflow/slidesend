@@ -32,7 +32,11 @@ export interface Desk {
   disarm(sessionId: string): Promise<void>;
   open(sessionId: string): Promise<void>;
   extend(sessionId: string, minutes: number): Promise<void>;
-  close(sessionId: string): Promise<void>;
+  /**
+   * Closes a session. A rehearsal's measured times are kept only when the person says the run
+   * was a timed one; nothing else in the tool decides that (spec §13).
+   */
+  close(sessionId: string, keepTimings?: boolean): Promise<void>;
   refresh(): void;
 }
 
@@ -174,7 +178,11 @@ export function useDesk({ platform, secret, onSecret, label }: DeskOptions): Des
     open: (id) => run(() => api?.sessionOpen(secret ?? "", id) ?? Promise.resolve()),
     extend: (id, minutes) =>
       run(() => api?.sessionExtend(secret ?? "", id, minutes) ?? Promise.resolve()),
-    close: (id) => run(() => api?.sessionClose(secret ?? "", id) ?? Promise.resolve()),
+    close: (id, keepTimings = true) =>
+      run(async () => {
+        await api?.sessionClose(secret ?? "", id);
+        if (!keepTimings) await api?.timingsDiscard(secret ?? "", id);
+      }),
     refresh,
   };
 }

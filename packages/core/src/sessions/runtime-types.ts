@@ -58,6 +58,21 @@ export interface Presence {
   phones: number;
 }
 
+/**
+ * A plan adopted from a rehearsal (spec §13): `minutes` per step, as the deck would write them,
+ * plus a fingerprint of the deck's timing at that moment. It belongs to the talk, not to the
+ * session it came from, which is why it is stored outside every session's partition.
+ */
+export interface AdoptedPlan {
+  /** Minutes per `<slideId>:<step>`, rounded to a tenth. */
+  minutes: Record<string, number>;
+  /** The deck's timing when this plan was adopted; it lapses when that changes. */
+  hash: string;
+  adoptedAt: number;
+  /** The session the rehearsal ran in. */
+  sessionId: string;
+}
+
 /** How long the cursor stayed on one step, measured silently (spec §13). */
 export interface StepTiming {
   index: number;

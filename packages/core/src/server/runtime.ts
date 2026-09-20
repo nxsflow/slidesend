@@ -3,6 +3,7 @@ import type { PlatformServer } from "../platform/contract";
 import { LimitError, SessionStateError } from "../sessions/errors";
 import type {
   ActivityResponse,
+  AdoptedPlan,
   Cursor,
   CursorTarget,
   DeviceRole,
@@ -51,6 +52,12 @@ const presenceSchema: z.ZodType<PresenceEntry> = z.object({
   deviceId: z.string(),
   label: z.string().optional(),
   at: z.number(),
+});
+const planSchema: z.ZodType<AdoptedPlan> = z.object({
+  minutes: z.record(z.string(), z.number()),
+  hash: z.string(),
+  adoptedAt: z.number(),
+  sessionId: z.string(),
 });
 const timingSchema: z.ZodType<StepTiming> = z.object({
   index: z.number(),
@@ -103,6 +110,9 @@ export function createRuntime({
     responses: platform.store("responses", responseSchema),
     presence: platform.store("presence", presenceSchema),
     timings: platform.store("timings", timingSchema),
+    // The plan belongs to the TALK, not to the session it was measured in, so it lives in its
+    // own partition: deleting a session's data must not take the plan with it.
+    plan: platform.store("plan", planSchema),
   };
   const cursorChannel = platform.channel(channels.cursor, cursorSchema);
   const responseChannel = platform.channel(channels.responses, responseSchema);
@@ -227,6 +237,22 @@ export function createRuntime({
     return entries.length;
   }
 
+  const planKey = "plan/current";
+
+  /** The adopted plan, if one was ever adopted. It may have lapsed; the desk decides that. */
+  async function plan(): Promise<AdoptedPlan | undefined> {
+    return stores.plan.get(planKey);
+  }
+
+  async function adopt(next: AdoptedPlan): Promise<AdoptedPlan> {
+    await stores.plan.put(planKey, next);
+    return next;
+  }
+
+  async function clearPlan(): Promise<void> {
+    await stores.plan.delete(planKey);
+  }
+
   async function exportData(sessionId: string): Promise<SessionExport> {
     const all = await stores.responses.list(`${id.parse(sessionId)}/`);
     return {
@@ -294,6 +320,9 @@ export function createRuntime({
     presenceList: control(guards, (sessionId: string) => presence(sessionId)),
     timingsList: control(guards, (sessionId: string) => timings(sessionId)),
     timingsDiscard: control(guards, (sessionId: string) => discardTimings(sessionId)),
+    planGet: control(guards, () => plan()),
+    planAdopt: control(guards, (next: AdoptedPlan) => adopt(planSchema.parse(next))),
+    planClear: control(guards, () => clearPlan()),
     sessionExport: control(guards, (sessionId: string) => exportData(sessionId)),
     sessionDeleteData: control(guards, (sessionId: string) => deleteData(sessionId)),
   } satisfies ServerApi;
@@ -308,6 +337,9 @@ export function createRuntime({
     presence,
     timings,
     discardTimings,
+    plan,
+    adopt,
+    clearPlan,
     exportData,
     deleteData,
     stores,

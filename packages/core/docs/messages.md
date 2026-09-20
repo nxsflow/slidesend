@@ -47,6 +47,32 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.present.position` | {step} / {total} · {slide} |
 | `core.desk.present.previous` | Previous |
 | `core.desk.present.shortcuts` | → or space: next · ←: previous · G: jump · ?: this list · Esc: close |
+| `core.desk.review.adopt` | Adopt as plan |
+| `core.desk.review.adopted` | Adopted. The plan now wins over the deck's minutes. |
+| `core.desk.review.column.audience` | Audience |
+| `core.desk.review.column.measured` | Measured |
+| `core.desk.review.column.planned` | Planned |
+| `core.desk.review.column.step` | Step |
+| `core.desk.review.copied` | The prompt is in the clipboard. |
+| `core.desk.review.copy` | Copy the analysis prompt |
+| `core.desk.review.delete` | Delete session data |
+| `core.desk.review.deleteCancel` | Keep it |
+| `core.desk.review.deleteConfirm` | Delete everything of “{session}” |
+| `core.desk.review.deleted` | Deleted {keys} entries; {left} timings left. |
+| `core.desk.review.empty` | This session has no measured times yet. |
+| `core.desk.review.estimateHint` | 1:30 |
+| `core.desk.review.export` | Export responses |
+| `core.desk.review.exported` | Exported {responses} response(s). |
+| `core.desk.review.flagged` | Much longer than planned. |
+| `core.desk.review.plan` | A plan adopted on {when} is in force. |
+| `core.desk.review.planClear` | Discard the plan |
+| `core.desk.review.planLapsed` | The adopted plan lapsed: the deck's timing changed. |
+| `core.desk.review.timed` | Was “{session}” a timed run? “No” discards its measured times. |
+| `core.desk.review.timedNo` | No, discard them |
+| `core.desk.review.timedYes` | Yes, keep the times |
+| `core.desk.review.title` | Review of “{session}” |
+| `core.desk.review.totals` | planned {planned} · measured {measured} + audience {audience} = {total} · target {target} min |
+| `core.desk.review.visits` | (entered {visits} times, the first one counts) |
 | `core.desk.sessions.arm` | Arm |
 | `core.desk.sessions.close` | Close |
 | `core.desk.sessions.closesAt` | Closes at {time} |
