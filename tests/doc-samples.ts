@@ -75,15 +75,22 @@ export interface SampleProblem {
 
 /**
  * Compiles the samples of the given documents in one run of `tsc`, in a scratch folder inside
- * `projectDir` (a talk project whose `node_modules` has the packages), and returns every error
+ * `projectDir`'s `node_modules` (a talk project that has the packages), and returns every error
  * at its line in the document. The scratch folder is removed afterwards.
  */
 export function compileSamples(
   documents: readonly { name: string; text: string }[],
   projectDir = join(repositoryRoot, "examples", "gravity"),
 ): SampleProblem[] {
-  // One folder per run: test files run in parallel, and two runs must not share one.
-  const scratch = join(projectDir, `.doc-samples-${process.pid}-${randomUUID().slice(0, 8)}`);
+  // One folder per run: test files run in parallel, and two runs must not share one. It sits in
+  // the project's node_modules, so the packages still resolve, but outside what a Vite dev server
+  // watches: a tsconfig.json appearing in the project made a parallel `slidesend check --render`
+  // reload in the middle of its measurement.
+  const scratch = join(
+    projectDir,
+    "node_modules",
+    `.doc-samples-${process.pid}-${randomUUID().slice(0, 8)}`,
+  );
   const written: Written[] = [];
   try {
     for (const { name, text } of documents) {
