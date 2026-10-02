@@ -102,6 +102,7 @@ export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,
   guards: backend.server.sessions.guards,
+  tools: { newton: newtonTools },
 }).api;
 ```
 <!-- end snippet -->

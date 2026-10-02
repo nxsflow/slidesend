@@ -7,6 +7,7 @@ import { createAgentChat } from "@slidesend/agent/server";
 import { createAwsBackend } from "@slidesend/aws/server";
 import config from "../presentation.config";
 import { agents } from "../src/agents";
+import { newtonTools } from "./tools";
 
 // snippet: aws-backend
 const scope = new Scope("gravity");
@@ -19,5 +20,6 @@ export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,
   guards: backend.server.sessions.guards,
+  tools: { newton: newtonTools },
 }).api;
 // end snippet
