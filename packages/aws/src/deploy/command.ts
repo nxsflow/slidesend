@@ -53,6 +53,11 @@ export interface DeployDefaults {
   domain?: string;
   /** Injected in tests; the real one runs programs and reads files. */
   io?: DeployIo;
+  /**
+   * Whether this runs in CI, where the log may be public: the desk link is then not printed,
+   * because it carries the control secret. Defaults to the `CI` variable every CI service sets.
+   */
+  ci?: boolean;
 }
 
 /** What one run works from: the talk's configuration, overridden by the command line. */
@@ -163,6 +168,7 @@ export function deployTools(
 export function cdkArgs(
   action: "deploy" | "destroy",
   tools: { cdk: string; tsx: string; app: string },
+  outputsFile = "",
 ): string[] {
   const app = `node "${tools.tsx}" -C cdk "${tools.app}"`;
   return action === "deploy"
@@ -176,6 +182,8 @@ export function cdkArgs(
         "--ci",
         "--progress",
         "events",
+        "--outputs-file",
+        outputsFile,
       ]
     : [tools.cdk, "destroy", "--app", app, "--force"];
 }
@@ -224,6 +232,26 @@ export function deskLink(url: string, secret: string): string {
   return `${url}/desk#key=${secret}`;
 }
 
+/**
+ * Where `slidesend deploy` has the CDK CLI write the stack's outputs: the folder AWS Blocks
+ * keeps its own deploy state in, which a talk project ignores already. Reading the address from
+ * here needs no permission beyond the deploy itself — the CI role has none.
+ */
+export const outputsFileOf = (projectRoot: string) =>
+  join(projectRoot, ".blocks-sandbox", "outputs.json");
+
+/** The site's address from the outputs file a deploy just wrote. */
+export function deployedUrl(io: DeployIo, plan: DeployPlan): string | undefined {
+  const all = json<Record<string, Record<string, string>>>(
+    io.read(outputsFileOf(plan.projectRoot)) ?? "",
+  );
+  const outputs = Object.entries(all?.[plan.stackName] ?? {}).map(([OutputKey, OutputValue]) => ({
+    OutputKey,
+    OutputValue,
+  }));
+  return siteUrl(outputs, plan.domain);
+}
+
 /** Reads the deployed talk's address and control secret; throws when the stack is not there. */
 async function linksOf(io: DeployIo, plan: DeployPlan): Promise<{ url: string; secret: string }> {
   const stack = await io.run("aws", [
@@ -244,6 +272,11 @@ async function linksOf(io: DeployIo, plan: DeployPlan): Promise<{ url: string; s
       `No deployed talk "${plan.stackName}"${plan.region ? ` in ${plan.region}` : ""}: run \`slidesend deploy\` first.`,
     );
   }
+  return { url, secret: await secretOf(io, plan) };
+}
+
+/** The control secret from SSM, where AWS Blocks generated it on the first deploy. */
+async function secretOf(io: DeployIo, plan: DeployPlan): Promise<string> {
   // The parameter is named after the block's place in the scope tree; its stack prefix and the
   // block id at the end are what is fixed.
   const listed = await io.run("aws", [
@@ -271,7 +304,7 @@ async function linksOf(io: DeployIo, plan: DeployPlan): Promise<{ url: string; s
   ]);
   const raw = json<{ Parameter?: { Value?: string } }>(read.stdout)?.Parameter?.Value;
   if (read.status !== 0 || !raw) throw new Error(`The control secret ${name} could not be read.`);
-  return { url, secret: secretValue(raw) };
+  return secretValue(raw);
 }
 
 function printLinks(context: PlatformCommandContext, links: { url: string; secret: string }) {
@@ -291,11 +324,20 @@ export async function deploy(context: PlatformCommandContext, defaults: DeployDe
   context.log(
     `  Deploying ${plan.stackName} to ${account}${plan.region ? ` in ${plan.region}` : ""} …`,
   );
-  const [command, ...args] = ["node", ...cdkArgs("deploy", tools)];
+  const [command, ...args] = ["node", ...cdkArgs("deploy", tools, outputsFileOf(plan.projectRoot))];
   const status = await io.exec(command as string, args, cdkEnv(plan, account));
   if (status !== 0) throw new Error("The deployment failed; see the output above.");
+  const url = deployedUrl(io, plan);
+  if (!url) throw new Error("The stack was deployed, but its outputs name no site address.");
   context.log("");
-  printLinks(context, await linksOf(io, plan));
+  if (defaults.ci ?? process.env.CI === "true") {
+    context.log(`  Site   ${url}/`);
+    context.log(
+      "  The desk link carries the control secret, so it is not printed here: run `slidesend open` where you are signed in.",
+    );
+    return;
+  }
+  printLinks(context, { url, secret: await secretOf(io, plan) });
 }
 
 /** `slidesend open`: prints the desk link of the deployed talk again. */
