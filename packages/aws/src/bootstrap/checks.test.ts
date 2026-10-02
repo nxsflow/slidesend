@@ -8,6 +8,8 @@ import {
   type BootstrapIo,
   type BootstrapPlan,
   bootstrapChecks,
+  branchPolicyRemedy,
+  environmentRemedy,
   type Facts,
   longestBucketName,
   runChecks,
@@ -19,6 +21,7 @@ const plan: BootstrapPlan = {
   profile: "talks",
   region: "eu-central-1",
   environment: "production",
+  branch: "main",
   roleName: "gravity-deploy",
 };
 
@@ -50,7 +53,11 @@ const repoApi = {
   stdout: '{"id":1369593468,"name":"gravity","owner":{"login":"cabcookie","id":2454422}}',
 };
 const subApi = { stdout: '{"use_default":true,"use_immutable_subject":true}' };
-const environmentApi = { stdout: '{"name":"production","deployment_branch_policy":{}}' };
+const environmentApi = {
+  stdout:
+    '{"name":"production","deployment_branch_policy":{"protected_branches":false,"custom_branch_policies":true}}',
+};
+const branchPoliciesApi = { stdout: '{"branch_policies":[{"name":"main","type":"branch"}]}' };
 const secretsApi = { stdout: '[{"name":"AWS_DEPLOY_ROLE"},{"name":"AWS_REGION"}]' };
 
 /** Everything in place: the happy world each test then takes one thing away from. */
@@ -62,7 +69,8 @@ const working = {
     "repo view": repoView,
     "gh api repos/cabcookie/gravity$": repoApi,
     "actions/oidc/customization/sub": subApi,
-    "environments/production": environmentApi,
+    "environments/production$": environmentApi,
+    "environments/production/deployment-branch-policies": branchPoliciesApi,
     "secret list": secretsApi,
   } as Record<string, Partial<Run> | undefined>,
   files: {
@@ -203,31 +211,124 @@ describe("the bootstrap checks", () => {
 
   const repository = { owner: "cabcookie", ownerId: 2454422, name: "gravity", id: 1369593468 };
 
-  it("accepts an environment with a branch rule", async () => {
+  it("accepts an environment whose branch policy names the deployment branch", async () => {
     expect(await run("environment", {}, { repository })).toMatchObject({
       ok: true,
-      detail: expect.stringContaining("branch rule"),
+      detail: '"production" admits main',
     });
   });
 
-  it("offers the command that creates a missing environment", async () => {
+  // One step, and the next run passes: the environment with a policy naming the branch. A bare
+  // PUT created it without one, and the next run failed again with a second remedy.
+  const remedy =
+    'gh api --method PUT repos/cabcookie/gravity/environments/production -F "deployment_branch_policy[protected_branches]=false" -F "deployment_branch_policy[custom_branch_policies]=true" && gh api --method POST repos/cabcookie/gravity/environments/production/deployment-branch-policies -f name=main';
+
+  it("creates a missing environment and its branch policy in one step", async () => {
+    expect(environmentRemedy("cabcookie/gravity", "production", "main")).toBe(remedy);
     expect(
-      await run("environment", { script: ["environments/production"] }, { repository }),
-    ).toMatchObject({
-      ok: false,
-      fix: "gh api --method PUT repos/cabcookie/gravity/environments/production",
-    });
+      await run("environment", { script: ["environments/production$"] }, { repository }),
+    ).toMatchObject({ ok: false, fix: remedy });
   });
 
   it("insists on a branch rule, because the trust policy carries no branch", async () => {
     const io = terminal({
       ...working.script,
-      "environments/production": { stdout: '{"name":"production"}' },
+      "environments/production$": {
+        stdout: '{"name":"production","deployment_branch_policy":null}',
+      },
     });
     expect(await check("environment").run(io, plan, { repository })).toMatchObject({
       ok: false,
-      fix: expect.stringContaining("deployment_branch_policy[protected_branches]=true"),
+      detail: '"production" accepts a deployment from any branch.',
+      fix: remedy,
     });
+  });
+
+  const protectedOnly = {
+    stdout:
+      '{"name":"production","deployment_branch_policy":{"protected_branches":true,"custom_branch_policies":false}}',
+  };
+
+  it("sees that 'protected branches only' admits nothing while the branch is unprotected", async () => {
+    const io = terminal({
+      ...working.script,
+      "environments/production$": protectedOnly,
+      "branches/main": { stdout: '{"name":"main","protected":false}' },
+    });
+    expect(await check("environment").run(io, plan, { repository })).toMatchObject({
+      ok: false,
+      detail: expect.stringContaining("main is not protected"),
+      fix: remedy,
+    });
+  });
+
+  it("accepts 'protected branches only' when the branch is protected", async () => {
+    const io = terminal({
+      ...working.script,
+      "environments/production$": protectedOnly,
+      "branches/main": { stdout: '{"name":"main","protected":true}' },
+    });
+    expect(await check("environment").run(io, plan, { repository })).toMatchObject({ ok: true });
+  });
+
+  it("adds the branch to custom policies that name other branches", async () => {
+    const io = terminal({
+      ...working.script,
+      "environments/production/deployment-branch-policies": {
+        stdout: '{"branch_policies":[{"name":"release","type":"branch"}]}',
+      },
+    });
+    expect(await check("environment").run(io, plan, { repository })).toMatchObject({
+      ok: false,
+      detail: '"production" does not admit main (only release).',
+      fix: branchPolicyRemedy("cabcookie/gravity", "production", "main"),
+    });
+  });
+
+  it("says that a private repository on GitHub Free has no environments", async () => {
+    const io = terminal({
+      ...working.script,
+      "environments/production$": { status: 1, stdout: '{"message":"Not Found"}' },
+      "gh api user$": { stdout: '{"login":"cabcookie","plan":{"name":"free"}}' },
+    });
+    const finding = await check("environment").run(io, plan, {
+      repository,
+      private: true,
+      ownerType: "User",
+    });
+    expect(finding).toMatchObject({
+      ok: false,
+      detail:
+        "cabcookie/gravity is private, and private repositories on GitHub Free have no environments.",
+    });
+    expect(finding.fix).toContain("gh repo edit cabcookie/gravity --visibility public");
+    expect(finding.fix).not.toContain("--method PUT");
+  });
+
+  it("does not guess a plan it cannot see", async () => {
+    // Signed in as somebody else: their plan says nothing about the owner's.
+    const io = terminal({
+      ...working.script,
+      "environments/production$": { status: 1, stdout: '{"message":"Not Found"}' },
+      "gh api user$": { stdout: '{"login":"someone-else","plan":{"name":"free"}}' },
+    });
+    expect(
+      await check("environment").run(io, plan, { repository, private: true, ownerType: "User" }),
+    ).toMatchObject({ ok: false, fix: remedy });
+  });
+
+  it("reads an organization's plan from the organization", async () => {
+    const io = terminal({
+      ...working.script,
+      "environments/production$": { status: 1, stdout: '{"message":"Not Found"}' },
+      "gh api orgs/cabcookie$": { stdout: '{"login":"cabcookie","plan":{"name":"free"}}' },
+    });
+    const finding = await check("environment").run(io, plan, {
+      repository,
+      private: true,
+      ownerType: "Organization",
+    });
+    expect(finding.detail).toContain("GitHub Free");
   });
 
   it("accepts both deploy secrets", async () => {

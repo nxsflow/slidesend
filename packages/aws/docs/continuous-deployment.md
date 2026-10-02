@@ -25,8 +25,10 @@ bootstrap roles and read the CDK bootstrap version; everything else happens thro
 
 ## 1. The GitHub environment
 
-Environments are available on public repositories, and on private ones with a paid GitHub plan.
-Create `production` with a rule that admits only `main`:
+Environments are available on public repositories, and on private ones with a paid GitHub plan;
+`slidesend bootstrap` says so when a private repository on GitHub Free has none. Create
+`production` with a rule that admits only `main` (this is also the remedy `slidesend bootstrap`
+prints):
 
 ```sh
 REPO=<owner>/<repo>
@@ -79,8 +81,9 @@ pnpm exec slidesend bootstrap --deploy --profile my-talk
 ```
 
 deploys `<stackId>-bootstrap` and prints the role's ARN, which must match the secret from step 2,
-and, for a custom domain, the name servers to delegate the domain to. `--environment <name>` and
-`--role <name>` change the defaults `production` and `<stackId>-deploy`.
+and, for a custom domain, the name servers to delegate the domain to. `--environment <name>`,
+`--branch <name>` and `--role <name>` change the defaults `production`, `main` and
+`<stackId>-deploy`; pass the same `--branch` to `slidesend workflow`.
 
 The trust policy is built from the repository's **immutable ids**, which `slidesend bootstrap`
 reads from GitHub. Renaming the repository keeps them; transferring it to another owner changes

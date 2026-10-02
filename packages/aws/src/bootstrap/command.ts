@@ -103,6 +103,7 @@ export function planOf(
     ...(region ? { region } : {}),
     ...(domain ? { domain } : {}),
     environment: option(args, "--environment") ?? "production",
+    branch: option(args, "--branch") ?? "main",
     roleName: option(args, "--role") ?? `${stackId}-deploy`,
   };
 }
