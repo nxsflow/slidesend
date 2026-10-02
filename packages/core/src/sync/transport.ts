@@ -59,6 +59,14 @@ export function browserEnvironment(): SyncEnvironment {
 export const sendDebounceMs = 120;
 /** The slow pulse that catches a silently dead connection (spec §11). */
 export const pulseMs = 20_000;
+/**
+ * Extra reads of the cursor after every connect, in ms. A subscription can take a moment to
+ * become visible to the server's fan-out — AWS Blocks finds subscribers through an eventually
+ * consistent index — and a move published in that moment never reaches the new subscriber. The
+ * read on connect happens before the move; these reads happen after it.
+ */
+export const settleReadsMs = [1_500, 5_000] as const;
+
 /** Reconnect backoff: 500 ms, doubling, capped at 8 s. */
 export const backoffMs = (attempt: number) => Math.min(8000, 500 * 2 ** attempt);
 
@@ -174,7 +182,9 @@ export interface HostedTransportOptions {
  * The transport over the hosted platform (spec §11). It subscribes to the session's cursor topic
  * and fetches the current cursor after every connect, when the page wakes up (visible again,
  * online, shown from the back-forward cache) and on a slow pulse, so a locked phone returns to
- * the right slide by itself. Failed fetches retry with backoff.
+ * the right slide by itself. After every connect it reads twice more (`settleReadsMs`), for a
+ * move published before the new subscription reached the server's fan-out. Failed fetches retry
+ * with backoff.
  */
 export function hostedTransport(options: HostedTransportOptions): CursorTransport {
   const { platform, sessionId, secret } = options;
@@ -189,6 +199,7 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
   let attempt = 0;
   let retry: unknown;
   let sendTimer: unknown;
+  let settleTimers: unknown[] = [];
   let queued: CursorTarget | undefined;
 
   const setStatus = (next: boolean) => {
@@ -215,12 +226,19 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
     }
   }
 
+  /** Reads now, and again while a fresh subscription may still be missing from the fan-out. */
+  function connect(): void {
+    for (const timer of settleTimers) environment.clearTimeout(timer);
+    settleTimers = settleReadsMs.map((ms) => environment.setTimeout(() => void refresh(), ms));
+    void refresh();
+  }
+
   const stopMessages = platform.subscribe(channels.cursor, sessionId, (message) => {
     const next = message as Cursor;
     if (next.from !== id) cursor.apply(next);
   });
   const stopStatus = platform.onStatus((up) => {
-    if (up) void refresh();
+    if (up) connect();
     else setStatus(false);
   });
   const stopWake = environment.onWake(() => {
@@ -230,7 +248,7 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
   const pulse = environment.setInterval(() => {
     if (environment.isVisible()) void refresh();
   }, pulseMs);
-  void refresh();
+  connect();
 
   return {
     kind: "hosted",
@@ -263,6 +281,7 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
       closed = true;
       environment.clearTimeout(retry);
       environment.clearTimeout(sendTimer);
+      for (const timer of settleTimers) environment.clearTimeout(timer);
       environment.clearInterval(pulse);
       stopMessages();
       stopStatus();
