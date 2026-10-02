@@ -56,10 +56,14 @@ describe("slidesend", () => {
     expect(result.stderr).toMatch(/needs a platform, and none is configured/);
   });
 
-  it("names the platform when it lacks a command", () => {
-    const result = slidesend("destroy");
-    expect(result.status).toBe(1);
-    expect(result.stderr).toMatch(/The platform "aws" has no command "destroy"/);
+  // Only `help`: `deploy`, `open` and `destroy` reach the AWS account of whoever runs the tests.
+  // Missing platform commands are covered against a fake platform in core's own tests.
+  it("lists the commands the aws platform adds", () => {
+    const result = slidesend("help");
+    expect(result.status).toBe(0);
+    for (const command of ["bootstrap", "deploy", "open", "destroy", "workflow"]) {
+      expect(result.stdout).toMatch(new RegExp(`^  ${command} +\\S`, "m"));
+    }
   });
 
   it("dev prints stage and desk links that work, in local mode", async () => {
