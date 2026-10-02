@@ -139,9 +139,9 @@ export const deck = defineDeck({
           cue: "Wait for the phones",
           print: { text: "The class answered both questions here; the counts appeared live." },
         },
+        // snippet: own-block
         {
           // The talk's own block, built in three clicks: what a plugin is for (spec §6.2).
-          // snippet: own-block
           content: orbit({
             captions: [
               { text: "The Earth pulls." },
