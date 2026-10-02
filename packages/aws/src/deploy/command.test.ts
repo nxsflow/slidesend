@@ -23,6 +23,9 @@ const files: Record<string, string> = {
   [`${root}/.blocks/config.json`]: '{"stackId":"sd-gravity"}',
   [`${root}/aws-blocks/index.ts`]: "export const slidesend = {};",
   [`${root}/aws-blocks/index.handler.ts`]: "export const handler = {};",
+  // What the CDK CLI writes after a deploy, keyed by stack.
+  [`${root}/.blocks-sandbox/outputs.json`]:
+    '{"sd-gravity-prod":{"ApiUrl":"https://x.execute-api","WebHostingUrlAB12":"https://d1.cloudfront.net/"}}',
 };
 
 const modules: Record<string, string> = {
@@ -124,7 +127,7 @@ describe("the tools a deploy needs", () => {
 
   it("runs the shipped CDK app under the cdk condition, without approval prompts", () => {
     const tools = deployTools(io().io, root);
-    expect(cdkArgs("deploy", tools)).toEqual([
+    expect(cdkArgs("deploy", tools, "/out.json")).toEqual([
       "/store/aws-cdk/bin/cdk",
       "deploy",
       "--app",
@@ -134,6 +137,8 @@ describe("the tools a deploy needs", () => {
       "--ci",
       "--progress",
       "events",
+      "--outputs-file",
+      "/out.json",
     ]);
     expect(cdkArgs("destroy", tools).slice(1, 2)).toEqual(["destroy"]);
     expect(cdkArgs("destroy", tools).at(-1)).toBe("--force");
@@ -165,12 +170,13 @@ describe("slidesend deploy", () => {
   it("deploys into the signed-in account and prints the desk link afterwards", async () => {
     const { io: terminal, executed, ran } = io();
     const { context: ctx, lines } = context(["--profile", "talk"]);
-    await deploy(ctx, { region: "eu-central-1", io: terminal });
+    await deploy(ctx, { region: "eu-central-1", io: terminal, ci: false });
 
     expect(executed).toHaveLength(1);
     const [run] = executed;
     expect(run?.command).toBe("node");
     expect(run?.args[1]).toBe("deploy");
+    expect(run?.args.at(-1)).toBe(`${root}/.blocks-sandbox/outputs.json`);
     const input = talkInput(run?.env.SLIDESEND_DEPLOY);
     expect(input).toEqual({
       stackName: "sd-gravity-prod",
@@ -190,6 +196,18 @@ describe("slidesend deploy", () => {
     expect(lines).toContain("  Phones https://d1.cloudfront.net/");
   });
 
+  it("prints no desk link in CI, where the log may be public, and needs no read permission", async () => {
+    const { io: terminal, ran } = io();
+    const { context: ctx, lines } = context();
+    await deploy(ctx, { region: "eu-central-1", io: terminal, ci: true });
+    const text = lines.join("\n");
+    expect(text).toContain("  Site   https://d1.cloudfront.net/");
+    expect(text).toContain("run `slidesend open` where you are signed in");
+    expect(text).not.toContain("s3cr3t");
+    // The deploy role may assume the CDK roles and nothing else: no stack or SSM reads.
+    expect(ran.filter((line) => !line.includes("sts get-caller-identity"))).toEqual([]);
+  });
+
   it("names the sign-in before anything is deployed", async () => {
     const { io: terminal, executed } = io({ answers: { "sts get-caller-identity": undefined } });
     await expect(
@@ -201,7 +219,7 @@ describe("slidesend deploy", () => {
   it("fails when the CDK CLI fails, without printing a link to nothing", async () => {
     const { io: terminal } = io({ status: 1 });
     const { context: ctx, lines } = context();
-    await expect(deploy(ctx, { io: terminal })).rejects.toThrow("The deployment failed");
+    await expect(deploy(ctx, { io: terminal, ci: false })).rejects.toThrow("The deployment failed");
     expect(lines.some((line) => line.includes("Desk"))).toBe(false);
   });
 });
