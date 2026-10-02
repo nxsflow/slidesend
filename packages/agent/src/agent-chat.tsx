@@ -69,6 +69,13 @@ export interface AgentChatApi {
 }
 
 /** What the phone shows and what it can do, for the component and for tests. */
+/**
+ * Reads of the conversation after a message was sent, in ms. The answer streams over the channel,
+ * but a chunk published before the phone's subscription stands is lost — the subscription can
+ * still be settling when someone taps a suggestion at once. The history has the answer either way.
+ */
+export const answerReadsMs = [2_000, 5_000, 10_000, 20_000] as const;
+
 export function useAgentChat(options: { agent: string; singleTurn: boolean }): {
   state: ChatState;
   send(text: string): Promise<void>;
@@ -89,6 +96,7 @@ export function useAgentChat(options: { agent: string; singleTurn: boolean }): {
   const [channelId, setChannelId] = useState<string>();
   // The id the chunks of the turn in flight belong to; the history's own ids take over after it.
   const pending = useRef<string>(undefined);
+  const answerReads = useRef<ReturnType<typeof setTimeout>[]>([]);
   const load = useCallback(() => {
     if (!client || !scope) return;
     client.start(scope.sessionId, scope.activityId, scope.deviceId, options.agent).then(
@@ -115,6 +123,7 @@ export function useAgentChat(options: { agent: string; singleTurn: boolean }): {
     return () => {
       stopStatus();
       document.removeEventListener("visibilitychange", onVisible);
+      for (const timer of answerReads.current) clearTimeout(timer);
     };
   }, [client, scope, load]);
 
@@ -140,13 +149,15 @@ export function useAgentChat(options: { agent: string; singleTurn: boolean }): {
       setState((current) => addOwnMessage(current, id, text));
       try {
         await client.send(scope.sessionId, scope.activityId, scope.deviceId, options.agent, text);
+        for (const timer of answerReads.current) clearTimeout(timer);
+        answerReads.current = answerReadsMs.map((ms) => setTimeout(load, ms));
       } catch (error) {
         setState((current) =>
           withProblem(current, error instanceof Error ? error.message : String(error)),
         );
       }
     },
-    [client, scope, options.agent],
+    [client, scope, options.agent, load],
   );
 
   const showPrompt = useCallback(async () => {

@@ -163,3 +163,34 @@ test("the agent calls a tool the talk gave it", async ({ request }) => {
     )
     .toContain("moonDistance");
 });
+
+// A phone whose live channel delivers nothing still shows the answer: it is in the history, and
+// the chat reads the conversation again after sending. Chunks are lost for real when a question
+// is sent before the subscription stands.
+test("the answer appears even when none of its chunks arrive", async ({ browser, request }) => {
+  const rpc = rpcOf(request);
+  const session = await rpc("slidesend.sessionCreate", [
+    key,
+    { kind: "rehearsal", name: `Agent deaf ${Date.now()}` },
+  ]);
+  await rpc("slidesend.sessionOpen", [key, session.id]);
+  await rpc("slidesend.cursorGoto", [
+    key,
+    session.id,
+    { index: 18, slideId: "together", step: 9 },
+    "e2e",
+  ]);
+  const join = await rpc("slidesend.sessionJoin", [key, session.id]);
+
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const phone = await context.newPage();
+  // Every WebSocket is accepted and then stays silent: no chunk, no cursor message.
+  await phone.routeWebSocket(/.*/, () => {});
+  await phone.goto(`${base}${join.joinPath}`);
+  const chat = phone.locator('[data-activity-kind="agentChat"]');
+  await expect(chat).toBeVisible({ timeout: 30_000 });
+  await chat.locator("[data-suggestion]").first().click();
+  await expect(chat.locator('[data-speaker="you"]')).toHaveCount(1);
+  await expect(chat.locator('[data-speaker="agent"]').first()).toBeVisible({ timeout: 15_000 });
+  await context.close();
+});
