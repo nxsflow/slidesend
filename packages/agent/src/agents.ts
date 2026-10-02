@@ -20,8 +20,6 @@ export interface AgentDefinition {
    * adds to it, because an audience that is shown the prompt must see the whole of it.
    */
   systemPrompt: string;
-  /** Blocks tools the talk supplies; the tool passes them through untouched. */
-  tools?: readonly unknown[];
   /** Which model tier to run on; the platform decides what that means. Defaults to `fast`. */
   model?: ModelTier;
   /** A name for the desk's tile and the phone's header; defaults to the key. */

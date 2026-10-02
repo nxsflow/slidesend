@@ -8,7 +8,13 @@
  * Every method that can cost money starts with the open-session guard (spec §9). A talk that is
  * over must not be able to spend anything, and "over" is core's judgement, not this package's.
  */
-import { Agent, ApiNamespace, BedrockModels, type Scope } from "@aws-blocks/blocks";
+import {
+  Agent,
+  ApiNamespace,
+  BedrockModels,
+  type Scope,
+  type ToolsConfig,
+} from "@aws-blocks/blocks";
 import type { PlatformServer, Store } from "@slidesend/core";
 import { type Guards, session } from "@slidesend/core/server";
 import { z } from "zod";
@@ -37,6 +43,14 @@ export interface AgentChatOptions {
   /** Core's platform on this backend: the store for conversations, and its guards. */
   platform: PlatformServer;
   guards: Guards;
+  /**
+   * The tools of each agent, by agent name, in the Agent block's own form:
+   * `{ advisor: (tool) => ({ lookUp: tool({ description, parameters, handler }) }) }`.
+   *
+   * They are given here, in the backend, and not in `defineAgents`: a tool's handler is server
+   * code — a database, a mail client, a secret — and `defineAgents` is imported by the phone too.
+   */
+  tools?: Readonly<Record<string, ToolsConfig>>;
 }
 
 /** What `createAgentChat` returns; export `api` from the project's `aws-blocks/index.ts`. */
@@ -59,7 +73,8 @@ export interface AgentChatBackend {
  * export const agentChat = createAgentChat(scope, {
  *   agents,
  *   platform: backend.platform,
- *   guards: backend.server.guards,
+ *   guards: backend.server.sessions.guards,
+ *   tools: { advisor: advisorTools },
  * }).api;
  * ```
  *
@@ -67,7 +82,12 @@ export interface AgentChatBackend {
  * against this very object (spec §5.2), and a registry that guessed could disagree with it.
  */
 export function createAgentChat(scope: Scope, options: AgentChatOptions): AgentChatBackend {
-  const { agents, platform, guards } = options;
+  const { agents, platform, guards, tools = {} } = options;
+  for (const name of Object.keys(tools)) {
+    if (!(name in agents)) {
+      throw new Error(`Tools are given for the agent "${name}", but no such agent is defined.`);
+    }
+  }
   const conversations: Store<Conversation> = platform.store("agentchat", conversationSchema);
 
   const blocks: Record<string, Agent> = {};
@@ -83,7 +103,7 @@ export function createAgentChat(scope: Scope, options: AgentChatOptions): AgentC
             ? [BedrockModels.SMART, BedrockModels.BALANCED]
             : [BedrockModels.FAST, BedrockModels.BALANCED],
       },
-      ...(definition.tools ? { tools: definition.tools as never } : {}),
+      ...(tools[name] ? { tools: tools[name] } : {}),
       // Token streaming, so the phone shows the answer arriving rather than a spinner.
       streamingMode: "token",
       conversation: { strategy: "sliding-window", windowSize: 2 * maxTurns },

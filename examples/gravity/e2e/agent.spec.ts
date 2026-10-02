@@ -130,3 +130,36 @@ test("the chat on a phone shows the answer arriving and survives a reload", asyn
 
   await context.close();
 });
+
+// The tools a talk gives an agent reach its block: the canned provider calls a tool whose name
+// the question mentions, and the call comes back as one of the answer's working steps.
+test("the agent calls a tool the talk gave it", async ({ request }) => {
+  const rpc = rpcOf(request);
+  const session = await rpc("slidesend.sessionCreate", [
+    key,
+    { kind: "rehearsal", name: `Tool ${Date.now()}` },
+  ]);
+  await rpc("slidesend.sessionOpen", [key, session.id]);
+  const device = `phone-${Date.now()}`;
+  await rpc("agentChat.start", [session.id, "ask-newton", device, "newton"]);
+  await rpc("agentChat.send", [
+    session.id,
+    "ask-newton",
+    device,
+    "newton",
+    "Please use moonDistance: how far away is the Moon?",
+  ]);
+
+  await expect
+    .poll(
+      async () => {
+        const again = await rpc("agentChat.start", [session.id, "ask-newton", device, "newton"]);
+        return again.messages.flatMap(
+          (message: { steps?: { what: string }[] }) =>
+            message.steps?.map((step) => step.what) ?? [],
+        );
+      },
+      { timeout: 30_000 },
+    )
+    .toContain("moonDistance");
+});

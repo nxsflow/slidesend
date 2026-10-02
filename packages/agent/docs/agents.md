@@ -34,7 +34,6 @@ export const agents = defineAgents({
 | `model` | `"fast"` (default) or `"smart"`; the platform maps the tier to a model, see [Models and cost](#models-and-cost). |
 | `label` | The name on the phone and in the desk; defaults to the key. |
 | `showPrompt` | Lets the phone show the system prompt to the audience. Off by default: a prompt can carry names, instructions and a tone nobody meant to publish. |
-| `tools` | Not supported yet: the field exists, but the tools do not reach the Agent block. |
 
 An agent's name is lowercase letters, digits and dashes: it becomes part of a block id.
 
@@ -77,6 +76,7 @@ export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,
   guards: backend.server.sessions.guards,
+  tools: { newton: newtonTools },
 }).api;
 ```
 <!-- end snippet -->
@@ -85,6 +85,35 @@ The talk project also needs `@aws-blocks/bb-file-bucket` as a dependency (the Ag
 a bucket of its own, and the generated client imports its middleware), and the browser must hand
 **every** exported namespace to the client: `awsClient(blocks)`, where `blocks` is the whole
 `aws-blocks` module, not only `slidesend`.
+
+## Tools
+
+A tool lets the agent act while it answers: look something up, compute, call an API. The model
+decides when to call one from its description. Tools are given in the backend, per agent, and
+not in `defineAgents`: a tool's handler is server code (a database, a mail client, a secret),
+and `defineAgents` is loaded by the phones too. The example gives Newton one tool, in
+`aws-blocks/tools.ts`:
+
+<!-- snippet: examples/gravity/aws-blocks/tools.ts#agent-tools -->
+```ts
+export const newtonTools: ToolsConfig = (tool) => ({
+  moonDistance: tool({
+    description: "The average distance between the centres of the Earth and the Moon.",
+    parameters: z.object({}),
+    handler: async () => ({ kilometres: 384_400, lightSeconds: 1.28 }),
+  }),
+});
+```
+<!-- end snippet -->
+
+and hands it to `createAgentChat` with `tools: { newton: newtonTools }` (see [The backend](#the-backend)).
+The form is the Agent block's own: a function that receives the `tool` factory and returns the
+tools by name, each with a `description`, a Zod schema of its `parameters`, and a `handler`.
+Tools for an agent that `defineAgents` does not define are refused when the backend starts.
+
+Each call shows up on the phone as one of the answer's working steps, folded away under the
+answer. Locally, the canned provider calls a tool whenever the question mentions its name, so
+`Please use moonDistance` exercises the whole path without a model.
 
 ## The cost guard
 
