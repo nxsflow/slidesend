@@ -7,6 +7,7 @@ import {
   localTransport,
   type PlatformClient,
   type SyncEnvironment,
+  settleReadsMs,
 } from "../index";
 import { createServer } from "../server";
 import { createMemoryPlatform, recordWrites } from "../testing";
@@ -141,6 +142,44 @@ describe("hosted transport", () => {
     await until(() => seen.at(-1)?.index === 5);
   });
 
+  // A subscription that the server's fan-out does not see yet loses a move published right
+  // after the connect; the reads shortly after the connect catch it up (the AWS fan-out finds
+  // subscribers through an eventually consistent index).
+  it("reads again shortly after connecting, for a move the new subscription missed", async () => {
+    const { phone, sessionId, steering, fake, tick } = await setup();
+    const deaf: PlatformClient = { ...phone.client, subscribe: () => () => {} };
+    const follower = track(
+      hostedTransport({ platform: deaf, sessionId, environment: fake.environment }),
+    );
+    const seen = follow(follower);
+    await pause(100);
+    tick();
+    steering.send(at(6));
+    // No wake-up and no pulse: only the settle reads can bring the move.
+    await until(() => seen.at(-1)?.index === 6, settleReadsMs[0] + 1000);
+  });
+
+  it("stops its settle reads when closed", async () => {
+    const { phone, sessionId, fake } = await setup();
+    let reads = 0;
+    const counting: PlatformClient = {
+      ...phone.client,
+      call: (method, args) => {
+        if (method === "cursorGet") reads++;
+        return phone.client.call(method, args);
+      },
+    };
+    const transport = hostedTransport({
+      platform: counting,
+      sessionId,
+      environment: fake.environment,
+    });
+    await until(() => reads === 1);
+    transport.close();
+    await pause(settleReadsMs[0] + 200);
+    expect(reads).toBe(1);
+  });
+
   it("sends only the last of several rapid moves", async () => {
     const { steering, writes, server, sessionId } = await setup();
     const before = writes.filter((write) => write.startsWith("put cursor")).length;
@@ -179,6 +218,8 @@ describe("hosted transport", () => {
     const environment: SyncEnvironment = {
       ...fake.environment,
       setTimeout(handler, ms) {
+        // The reads after a connect are tested on their own; this test is about the backoff.
+        if ((settleReadsMs as readonly number[]).includes(ms)) return handler;
         delays.push(ms);
         pending.push(handler);
         return handler;

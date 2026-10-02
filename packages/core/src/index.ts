@@ -219,6 +219,7 @@ export {
   pulseMs,
   type SyncEnvironment,
   sendDebounceMs,
+  settleReadsMs,
 } from "./sync/transport";
 export {
   ActivityHost,
