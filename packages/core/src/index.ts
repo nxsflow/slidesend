@@ -91,6 +91,7 @@ export {
   type SlideOptions,
   type SlideTemplate,
 } from "./nodes/define";
+export { type FieldRow, nodeReferenceTable, schemaFields } from "./nodes/reference";
 export {
   createRegistry,
   formatNodePath,

@@ -115,7 +115,7 @@ slide.
 
 A poll can be asked and shown in one node, or asked on one step and shown later:
 
-```ts
+```ts fragment
 // one node does both: a matrix on the stage, two questions on the phones
 content: pollMatrix({ id: "mood", questions: [q1, q2] })
 
@@ -187,7 +187,7 @@ Answers are limited to 500 characters each. The agent chat (`agentChat`) comes f
 Core and plugins ship English strings for phone and desk. A talk in another language overrides
 them with `messages` in `presentation.config.ts`, by language and key:
 
-```ts
+```ts fragment
 export default definePresentation({
   deck,
   design: defaultDesign,

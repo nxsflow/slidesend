@@ -19,7 +19,7 @@ that no browser entry imports a server entry.
 
 ## `Platform`: what a talk installs
 
-```ts
+```ts fragment
 interface Platform {
   readonly name: string;                                   // e.g. "aws"
   readonly commands?: Record<string, PlatformCommand>;     // added to `slidesend`
@@ -43,7 +43,7 @@ browser bundle never contains it. `@slidesend/aws` shows the pattern in its `aws
 
 ## `PlatformServer`: what core's server needs
 
-```ts
+```ts fragment
 interface PlatformServer {
   store<T>(name: string, schema: ZodType<T>): Store<T>;
   channel<T>(name: string, schema: ZodType<T>): Channel<T>;
@@ -83,7 +83,7 @@ match them:
 
 Given an implementation, core's whole server is one call:
 
-```ts
+```ts fragment
 import { createServer } from "@slidesend/core/server";
 
 const server = createServer({ platform, defaultPlannedMinutes: 20 });
@@ -97,7 +97,7 @@ same scenarios against both.
 
 ## `PlatformClient`: what the views need
 
-```ts
+```ts fragment
 interface PlatformClient {
   call(method: string, args: unknown[]): Promise<unknown>;
   subscribe(channel: string, topic: string, handler: (message: unknown) => void): () => void;
@@ -110,7 +110,7 @@ methods of a plugin's namespace are called as `"agentChat.send"`. `subscribe` re
 server publishes on a channel and topic. `onStatus` reports connection changes, so the views can
 say "connection lost" and catch up afterwards. The talk hands the client to `mount`:
 
-```ts
+```ts fragment
 mount(presentation, { platform: myPlatformClient() });
 ```
 

@@ -106,7 +106,8 @@ pnpm --filter gravity dev                                # run the example talk
 
 `pnpm check` is exactly what CI runs on every pull request. Code samples in the docs are copied
 from the example talk between `// snippet: <name>` and `// end snippet`; after changing one, run
-`UPDATE_DOCS=1 pnpm test` to copy it again. Record user-facing package changes with
+`UPDATE_DOCS=1 pnpm test` to copy it again. [docs/docs-tests.md](docs/docs-tests.md) explains
+every docs check and how to fix it. Record user-facing package changes with
 `pnpm changeset`.
 
 ## License

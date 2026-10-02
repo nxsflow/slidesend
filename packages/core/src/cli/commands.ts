@@ -1,5 +1,6 @@
 import { type OverflowFinding, overflowMessage } from "../checks/overflow";
 import type { Presentation } from "../deck/presentation";
+import type { Platform } from "../platform/package";
 import { type PdfJob, pageCountProblem, pdfJobs } from "../print/pdf";
 import { printProblemMessage, printProblems } from "../print/rules";
 
@@ -55,6 +56,18 @@ export function commandReferenceTable(): string {
       (command) => `| \`${command.name}\` | \`${command.usage}\` | ${command.description} |`,
     ),
     `| ${platformCommandNames.map((name) => `\`${name}\``).join(", ")} | \`slidesend <command>\` | Provided by the configured platform package, e.g. \`@slidesend/aws\`. |`,
+    "",
+  ].join("\n");
+}
+
+/** The commands a platform adds to `slidesend`, as a Markdown table for the platform's docs. */
+export function platformCommandTable(platform: Platform): string {
+  return [
+    "| Command | What it does |",
+    "|---|---|",
+    ...Object.entries(platform.commands ?? {}).map(
+      ([name, command]) => `| \`slidesend ${name}\` | ${command.description} |`,
+    ),
     "",
   ].join("\n");
 }

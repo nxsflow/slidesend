@@ -40,14 +40,14 @@ An agent's name is lowercase letters, digits and dashes: it becomes part of a bl
 
 ## Install the plugin and use it in the deck
 
-```ts
+```ts fragment
 // presentation.config.ts
 plugins: [basics(), agent({ agents })],
 ```
 
 and attach the chat to a step like any activity:
 
-```ts
+```ts fragment
 activity: agentChat({
   id: "ask-newton",
   agent: "newton",

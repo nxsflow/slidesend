@@ -214,7 +214,7 @@ resolved when the deck loads.
 
 ## The plugin
 
-```ts
+```ts fragment
 import { definePlugin } from "@slidesend/core";
 
 export const myPlugin = definePlugin({
