@@ -28,6 +28,10 @@ export interface AwsPlatform extends Platform {
  * itself is created in the project's `aws-blocks/index.ts` with `createAwsBackend`.
  */
 export function aws(options: AwsOptions): AwsPlatform {
+  const defaults = {
+    region: options.region,
+    ...(options.domain ? { domain: options.domain } : {}),
+  };
   return {
     name: "aws",
     region: options.region,
@@ -41,11 +45,27 @@ export function aws(options: AwsOptions): AwsPlatform {
       bootstrap: {
         description:
           "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider and the deploy role.",
-        run: async (context) =>
-          (await commands()).bootstrap(context, {
-            region: options.region,
-            ...(options.domain ? { domain: options.domain } : {}),
-          }),
+        run: async (context) => (await commands()).bootstrap(context, defaults),
+      },
+      deploy: {
+        description:
+          "Builds the site, deploys the talk's stack <stackId>-prod and prints the desk link with the control secret. Options: --profile, --region.",
+        run: async (context) => (await commands()).deploy(context, defaults),
+      },
+      open: {
+        description:
+          "Prints the desk link of the deployed talk again. Options: --profile, --region.",
+        run: async (context) => (await commands()).open(context, defaults),
+      },
+      destroy: {
+        description:
+          "Removes the talk's stack, its data included, and says what stays: the bootstrap stack, the CDK bootstrap, a hosted zone. Options: --profile, --region.",
+        run: async (context) => (await commands()).destroy(context, defaults),
+      },
+      workflow: {
+        description:
+          "Writes the GitHub Actions workflow that checks the talk and deploys it via OIDC to .github/workflows/deploy.yml. Option: --force to overwrite.",
+        run: async (context) => (await commands()).workflow(context),
       },
     },
   };
@@ -57,8 +77,11 @@ const commandsModule = "@slidesend/aws/commands";
 const commands = () =>
   import(/* @vite-ignore */ commandsModule) as Promise<{
     dev(context: PlatformCommandContext): Promise<void>;
-    bootstrap(
-      context: PlatformCommandContext,
-      defaults: { region?: string; domain?: string },
-    ): Promise<void>;
+    bootstrap(context: PlatformCommandContext, defaults: AwsDefaults): Promise<void>;
+    deploy(context: PlatformCommandContext, defaults: AwsDefaults): Promise<void>;
+    open(context: PlatformCommandContext, defaults: AwsDefaults): Promise<void>;
+    destroy(context: PlatformCommandContext, defaults: AwsDefaults): Promise<void>;
+    workflow(context: PlatformCommandContext): Promise<void>;
   }>;
+
+type AwsDefaults = { region?: string; domain?: string };

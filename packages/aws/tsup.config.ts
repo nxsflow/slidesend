@@ -1,7 +1,14 @@
 import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ["src/index.ts", "src/server.ts", "src/commands.ts", "src/infra.ts", "src/infra/app.ts"],
+  entry: [
+    "src/index.ts",
+    "src/server.ts",
+    "src/commands.ts",
+    "src/infra.ts",
+    "src/infra/app.ts",
+    "src/infra/talk-app.ts",
+  ],
   // CDK is the talk project's, not ours: bundling it would give the stack a second copy of
   // `constructs` and break every `instanceof`.
   external: ["aws-cdk-lib", "constructs"],

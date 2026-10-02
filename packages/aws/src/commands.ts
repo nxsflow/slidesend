@@ -37,6 +37,8 @@ function localSecret(projectRoot: string): string | undefined {
 }
 
 export { bootstrap } from "./bootstrap/command";
+export { deploy, destroy, open } from "./deploy/command";
+export { workflow } from "./workflow/command";
 
 /**
  * `slidesend dev` on AWS: runs the project's `aws-blocks/index.ts` on the AWS Blocks dev server

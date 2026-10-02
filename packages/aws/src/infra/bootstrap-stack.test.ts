@@ -26,7 +26,9 @@ function template(
   return Template.fromStack(stack);
 }
 
-describe("the bootstrap stack", () => {
+// Synthesizing a CDK stack takes a few seconds on its own, and more while the rest of
+// `pnpm check` runs beside it; the default five seconds failed under that load.
+describe("the bootstrap stack", { timeout: 30_000 }, () => {
   it("trusts exactly the immutable subject of the deployment environment", () => {
     const roles = Object.values(template().findResources("AWS::IAM::Role"));
     const deployRole = roles.find((role) => role.Properties?.RoleName === "gravity-deploy");
