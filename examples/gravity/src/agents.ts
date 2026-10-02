@@ -26,7 +26,13 @@ export const agents = defineAgents({
 /**
  * Whether this run of the talk offers the chat at all: `VITE_SLIDESEND_AGENT=1`.
  *
- * It is a Vite variable rather than `process.env`, because the deck is loaded in the browser as
- * well as in Node, and `process` does not exist there.
+ * The deck is loaded in the browser and in Node, and both have to agree: a deck with the chat on
+ * one side and without it on the other has different steps. The browser has the value from Vite;
+ * Node — `slidesend check`, the Blocks dev server, the deployed Lambda, whose bundle has no
+ * `import.meta` — reads the same variable from the environment, where `slidesend deploy` puts
+ * every `VITE_*` value the site was built with.
  */
-export const agentEnabled = import.meta.env?.VITE_SLIDESEND_AGENT === "1";
+const agentSwitch =
+  import.meta.env?.VITE_SLIDESEND_AGENT ??
+  (typeof process === "undefined" ? undefined : process.env.VITE_SLIDESEND_AGENT);
+export const agentEnabled = agentSwitch === "1";

@@ -10,7 +10,7 @@
 import { join } from "node:path";
 import { BlocksPresets, BlocksStack, Hosting } from "@aws-blocks/blocks/cdk";
 import { App, RemovalPolicy } from "aws-cdk-lib";
-import { talkInput } from "./talk-input";
+import { publicVariables, talkInput } from "./talk-input";
 
 const input = talkInput(process.env.SLIDESEND_DEPLOY);
 const backend = join(input.projectRoot, "aws-blocks");
@@ -31,6 +31,10 @@ const stack = await BlocksStack.create(app, input.stackName, {
   // The account is bound to the stack: CDK refuses a different one before the first write.
   env: { account: input.account, region: input.region },
 });
+
+for (const [name, value] of Object.entries(publicVariables(process.env))) {
+  stack.handler.addEnvironment(name, value);
+}
 
 new Hosting(stack, "Web", {
   root: input.projectRoot,
