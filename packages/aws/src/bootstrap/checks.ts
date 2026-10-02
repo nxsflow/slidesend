@@ -40,6 +40,8 @@ export interface BootstrapPlan {
   region?: string;
   /** The GitHub environment the deploy job runs in. */
   environment: string;
+  /** The branch that environment admits, the one the workflow deploys from. */
+  branch: string;
   /** The deploy role's name. */
   roleName: string;
   /** A custom domain, if the talk has one. */
@@ -51,6 +53,10 @@ export interface Facts {
   account?: string;
   region?: string;
   repository?: Repository;
+  /** Whether the repository is private, which decides whether GitHub Free has environments. */
+  private?: boolean;
+  /** Whether the owner is a user or an organization, which decides where its plan is read. */
+  ownerType?: "User" | "Organization";
   /** Whether GitHub puts the numeric ids into the subject of this repository's tokens. */
   immutableSubject?: boolean;
   stackId?: string;
@@ -204,7 +210,12 @@ const repositoryIds: Check = {
     }
     const api = await io.run("gh", ["api", `repos/${nameWithOwner}`]);
     const data = json(api) as
-      | { id?: number; name?: string; owner?: { login?: string; id?: number } }
+      | {
+          id?: number;
+          name?: string;
+          private?: boolean;
+          owner?: { login?: string; id?: number; type?: "User" | "Organization" };
+        }
       | undefined;
     if (api.status !== 0 || !data?.id || !data.owner?.id) {
       return {
@@ -219,6 +230,8 @@ const repositoryIds: Check = {
       name: data.name ?? nameWithOwner.split("/")[1] ?? "",
       id: data.id,
     };
+    facts.private = data.private === true;
+    if (data.owner.type) facts.ownerType = data.owner.type;
     // The subject form is read, not assumed: with immutable subjects GitHub appends the ids, and
     // a policy written for the wrong form matches no token at all.
     const sub = await io.run("gh", [
@@ -238,6 +251,38 @@ const repositoryIds: Check = {
   },
 };
 
+/**
+ * The one-step remedy for an environment without a usable branch rule: a custom branch policy
+ * that names the deployment branch. `protected_branches` would be shorter, but it admits no
+ * branch at all while the branch has no protection rule — the common case for a talk.
+ */
+export function environmentRemedy(slug: string, environment: string, branch: string): string {
+  return [
+    `gh api --method PUT repos/${slug}/environments/${environment}`,
+    `-F "deployment_branch_policy[protected_branches]=false"`,
+    `-F "deployment_branch_policy[custom_branch_policies]=true"`,
+    `&& ${branchPolicyRemedy(slug, environment, branch)}`,
+  ].join(" ");
+}
+
+/** Adds the deployment branch to an environment that already has custom branch policies. */
+export function branchPolicyRemedy(slug: string, environment: string, branch: string): string {
+  return `gh api --method POST repos/${slug}/environments/${environment}/deployment-branch-policies -f name=${branch}`;
+}
+
+/** The plan of the repository's owner, if GitHub tells this login; `undefined` if it does not. */
+async function ownerPlan(io: BootstrapIo, facts: Facts): Promise<string | undefined> {
+  const owner = facts.repository?.owner;
+  if (!owner) return undefined;
+  const path = facts.ownerType === "Organization" ? `orgs/${owner}` : "user";
+  const data = json(await io.run("gh", ["api", path])) as
+    | { login?: string; plan?: { name?: string } }
+    | undefined;
+  // `user` is whoever is signed in; its plan says nothing about somebody else's repository.
+  if (path === "user" && data?.login !== owner) return undefined;
+  return data?.plan?.name;
+}
+
 const environmentExists: Check = {
   id: "environment",
   title: "the GitHub environment restricts the branch",
@@ -246,30 +291,75 @@ const environmentExists: Check = {
     if (!repository)
       return { ok: false, detail: "Unknown repository.", fix: "Fix the check above." };
     const slug = `${repository.owner}/${repository.name}`;
-    const result = await io.run("gh", ["api", `repos/${slug}/environments/${plan.environment}`]);
+    const { environment, branch } = plan;
+    const result = await io.run("gh", ["api", `repos/${slug}/environments/${environment}`]);
     if (result.status !== 0) {
+      // A private repository on GitHub Free has no environments at all, and the PUT below would
+      // fail as well. Say so instead of handing out a command that cannot work.
+      if (facts.private && (await ownerPlan(io, facts)) === "free") {
+        return {
+          ok: false,
+          detail: `${slug} is private, and private repositories on GitHub Free have no environments.`,
+          fix:
+            `Make it public (gh repo edit ${slug} --visibility public ` +
+            "--accept-visibility-change-consequences) or move its owner to a paid plan, then run " +
+            "`slidesend bootstrap` again.",
+        };
+      }
       return {
         ok: false,
-        detail: `The repository has no environment "${plan.environment}".`,
-        fix: `gh api --method PUT repos/${slug}/environments/${plan.environment}`,
+        detail: `The repository has no environment "${environment}".`,
+        fix: environmentRemedy(slug, environment, branch),
       };
     }
     const data = json(result) as
-      | { protection_rules?: { type?: string }[]; deployment_branch_policy?: unknown }
+      | {
+          deployment_branch_policy?: {
+            protected_branches?: boolean;
+            custom_branch_policies?: boolean;
+          } | null;
+        }
       | undefined;
-    if (!data?.deployment_branch_policy) {
-      // The trust policy carries no branch — with `environment:` in the job, GitHub drops the
-      // ref from the subject. This rule is what keeps a deploy to the branch you meant.
+    const policy = data?.deployment_branch_policy;
+    // The trust policy carries no branch — with `environment:` in the job, GitHub drops the ref
+    // from the subject. This rule is what keeps a deploy to the branch you meant.
+    if (!policy || (!policy.protected_branches && !policy.custom_branch_policies)) {
       return {
         ok: false,
-        detail: `"${plan.environment}" accepts a deployment from any branch.`,
-        fix:
-          `gh api --method PUT repos/${slug}/environments/${plan.environment} ` +
-          `-F "deployment_branch_policy[protected_branches]=true" ` +
-          `-F "deployment_branch_policy[custom_branch_policies]=false"`,
+        detail: `"${environment}" accepts a deployment from any branch.`,
+        fix: environmentRemedy(slug, environment, branch),
       };
     }
-    return { ok: true, detail: `"${plan.environment}" with a branch rule` };
+    if (policy.protected_branches) {
+      const found = json(await io.run("gh", ["api", `repos/${slug}/branches/${branch}`])) as
+        | { protected?: boolean }
+        | undefined;
+      if (found?.protected) {
+        return { ok: true, detail: `"${environment}" admits protected branches; ${branch} is one` };
+      }
+      return {
+        ok: false,
+        detail: `"${environment}" admits only protected branches, and ${branch} is not protected, so no deployment can run.`,
+        fix: environmentRemedy(slug, environment, branch),
+      };
+    }
+    const policies = json(
+      await io.run("gh", [
+        "api",
+        `repos/${slug}/environments/${environment}/deployment-branch-policies`,
+      ]),
+    ) as { branch_policies?: { name?: string; type?: string }[] } | undefined;
+    const names = (policies?.branch_policies ?? [])
+      .filter((entry) => (entry.type ?? "branch") === "branch")
+      .map((entry) => entry.name);
+    if (names.includes(branch)) {
+      return { ok: true, detail: `"${environment}" admits ${branch}` };
+    }
+    return {
+      ok: false,
+      detail: `"${environment}" does not admit ${branch}${names.length > 0 ? ` (only ${names.join(", ")})` : ""}.`,
+      fix: branchPolicyRemedy(slug, environment, branch),
+    };
   },
 };
 

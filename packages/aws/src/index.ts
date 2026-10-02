@@ -44,7 +44,7 @@ export function aws(options: AwsOptions): AwsPlatform {
       },
       bootstrap: {
         description:
-          "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider and the deploy role.",
+          "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider and the deploy role. Options: --profile, --region, --environment, --branch, --role, --domain.",
         run: async (context) => (await commands()).bootstrap(context, defaults),
       },
       deploy: {

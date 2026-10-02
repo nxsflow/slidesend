@@ -20,7 +20,9 @@ const answers: Record<string, string> = {
   "gh api repos/cabcookie/gravity$":
     '{"id":1369593468,"name":"gravity","owner":{"login":"cabcookie","id":2454422}}',
   "customization/sub": '{"use_immutable_subject":true}',
-  "environments/production": '{"deployment_branch_policy":{}}',
+  "environments/production$":
+    '{"deployment_branch_policy":{"protected_branches":false,"custom_branch_policies":true}}',
+  "deployment-branch-policies": '{"branch_policies":[{"name":"main","type":"branch"}]}',
   "secret list": '[{"name":"AWS_DEPLOY_ROLE"},{"name":"AWS_REGION"}]',
 };
 
@@ -101,7 +103,7 @@ describe("slidesend bootstrap", () => {
     expect(lines.join("\n")).toContain("Everything is in place.");
     expect(lines.join("\n")).toContain("slidesend bootstrap --deploy");
     // Read-only: no command that writes was run.
-    expect(ran.every((line) => !/deploy|secret set|--method PUT/.test(line))).toBe(true);
+    expect(ran.every((line) => !/cdk deploy|secret set|--method/.test(line))).toBe(true);
   });
 
   it("fails with the list of what to do, in order", async () => {
