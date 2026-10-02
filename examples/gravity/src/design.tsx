@@ -3,6 +3,7 @@ import { cssVariable, defineDesign } from "@slidesend/core";
 const accent = `var(--slidesend-accent)`;
 
 /** The example talk's own design: a calm night sky, with one accent per chapter. */
+// snippet: define-design
 export const gravityDesign = defineDesign({
   name: "gravity",
   tokens: {
@@ -66,6 +67,7 @@ export const gravityDesign = defineDesign({
   ClosedPage: ({ title }) => <p data-page="closed">Thanks for joining “{title}”.</p>,
   IdlePage: () => <p data-page="idle">Nothing is happening right now.</p>,
 });
+// end snippet
 
 /** Colors of the design, for components that need a token by name. */
 export const token = {
