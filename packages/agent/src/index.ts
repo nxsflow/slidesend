@@ -8,6 +8,7 @@ export {
   type AgentChatApi,
   agentChannel,
   agentChat,
+  answerReadsMs,
   conversationTopic,
   useAgentChat,
 } from "./agent-chat";
