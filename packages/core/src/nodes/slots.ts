@@ -76,12 +76,12 @@ function slot<Group extends NodeGroup>(group: Group) {
  * against that block's schema. Use `.optional()` for a slot that may stay empty.
  */
 export function blockSlot(): z.ZodType<BlockNode, BlockNode> {
-  return slot("block");
+  return slot("block").describe("block node");
 }
 
 /** A slot for one activity. It accepts an activity of any installed plugin. */
 export function activitySlot(): z.ZodType<ActivityNode, ActivityNode> {
-  return slot("activity");
+  return slot("activity").describe("activity node");
 }
 
 /**
@@ -96,7 +96,8 @@ export function ref(kind: string): z.ZodString {
     .superRefine((id, context) => {
       const problem = active?.reference?.(kind, id);
       if (problem) context.addIssue({ code: "custom", message: problem });
-    });
+    })
+    .describe(`${kind} id`);
 }
 
 /** A reference to a slide id, e.g. `keep: { until: "summary" }`. */
@@ -110,12 +111,15 @@ export function activityRef(): z.ZodString {
 }
 
 /** The print rule of one step (spec §6.3); see `PrintRule`. */
-export const printRule = z.object({
-  hide: z.boolean().optional(),
-  keep: z.boolean().optional(),
-  replaceWith: blockSlot().optional(),
-  text: z.string().optional(),
-});
+export const printRule = z
+  .object({
+    hide: z.boolean().optional(),
+    keep: z.boolean().optional(),
+    replaceWith: blockSlot().optional(),
+    text: z.string().optional(),
+  })
+  // Names the shape in the generated field reference instead of listing its four fields there.
+  .describe("print rule");
 
 /**
  * The fields of one step, to spread wherever steps originate: on each panel of a section, on
@@ -152,5 +156,8 @@ export const activityMeta = {
    * Keeps the activity available after its step: `true` for the rest of the talk, or until the
    * slide with the given id.
    */
-  keep: z.union([z.literal(true), z.object({ until: slideRef() })]).optional(),
+  keep: z
+    .union([z.literal(true), z.object({ until: slideRef() })])
+    .describe("true, or { until: slide id }")
+    .optional(),
 };

@@ -61,7 +61,7 @@ dependency of the repository's root package; in a monorepo, add it there (`pnpm 
 
 ### The platform
 
-```ts
+```ts fragment
 // presentation.config.ts
 import { aws } from "@slidesend/aws";
 
@@ -78,7 +78,7 @@ export default definePresentation({
 AWS Blocks needs the talk project to own its backend file, and it takes the name of each
 exported variable as an API namespace. `aws-blocks/index.ts`:
 
-```ts
+```ts fragment
 import { Scope } from "@aws-blocks/blocks";
 import { createAwsBackend } from "@slidesend/aws/server";
 import config from "../presentation.config";
@@ -108,7 +108,7 @@ export const agentChat = createAgentChat(scope, {
 
 `aws-blocks/index.handler.ts` is the Lambda entry that loads it:
 
-```ts
+```ts fragment
 import { createLambdaHandler } from "@aws-blocks/blocks/lambda-handler";
 
 export const handler = createLambdaHandler(() => import("./index.js"));
@@ -159,7 +159,7 @@ Add to `.gitignore`: `.bb-data/`, `.blocks-sandbox/`, `aws-blocks/client.js`, `d
 `src/main.ts` hands the AWS client to `mount` when the page runs on AWS, and stays in local mode
 otherwise. `slidesend dev` and `slidesend deploy` set `VITE_SLIDESEND_PLATFORM=aws`:
 
-```ts
+```ts fragment
 import { mount, type PlatformClient } from "@slidesend/core";
 import presentation from "../presentation.config";
 
@@ -179,7 +179,7 @@ mount(presentation, { platform: await platform() });
 A run without AWS (plain `vite`, `slidesend check --render`) has no generated `client.js`, so
 point `aws-blocks` at an empty module there. `vite.config.ts`:
 
-```ts
+```ts file=vite.config.ts
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 

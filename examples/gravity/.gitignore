@@ -5,3 +5,4 @@ aws-blocks/client.js
 dist
 cdk.out
 .hosting/
+.doc-samples-*/

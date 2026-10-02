@@ -40,7 +40,7 @@ pnpm add -D vite typescript @types/react @types/react-dom
 
 A deck is TypeScript. `src/deck.ts`:
 
-```ts
+```ts file=src/deck.ts
 import { list, section, statement } from "@slidesend/basics";
 import { defineDeck } from "@slidesend/core";
 
@@ -66,7 +66,7 @@ export const deck = defineDeck({
 `presentation.config.ts` names the deck, exactly one design and the plugins whose nodes the deck
 uses. A `platform` here (e.g. `aws(...)`) deploys the talk; without one it runs locally.
 
-```ts
+```ts file=presentation.config.ts
 import { basics, defaultDesign } from "@slidesend/basics";
 import { definePresentation } from "@slidesend/core";
 import { deck } from "./src/deck";
@@ -80,7 +80,7 @@ export default definePresentation({
 
 `src/main.ts` mounts it:
 
-```ts
+```ts file=src/main.ts
 import { mount } from "@slidesend/core";
 import presentation from "../presentation.config";
 
@@ -128,7 +128,7 @@ The first step of the hero section is its title alone; the panels follow one cli
 Local mode has no audience. The dev bridge runs Slidesend's server in memory inside the Vite
 dev server, so phones on the same network can join. `vite.config.ts`:
 
-```ts
+```ts file=vite.config.ts
 import { slidesendDev } from "@slidesend/core/server";
 import { defineConfig } from "vite";
 
@@ -142,7 +142,7 @@ export default defineConfig({
 
 and in `src/main.ts`, hand the bridge's client to `mount`:
 
-```ts
+```ts file=src/main.ts
 import { httpPlatformClient, mount } from "@slidesend/core";
 import presentation from "../presentation.config";
 
@@ -169,6 +169,8 @@ put `yesOrNo` and `panel` above the deck, and add `panel` as the third entry of 
 `panels`:
 
 ```ts
+import { pollMatrix } from "@slidesend/basics";
+
 const yesOrNo = [
   { id: "yes", label: "Yes" },
   { id: "no", label: "No" },
