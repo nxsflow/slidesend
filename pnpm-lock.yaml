@@ -189,6 +189,48 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
 
+  packages/create-slidesend: {}
+
+  packages/create-slidesend/template:
+    dependencies:
+      '@nxsflow/slidesend-basics':
+        specifier: workspace:*
+        version: link:../../slidesend-basics
+      '@nxsflow/slidesend-core':
+        specifier: workspace:*
+        version: link:../../slidesend-core
+      react:
+        specifier: ^19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.0(react@19.3.0)
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.63.0
+        version: 1.63.0
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.5
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^6.1.1
+        version: 6.1.1(vite@8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1))
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.3.0
+        version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
+
   packages/slidesend-agent:
     devDependencies:
       '@aws-blocks/blocks':

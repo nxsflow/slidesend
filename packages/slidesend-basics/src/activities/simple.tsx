@@ -84,7 +84,17 @@ export const text = defineActivity({
             color: color("text"),
           }}
         />
-        <button type="submit" style={{ fontSize: 20, padding: 12 }}>
+        <button
+          type="submit"
+          style={{
+            fontSize: 20,
+            padding: 12,
+            border: "none",
+            borderRadius: `var(${cssVariable("radius", "small")})`,
+            background: color("primary"),
+            color: color("onPrimary"),
+          }}
+        >
           {strings("basics.activity.send")}
         </button>
         {own.length > 0 && (

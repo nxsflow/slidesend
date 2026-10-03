@@ -1,0 +1,8 @@
+node_modules/
+dist/
+test-results/
+.bb-data/
+.blocks-sandbox/
+aws-blocks/client.js
+cdk.out
+.hosting/
