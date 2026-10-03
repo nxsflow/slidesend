@@ -223,8 +223,8 @@ prints a desk link with a local control secret. Everything from
      The desk link carries the control secret: share it only with whoever runs the talk.
    ```
 
-5. Open the desk link. Prepare should say that this device holds control. Create a rehearsal,
-   open it, open the stage, and join with a phone.
+5. Open the desk link. The desk should say **In control**. Click **Rehearse**, open the stage
+   from the banner, and join with a phone.
 
 `slidesend open --profile my-talk` prints the desk link again at any time.
 

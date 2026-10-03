@@ -306,7 +306,7 @@ export function createSessions({ platform, defaultPlannedMinutes }: SessionsOpti
     },
   };
 
-  /** What a stage or desk needs to show how the audience joins (spec §12, Join card). */
+  /** What a stage or desk needs to show how the audience joins (spec §12). */
   async function joinInfo(id: string): Promise<{ kind: SessionKind; joinPath: string }> {
     const session = await get(id);
     return {

@@ -52,13 +52,14 @@ starts the dev server and prints two desk links that end in `#key=…`: one with
 with your machine's network address. The key is the control secret: the browser that opens such
 a link may steer the talk. Then:
 
-1. Open the desk link. The desk shows the notes, the cue, what comes next and the clock.
-2. **Prepare**: create a session and open it. Phones take part only while a session is open.
-3. **Join → Open the stage**: the stage opens in a new window, already allowed to follow the
-   session. Put it on the projector; the arrow keys, space and a presenter remote step through it.
-4. Phones scan the code on the stage, or open the address under Join. For that, use the desk
-   link **for phones on this network**: the join code points at the address the desk was opened
-   with, and phones cannot reach `localhost`.
+1. Open the desk link **for phones on this network**: the join code on the stage points at the
+   address the desk was opened with, and phones cannot reach `localhost`.
+2. Click **Rehearse**. The desk opens a rehearsal and shows the speaker's view: the notes in large
+   type, what is on stage and what comes next, and the clock.
+3. **Open the stage** (the banner at the top): the stage opens in a new window, already allowed to
+   follow the session. Put it on the projector; the arrow keys, space and a presenter remote step
+   through it.
+4. Phones scan the code on the stage. When you are done, **End session** leads to its review.
 
 Everything lives in memory and is gone when the dev server stops. With `--aws`, `npm run dev`
 starts the AWS Blocks dev server instead, with local mocks of the backend; it needs no AWS
@@ -131,9 +132,21 @@ section({
     {
       content: reveal({
         items: [
-          { text: "Every click is a **step**", minutes: 0.3 },
-          { text: "A step has notes, a cue and planned minutes", minutes: 0.3 },
-          { text: "The desk adds the minutes up to a plan", minutes: 0.3 },
+          {
+            text: "Every click is a **step**",
+            notes: "One click, one step. The section moves on panel by panel.",
+            minutes: 0.3,
+          },
+          {
+            text: "A step has notes, a cue and planned minutes",
+            notes: "These notes are the speaker notes of exactly this step.",
+            minutes: 0.3,
+          },
+          {
+            text: "The desk adds the minutes up to a plan",
+            notes: "The clock in the desk compares where you are with that plan.",
+            minutes: 0.3,
+          },
         ],
       }),
       cue: "Three clicks",
@@ -299,7 +312,7 @@ VITE_SLIDESEND_PLATFORM=dev npx vite --host
 Vite prints a desk link with the control secret after `#key=`, and the network address of your
 machine (`Network: http://192.168.…`). Open the desk link with `localhost` replaced by that
 network address: the **Join** card shows phones the address the desk was opened with. Create and
-open a session in **Prepare**, then scan the code under Join with a phone. Everything lives in
+open a session with **Rehearse**, then scan the code on the stage with a phone. Everything lives in
 memory and is gone when Vite stops. Plain `slidesend dev` still runs local mode.
 
 To give the phones something to do, add a poll; its answers fill a matrix on the stage while

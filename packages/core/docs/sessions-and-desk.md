@@ -1,7 +1,7 @@
 # Sessions and the desk
 
 A **session** is one run of the talk: a rehearsal on Tuesday, the live talk on Thursday, the
-same talk again next month. The **desk** at `/desk` is where you prepare, hold and review it.
+same talk again next month. The **desk** at `/desk` is where you start, hold and review it.
 Both need a platform (AWS, or the dev bridge from [getting-started](getting-started.md#2-run-it));
 in local mode the desk drives the stage in the same browser, and no audience can join.
 
@@ -52,39 +52,62 @@ print a desk link with the secret in the address fragment, `/desk#key=...`; `sli
 prints it again. A fragment is never sent to a server and appears in no log. The desk stores the
 secret and removes it from the address bar at once. Without it, the desk is view-only.
 
-Hand the link only to whoever runs the talk. **Hand over control** in the desk forgets the
-secret on that device.
+Hand the link only to whoever runs the talk. A browser without the key sees the desk as **view
+only**, with a field to paste the key. **Remove control from this device**, in the desk's menu
+(⋯), forgets the key on that device.
 
 ## The desk
 
-Three tabs, in the order you need them.
+One flow, for someone who has never held a talk with it: **Start → Present → Review**.
 
-### Prepare
+### Start
 
-Reads top to bottom like a checklist:
+The talk's title, length and number of steps, and whether this device is in control. Then two
+large choices:
 
-- **Control**: whether this device holds control, always visible; a field for the secret. Name
-  the device here, so that warnings on other desks can say who is in control.
-- **Session**: create, select, open, arm, close, extend. Warnings when a live session is open
-  elsewhere or another desk is on the same session.
-- **Join**: the phone address with a QR code, and **Open the stage**. The stage opens in a new
-  window, already authorized and bound to the selected session.
-- **Deck**: the result of validation: slides, steps, planned minutes against the session length.
+- **Rehearse** — try the talk out. Phones join with the rehearsal's private address, and every
+  step is timed.
+- **Go live** — the real talk. The audience joins at `/` with the code on the stage.
+
+One click creates the session, opens it and switches to Present; the name comes from the kind and
+the date. While a session is open, the start page offers **Continue presenting** instead.
+
+Folded away below:
+
+- **Plan a talk for later**: a start time, the kind and an optional name. The session is armed:
+  it opens by itself `leadMinutes` before the start and closes after the talk.
+- **Earlier sessions**: every session with what can be done with it — present an open one, open
+  or cancel a planned one, review any of them.
+
+Warnings appear on the start page when a live session is open elsewhere or another desk is on the
+same session. The menu (⋯) names this device (proposed from its system and browser), so that the
+warnings on other desks can say who is in control.
 
 ### Present
 
-A fixed layout with nothing destructive in it: what is on stage now and next, the phones'
-activity with its live tile, the notes in large type, the cue highlighted, the clock (elapsed,
-planned, ahead or behind), and who is connected (stages, desks, phones). If no stage is
-connected, Present says so and offers to open one.
+Dark, for a dark room, and laid out for reading aloud:
 
-Keys: → or space next, ← previous, **G** jump to a slide (grouped by chapter), **?** the list of
-shortcuts. The stage window steers with the same keys and a presenter remote once it holds the
-secret.
+- **Header**: the chapter in its accent colour and the slide, the step counter, the clock
+  (elapsed time and how far ahead or behind the plan, in colour), the session's kind, the
+  connected stages and phones, when it closes, and **+10 min**.
+- **Left**: what is on stage now, what comes next, the phones' activity with its live tile, and
+  the join address with its QR code.
+- **Right**: the cue, highlighted, and the speaker notes in large type.
+- **Bottom bar**: Back, **Jump** (also **G**: every slide, grouped by chapter), **?** (the
+  shortcuts), **End session**, Next.
+
+If no stage is connected, a slim banner says so with **Open the stage**: the stage opens in a new
+window, already authorized and bound to the session. Keys: → or space next, ← back, **G** jump,
+**?** shortcuts, Esc closes an overlay. The stage window steers with the same keys and a
+presenter remote once it holds the key.
+
+**End session** asks first: for a rehearsal, whether it was a timed run ("no" discards its
+times); for a live session, whether to end it. Then the desk shows the session's review. Nothing
+in Present deletes data.
 
 ### Review
 
-Per session:
+Per session, after it ended or from **Earlier sessions**:
 
 - **Timings**: planned against measured per step. Steps with an activity are preselected for an
   estimate of audience time; unusually long dwell times are flagged.
@@ -96,16 +119,15 @@ Per session:
 - **Export responses** downloads every answer of the session.
 - **Delete session data** is the only destructive function, and it lives only here.
 
-When a rehearsal closes, the desk asks whether it was a timed run; "no" discards its timings.
 Nothing is adopted automatically.
 
 ## A rehearsal, end to end
 
-1. Prepare: create a session of kind *Rehearsal*, open it, open the stage.
-2. Point a phone at the rehearsal address under Join (`/r/<token>`).
-3. Present: talk through the deck. Phones answer; the stage shows the results.
-4. Close the session and answer "Was it a timed run?".
+1. Start: **Rehearse**. The desk opens the rehearsal and switches to Present.
+2. **Open the stage** from the banner; point a phone at the code on the stage (`/r/<token>`).
+3. Talk through the deck. Phones answer; the stage shows the results.
+4. **End session** and answer "Was it a timed run?".
 5. Review: compare, adopt as plan or copy the prompt, export, delete the data.
 
-A live session works the same, at `/` instead of `/r/<token>`, and is usually armed with a
-planned start rather than opened by hand.
+A live session works the same with **Go live**, at `/` instead of `/r/<token>`, or planned ahead
+with **Plan a talk for later**.

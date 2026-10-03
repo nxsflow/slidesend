@@ -9,46 +9,64 @@ that no installed package has is a validation error. Plugins ship their own keys
 |---|---|
 | `core.connection.back` | Connected again. |
 | `core.connection.lost` | Connection lost — trying again. |
-| `core.desk.control.enter` | Control secret |
-| `core.desk.control.forget` | Hand over control |
-| `core.desk.control.holds` | This device holds control. |
+| `core.desk.control.badge` | In control |
+| `core.desk.control.enter` | Control key |
+| `core.desk.control.explain` | This browser cannot steer the talk yet. Open the desk link that the dev server or “slidesend open” printed — it ends in #key=… — or paste the key here. |
 | `core.desk.control.save` | Take control |
-| `core.desk.control.title` | Control |
-| `core.desk.control.viewOnly` | View only — without the control secret nothing can be changed. |
-| `core.desk.control.wrong` | That secret does not work here. |
-| `core.desk.deck.counts` | {slides} slides, {steps} steps. |
-| `core.desk.deck.over` | The deck plans {over} minutes more than the session. |
-| `core.desk.deck.planned` | The deck plans {planned} minutes. |
-| `core.desk.deck.session` | The session is {minutes} minutes long. |
-| `core.desk.deck.title` | Deck |
-| `core.desk.join.local` | Local mode: stage and desk share this browser, and no audience can join. |
-| `core.desk.join.openStage` | Open the stage |
-| `core.desk.join.phone` | Phones open this address: |
-| `core.desk.join.title` | Join |
-| `core.desk.label.hint` | Shown to other desks, so a warning can name the device in control. |
-| `core.desk.label.title` | This device |
+| `core.desk.control.title` | Take control of this talk |
+| `core.desk.control.viewOnly` | View only |
+| `core.desk.control.wrong` | That key does not work for this talk. |
+| `core.desk.history.cancel` | Cancel the plan |
+| `core.desk.history.open` | Open now |
+| `core.desk.history.present` | Present |
+| `core.desk.history.review` | Review |
+| `core.desk.history.title` | Earlier sessions ({count}) |
+| `core.desk.menu.device` | Name of this device |
+| `core.desk.menu.deviceHint` | Other desks show it when they warn that this one is in control. |
+| `core.desk.menu.open` | Settings |
+| `core.desk.menu.release` | Remove control from this device |
+| `core.desk.menu.releaseHint` | This browser forgets the key. Open the desk link again to steer. |
+| `core.desk.meta` | {minutes} min · {steps} steps |
+| `core.desk.name.live` | Talk, {when} |
+| `core.desk.name.rehearsal` | Rehearsal, {when} |
+| `core.desk.plan.hint` | It opens by itself shortly before the start and closes after the talk; you only open the stage. |
+| `core.desk.plan.kind` | Kind |
+| `core.desk.plan.name` | Name (optional) |
+| `core.desk.plan.submit` | Plan it |
+| `core.desk.plan.title` | Plan a talk for later |
+| `core.desk.plan.when` | Start |
 | `core.desk.presence.desks` | {count} desk(s) |
 | `core.desk.presence.phones` | {count} phone(s) |
 | `core.desk.presence.stages` | {count} stage(s) |
-| `core.desk.presence.title` | Connected |
+| `core.desk.present.back` | Start page |
 | `core.desk.present.close` | Close |
-| `core.desk.present.elapsed` | elapsed {time} |
+| `core.desk.present.cue` | Cue |
+| `core.desk.present.end` | End session |
+| `core.desk.present.endCancel` | Keep going |
+| `core.desk.present.endConfirm` | End it |
+| `core.desk.present.endLive` | End the live session? Phones show the closing page. |
+| `core.desk.present.extend` | +10 min |
 | `core.desk.present.fullscreen` | Fullscreen |
-| `core.desk.present.jump` | Jump to a slide |
+| `core.desk.present.join` | Phones join at |
+| `core.desk.present.jump` | Jump |
+| `core.desk.present.jumpTitle` | Jump to a slide |
+| `core.desk.present.last` | This is the last step. |
 | `core.desk.present.next` | Next |
-| `core.desk.present.noActivity` | No activity on this step. |
-| `core.desk.present.noCue` | No cue. |
-| `core.desk.present.noNotes` | No notes on this step. |
-| `core.desk.present.noStage` | No stage is connected. |
-| `core.desk.present.notStarted` | the talk clock starts with the first forward step |
-| `core.desk.present.onStage` | On stage |
-| `core.desk.present.phones` | Phones ({count}) |
+| `core.desk.present.noActivity` | Nothing to answer on this step. |
+| `core.desk.present.noNotes` | No speaker notes for this step. |
+| `core.desk.present.noStage` | The stage is not open yet. |
+| `core.desk.present.notStarted` | the clock starts with the first step forward |
+| `core.desk.present.notes` | Speaker notes |
+| `core.desk.present.now` | Now on stage |
+| `core.desk.present.openStage` | Open the stage |
+| `core.desk.present.phones` | Phones · {count} |
 | `core.desk.present.planned` | plan {time} |
-| `core.desk.present.position` | {step} / {total} · {slide} |
-| `core.desk.present.previous` | Previous |
-| `core.desk.present.shortcuts` | → or space: next · ←: previous · G: jump · ?: this list · Esc: close |
+| `core.desk.present.position` | {step} / {total} |
+| `core.desk.present.previous` | Back |
+| `core.desk.present.shortcuts` | → or space: next · ←: back · G: jump · ?: this list · Esc: close |
 | `core.desk.review.adopt` | Adopt as plan |
 | `core.desk.review.adopted` | Adopted. The plan now wins over the deck's minutes. |
+| `core.desk.review.back` | Start page |
 | `core.desk.review.column.audience` | Audience |
 | `core.desk.review.column.measured` | Measured |
 | `core.desk.review.column.planned` | Planned |
@@ -73,32 +91,24 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.review.title` | Review of “{session}” |
 | `core.desk.review.totals` | planned {planned} · measured {measured} + audience {audience} = {total} · target {target} min |
 | `core.desk.review.visits` | (entered {visits} times, the first one counts) |
-| `core.desk.sessions.arm` | Arm |
-| `core.desk.sessions.close` | Close |
-| `core.desk.sessions.closesAt` | Closes at {time} |
-| `core.desk.sessions.create` | Create session |
-| `core.desk.sessions.disarm` | Disarm |
-| `core.desk.sessions.extend` | Extend by 10 minutes |
-| `core.desk.sessions.kind` | Kind |
+| `core.desk.sessions.closesAt` | open until {time} |
 | `core.desk.sessions.live` | Live |
-| `core.desk.sessions.name` | Name |
-| `core.desk.sessions.none` | No session yet. |
-| `core.desk.sessions.older` | {count} older session(s) |
-| `core.desk.sessions.open` | Open now |
-| `core.desk.sessions.opensAt` | Opens at {time} |
-| `core.desk.sessions.plannedStart` | Planned start |
+| `core.desk.sessions.opensAt` | opens at {time} |
 | `core.desk.sessions.rehearsal` | Rehearsal |
-| `core.desk.sessions.select` | Select |
-| `core.desk.sessions.showAll` | Show all |
-| `core.desk.sessions.state.armed` | armed |
-| `core.desk.sessions.state.closed` | closed |
-| `core.desk.sessions.state.draft` | draft |
+| `core.desk.sessions.state.armed` | planned |
+| `core.desk.sessions.state.closed` | ended |
+| `core.desk.sessions.state.draft` | not opened |
 | `core.desk.sessions.state.open` | open |
-| `core.desk.sessions.title` | Session |
-| `core.desk.tab.prepare` | Prepare |
-| `core.desk.tab.present` | Present |
-| `core.desk.tab.review` | Review |
-| `core.desk.tab.unavailable` | The {tab} tab is not available yet. |
+| `core.desk.start.another` | Or start another session |
+| `core.desk.start.continue` | Continue presenting |
+| `core.desk.start.live` | Go live |
+| `core.desk.start.liveHint` | The real talk. The audience joins with the code on the stage. |
+| `core.desk.start.local` | Local mode: the stage and this desk share this browser, and no audience can join. |
+| `core.desk.start.openStage` | Open the stage |
+| `core.desk.start.rehearse` | Rehearse |
+| `core.desk.start.rehearseHint` | Try the talk out. Phones join with a private link, and every step is timed. |
+| `core.desk.start.running` | “{name}” is running. |
+| `core.desk.start.title` | How do you want to start? |
 | `core.desk.title` | Desk |
 | `core.desk.warning.liveOpen` | The live session “{name}” is open, controlled by {device}. |
 | `core.desk.warning.secondDesk` | Another desk is on this session: {device}. |

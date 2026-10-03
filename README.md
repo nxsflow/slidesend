@@ -55,9 +55,9 @@ about USD 0.0005 on the fast tier. → [agents](packages/agent/docs/agents.md)
 ## Sessions and the desk
 
 A session is one run of the talk, a rehearsal or the real thing, each with its own answers and
-timings. The desk prepares a session (control, joining, the deck's timing), presents it (now,
-next, notes, cue, clock, connected devices) and reviews it (planned against measured time per
-step, adopt as plan, export, delete). → [sessions-and-desk](packages/core/docs/sessions-and-desk.md)
+timings. The desk starts one in a click (rehearse or go live), presents it in a dark speaker view
+with the notes in large type next to the stage, the next step and the clock, and reviews it
+afterwards (planned against measured time per step, adopt as plan, export, delete). → [sessions-and-desk](packages/core/docs/sessions-and-desk.md)
 
 ## Deploy to AWS
 

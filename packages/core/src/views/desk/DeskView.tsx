@@ -12,13 +12,14 @@ import {
   forgetControlSecret,
   setDeviceLabel,
   storeControlSecret,
+  suggestedDeviceLabel,
   takeControlSecret,
 } from "../access";
 import { usePresentation, useText } from "../context";
 import { deviceId } from "../device";
 import { PresentTab } from "./Present";
 import { ReviewTab } from "./Review";
-import { type Desk, deskWarnings, shownSessions, sortSessions, useDesk } from "./useDesk";
+import { type Desk, deskWarnings, sortSessions, useDesk } from "./useDesk";
 
 /** Props of `DeskView`. */
 export interface DeskViewProps {
@@ -26,131 +27,468 @@ export interface DeskViewProps {
   platform?: PlatformClient;
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <section
-      data-card={title}
-      style={{
-        border: "1px solid #d8d9d4",
-        borderRadius: 12,
-        padding: 20,
-        display: "grid",
-        gap: 12,
-        minWidth: 0,
-        background: "#ffffff",
-      }}
-    >
-      <h2 style={{ margin: 0, fontSize: 18 }}>{title}</h2>
-      {children}
-    </section>
-  );
-}
+/** The light palette of the start page and the review; presenting has its own, dark one. */
+const light = {
+  page: "#f6f5f1",
+  card: "#ffffff",
+  line: "#e2e0d9",
+  text: "#1c1d21",
+  muted: "#62656e",
+  primary: "#1c1d21",
+  onPrimary: "#ffffff",
+  good: "#1f8a5b",
+  warn: "#fdf1d6",
+  bad: "#c2372b",
+};
 
 const button = {
   fontSize: 15,
-  padding: "8px 12px",
-  borderRadius: 8,
-  border: "1px solid #d8d9d4",
-  background: "#f7f7f4",
+  padding: "9px 14px",
+  borderRadius: 10,
+  border: `1px solid ${light.line}`,
+  background: light.card,
+  color: light.text,
   cursor: "pointer",
 } as const;
 
 const field = {
   fontSize: 15,
-  padding: "8px 10px",
-  borderRadius: 8,
-  border: "1px solid #d8d9d4",
+  padding: "9px 10px",
+  borderRadius: 10,
+  border: `1px solid ${light.line}`,
+  background: light.card,
+  color: light.text,
 } as const;
 
-function ControlCard({ desk, onSecret }: { desk: Desk; onSecret(value?: string): void }) {
-  const text = useText();
-  const [draft, setDraft] = useState("");
-  const [wrong, setWrong] = useState(false);
-  const [label, setLabel] = useState(() => deviceLabel());
+/** The view the desk shows: where to begin, the talk itself, or what a session measured. */
+type Stage = "start" | "present" | "review";
 
+const when = (value: number) =>
+  new Date(value).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+const time = (value: number) =>
+  new Date(value).toLocaleTimeString(undefined, { timeStyle: "short" });
+
+/** The header of the start page and the review: the talk, and whether this desk steers it. */
+function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back?: () => void }) {
+  const text = useText();
+  const presentation = usePresentation();
+  const [menu, setMenu] = useState(false);
+  const [label, setLabel] = useState(() => deviceLabel() || suggestedDeviceLabel());
   return (
-    <Card title={text("core.desk.control.title")}>
-      <p data-control-state={desk.inControl ? "control" : "view-only"} style={{ margin: 0 }}>
-        {desk.inControl ? text("core.desk.control.holds") : text("core.desk.control.viewOnly")}
-      </p>
-      {!desk.inControl && (
-        <form
-          style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
-          onSubmit={async (event) => {
-            event.preventDefault();
-            setWrong(!(await desk.takeControl(draft.trim())));
-          }}
-        >
-          <input
-            aria-label={text("core.desk.control.enter")}
-            value={draft}
-            onChange={(event) => setDraft(event.target.value)}
-            style={{ ...field, flex: 1, minWidth: 180 }}
-          />
-          <button type="submit" style={button}>
-            {text("core.desk.control.save")}
-          </button>
-        </form>
-      )}
-      {wrong && (
-        <p data-wrong style={{ margin: 0, color: "#c2372b" }}>
-          {text("core.desk.control.wrong")}
-        </p>
-      )}
-      {desk.inControl && (
-        <button
-          type="button"
-          style={button}
-          onClick={() => {
-            forgetControlSecret();
-            onSecret(undefined);
-          }}
-        >
-          {text("core.desk.control.forget")}
+    <header
+      style={{
+        display: "flex",
+        gap: 16,
+        alignItems: "center",
+        flexWrap: "wrap",
+        paddingBottom: 16,
+        borderBottom: `1px solid ${light.line}`,
+      }}
+    >
+      {back && (
+        <button type="button" data-back style={button} onClick={back}>
+          ← {text("core.desk.review.back")}
         </button>
       )}
-      <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
-        {text("core.desk.label.title")}
-        <input
-          value={label}
-          onChange={(event) => {
-            setLabel(event.target.value);
-            setDeviceLabel(event.target.value);
-          }}
-          style={field}
-        />
-        <span style={{ color: "#5d616b" }}>{text("core.desk.label.hint")}</span>
-      </label>
-    </Card>
+      <div style={{ display: "grid", gap: 2, flex: 1, minWidth: 220 }}>
+        <h1 style={{ margin: 0, fontSize: 22 }}>{presentation.meta.title}</h1>
+        <span data-meta style={{ color: light.muted, fontSize: 14 }}>
+          {text("core.desk.meta", {
+            minutes: Math.round(presentation.plannedMinutes),
+            steps: presentation.steps.length,
+          })}
+        </span>
+      </div>
+      <span
+        data-control-state={desk.inControl ? "control" : "view-only"}
+        style={{
+          fontSize: 14,
+          padding: "5px 10px",
+          borderRadius: 999,
+          background: desk.inControl ? "#e5f3ec" : light.warn,
+          color: desk.inControl ? light.good : light.text,
+        }}
+      >
+        {desk.inControl
+          ? `✓ ${text("core.desk.control.badge")}`
+          : text("core.desk.control.viewOnly")}
+      </span>
+      <div style={{ position: "relative" }}>
+        <button
+          type="button"
+          data-menu
+          aria-expanded={menu}
+          aria-label={text("core.desk.menu.open")}
+          style={button}
+          onClick={() => setMenu((open) => !open)}
+        >
+          ⋯
+        </button>
+        {menu && (
+          <div
+            data-menu-panel
+            style={{
+              position: "absolute",
+              right: 0,
+              top: "calc(100% + 8px)",
+              width: 300,
+              display: "grid",
+              gap: 12,
+              padding: 16,
+              borderRadius: 12,
+              border: `1px solid ${light.line}`,
+              background: light.card,
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
+              zIndex: 5,
+            }}
+          >
+            <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
+              {text("core.desk.menu.device")}
+              <input
+                value={label}
+                onChange={(event) => {
+                  setLabel(event.target.value);
+                  setDeviceLabel(event.target.value);
+                }}
+                style={field}
+              />
+              <span style={{ color: light.muted, fontSize: 13 }}>
+                {text("core.desk.menu.deviceHint")}
+              </span>
+            </label>
+            {desk.inControl && (
+              <div style={{ display: "grid", gap: 4 }}>
+                <button
+                  type="button"
+                  data-release
+                  style={button}
+                  onClick={() => {
+                    setMenu(false);
+                    onRelease();
+                  }}
+                >
+                  {text("core.desk.menu.release")}
+                </button>
+                <span style={{ color: light.muted, fontSize: 13 }}>
+                  {text("core.desk.menu.releaseHint")}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </header>
   );
 }
 
-function SessionCard({ desk }: { desk: Desk }) {
+/** For a browser without the key: where the key comes from, and a field to paste it. */
+function TakeControl({ desk }: { desk: Desk }) {
+  const text = useText();
+  const [draft, setDraft] = useState("");
+  const [wrong, setWrong] = useState(false);
+  return (
+    <section
+      data-take-control
+      style={{
+        display: "grid",
+        gap: 12,
+        padding: 24,
+        borderRadius: 16,
+        border: `1px solid ${light.line}`,
+        background: light.card,
+        maxWidth: 640,
+      }}
+    >
+      <h2 style={{ margin: 0, fontSize: 20 }}>{text("core.desk.control.title")}</h2>
+      <p style={{ margin: 0, color: light.muted }}>{text("core.desk.control.explain")}</p>
+      <form
+        style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
+        onSubmit={async (event) => {
+          event.preventDefault();
+          setWrong(!(await desk.takeControl(draft.trim())));
+        }}
+      >
+        <input
+          aria-label={text("core.desk.control.enter")}
+          placeholder={text("core.desk.control.enter")}
+          value={draft}
+          onChange={(event) => setDraft(event.target.value)}
+          style={{ ...field, flex: 1, minWidth: 220 }}
+        />
+        <button
+          type="submit"
+          style={{ ...button, background: light.primary, color: light.onPrimary }}
+        >
+          {text("core.desk.control.save")}
+        </button>
+      </form>
+      {wrong && (
+        <p data-wrong style={{ margin: 0, color: light.bad }}>
+          {text("core.desk.control.wrong")}
+        </p>
+      )}
+    </section>
+  );
+}
+
+/** One of the two big ways to begin. */
+function Choice({
+  kind,
+  title,
+  hint,
+  onChoose,
+  busy,
+}: {
+  kind: Session["kind"];
+  title: string;
+  hint: string;
+  onChoose(): void;
+  busy: boolean;
+}) {
+  return (
+    <button
+      type="button"
+      data-start={kind}
+      disabled={busy}
+      onClick={onChoose}
+      style={{
+        display: "grid",
+        gap: 8,
+        alignContent: "start",
+        textAlign: "left",
+        padding: 24,
+        minHeight: 150,
+        borderRadius: 16,
+        border: `1px solid ${kind === "live" ? light.primary : light.line}`,
+        background: kind === "live" ? light.primary : light.card,
+        color: kind === "live" ? light.onPrimary : light.text,
+        cursor: busy ? "wait" : "pointer",
+      }}
+    >
+      <span style={{ fontSize: 24, fontWeight: 650 }}>
+        {kind === "live" ? "● " : "▶ "}
+        {title}
+      </span>
+      <span style={{ fontSize: 15, lineHeight: 1.45, opacity: 0.8 }}>{hint}</span>
+    </button>
+  );
+}
+
+/** "Plan a talk for later": a start time, and the session opens by itself (spec §9, arming). */
+function PlanLater({ desk }: { desk: Desk }) {
+  const text = useText();
+  const [kind, setKind] = useState<Session["kind"]>("live");
+  const [start, setStart] = useState("");
+  const [name, setName] = useState("");
+  return (
+    <details data-plan-later style={{ borderTop: `1px solid ${light.line}`, paddingTop: 12 }}>
+      <summary style={{ cursor: "pointer", fontSize: 16 }}>{text("core.desk.plan.title")}</summary>
+      <p style={{ margin: "8px 0", color: light.muted }}>{text("core.desk.plan.hint")}</p>
+      <form
+        style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end" }}
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!start) return;
+          const plannedStart = new Date(start);
+          void desk.plan({
+            kind,
+            plannedStart: plannedStart.toISOString(),
+            name:
+              name.trim() || text(`core.desk.name.${kind}`, { when: when(plannedStart.getTime()) }),
+          });
+          setName("");
+        }}
+      >
+        <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
+          {text("core.desk.plan.when")}
+          <input
+            aria-label={text("core.desk.plan.when")}
+            type="datetime-local"
+            required
+            value={start}
+            onChange={(event) => setStart(event.target.value)}
+            style={field}
+          />
+        </label>
+        <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
+          {text("core.desk.plan.kind")}
+          <select
+            aria-label={text("core.desk.plan.kind")}
+            value={kind}
+            onChange={(event) => setKind(event.target.value as Session["kind"])}
+            style={field}
+          >
+            <option value="live">{text("core.desk.sessions.live")}</option>
+            <option value="rehearsal">{text("core.desk.sessions.rehearsal")}</option>
+          </select>
+        </label>
+        <label style={{ display: "grid", gap: 4, fontSize: 14, flex: 1, minWidth: 180 }}>
+          {text("core.desk.plan.name")}
+          <input
+            aria-label={text("core.desk.plan.name")}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            style={field}
+          />
+        </label>
+        <button type="submit" data-plan-submit style={button}>
+          {text("core.desk.plan.submit")}
+        </button>
+      </form>
+    </details>
+  );
+}
+
+/** Every session of this talk, with the one thing that can be done with each. */
+function History({
+  desk,
+  onPresent,
+  onReview,
+}: {
+  desk: Desk;
+  onPresent(id: string): void;
+  onReview(id: string): void;
+}) {
+  const text = useText();
+  const ordered = sortSessions(desk.sessions);
+  if (ordered.length === 0) return null;
+  return (
+    <details data-history style={{ borderTop: `1px solid ${light.line}`, paddingTop: 12 }}>
+      <summary style={{ cursor: "pointer", fontSize: 16 }}>
+        {text("core.desk.history.title", { count: ordered.length })}
+      </summary>
+      <ul style={{ listStyle: "none", margin: "12px 0 0", padding: 0, display: "grid", gap: 8 }}>
+        {ordered.map((session) => (
+          <li
+            key={session.id}
+            data-session={session.id}
+            data-state={session.state}
+            style={{
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+              flexWrap: "wrap",
+              padding: "10px 12px",
+              borderRadius: 12,
+              border: `1px solid ${light.line}`,
+              background: light.card,
+            }}
+          >
+            <span style={{ flex: 1, minWidth: 200 }}>
+              <strong>{session.name}</strong>
+              <span style={{ color: light.muted }}>
+                {" · "}
+                {text(`core.desk.sessions.${session.kind}`)} ·{" "}
+                {session.state === "armed" && session.opensAt
+                  ? text("core.desk.sessions.opensAt", { time: when(session.opensAt) })
+                  : session.state === "open" && session.closesAt
+                    ? text("core.desk.sessions.closesAt", { time: time(session.closesAt) })
+                    : text(`core.desk.sessions.state.${session.state}`)}
+              </span>
+            </span>
+            {session.state === "open" && (
+              <button
+                type="button"
+                data-present-session
+                style={button}
+                onClick={() => onPresent(session.id)}
+              >
+                {text("core.desk.history.present")}
+              </button>
+            )}
+            {(session.state === "draft" || session.state === "armed") && (
+              <button
+                type="button"
+                data-open
+                style={button}
+                onClick={async () => {
+                  await desk.open(session.id);
+                  onPresent(session.id);
+                }}
+              >
+                {text("core.desk.history.open")}
+              </button>
+            )}
+            {session.state === "armed" && (
+              <button
+                type="button"
+                data-disarm
+                style={button}
+                onClick={() => desk.disarm(session.id)}
+              >
+                {text("core.desk.history.cancel")}
+              </button>
+            )}
+            <button
+              type="button"
+              data-review-session
+              style={button}
+              onClick={() => onReview(session.id)}
+            >
+              {text("core.desk.history.review")}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
+/** Where every talk begins: one click to rehearse or to go live (spec §12, amended 2026-10-03). */
+function Start({
+  desk,
+  hosted,
+  openStage,
+  onPresent,
+  onReview,
+}: {
+  desk: Desk;
+  hosted: boolean;
+  openStage(): void;
+  onPresent(id: string): void;
+  onReview(id: string): void;
+}) {
   const text = useText();
   const device = useMemo(() => deviceId(), []);
-  const [name, setName] = useState("");
-  const [kind, setKind] = useState<Session["kind"]>("live");
-  const [plannedStart, setPlannedStart] = useState("");
-  const [showAll, setShowAll] = useState(false);
-  // The rehearsal whose closing is waiting for the answer "was this a timed run?".
-  const [closing, setClosing] = useState<string>();
-  const ordered = sortSessions(desk.sessions);
-  const selected = desk.selected;
-  const shown = showAll ? ordered : ordered.slice(0, shownSessions);
-  // The session being worked on is always in the list, however old it is.
-  if (selected && !shown.some((session) => session.id === selected.id)) shown.unshift(selected);
-  const when = (value?: number) =>
-    value === undefined
-      ? ""
-      : new Date(value).toLocaleTimeString(undefined, { timeStyle: "short" });
+  const [busy, setBusy] = useState(false);
+  const running = sortSessions(desk.sessions).find((session) => session.state === "open");
+
+  if (!hosted) {
+    return (
+      <section data-local style={{ display: "grid", gap: 16, maxWidth: 640 }}>
+        <p style={{ margin: 0, fontSize: 17 }}>{text("core.desk.start.local")}</p>
+        <button
+          type="button"
+          data-open-stage
+          style={{
+            ...button,
+            background: light.primary,
+            color: light.onPrimary,
+            justifySelf: "start",
+          }}
+          onClick={openStage}
+        >
+          {text("core.desk.start.openStage")}
+        </button>
+      </section>
+    );
+  }
+  if (!desk.inControl) return <TakeControl desk={desk} />;
+
+  const begin = async (kind: Session["kind"]) => {
+    setBusy(true);
+    const name = text(`core.desk.name.${kind}`, { when: when(Date.now()) });
+    if (await desk.start({ kind, name })) onPresent("");
+    setBusy(false);
+  };
 
   return (
-    <Card title={text("core.desk.sessions.title")}>
+    <div style={{ display: "grid", gap: 20, maxWidth: 860 }}>
       {deskWarnings(desk, device).map((warning) => (
         <p
           key={warning.key}
           data-warning
-          style={{ margin: 0, padding: 8, borderRadius: 8, background: "#fdf3d8" }}
+          style={{ margin: 0, padding: 12, borderRadius: 12, background: light.warn }}
         >
           {text(warning.key, {
             ...warning.values,
@@ -160,260 +498,80 @@ function SessionCard({ desk }: { desk: Desk }) {
           })}
         </p>
       ))}
-      {desk.sessions.length === 0 && <p style={{ margin: 0 }}>{text("core.desk.sessions.none")}</p>}
-      <ul style={{ listStyle: "none", margin: 0, padding: 0, display: "grid", gap: 8 }}>
-        {shown.map((session) => (
-          <li
-            key={session.id}
-            data-session={session.id}
-            data-state={session.state}
-            data-selected={session.id === desk.selected?.id || undefined}
-            style={{
-              display: "flex",
-              gap: 8,
-              flexWrap: "wrap",
-              alignItems: "center",
-              padding: 8,
-              borderRadius: 8,
-              border: `1px solid ${session.id === desk.selected?.id ? "#2f5bd3" : "#d8d9d4"}`,
-            }}
+      {running && (
+        <section
+          data-running={running.id}
+          style={{
+            display: "flex",
+            gap: 16,
+            alignItems: "center",
+            flexWrap: "wrap",
+            padding: 24,
+            borderRadius: 16,
+            background: light.primary,
+            color: light.onPrimary,
+          }}
+        >
+          <span style={{ flex: 1, minWidth: 220, fontSize: 18 }}>
+            {text("core.desk.start.running", { name: running.name })}
+          </span>
+          <button
+            type="button"
+            data-continue
+            style={{ ...button, fontSize: 17, fontWeight: 600 }}
+            onClick={() => onPresent(running.id)}
           >
-            <button
-              type="button"
-              style={{ ...button, flex: 1, textAlign: "left" }}
-              onClick={() => desk.select(session.id)}
-            >
-              {session.name} · {text(`core.desk.sessions.state.${session.state}`)}
-              {session.state === "armed" && session.opensAt
-                ? ` · ${text("core.desk.sessions.opensAt", { time: when(session.opensAt) })}`
-                : ""}
-              {session.state === "open" && session.closesAt
-                ? ` · ${text("core.desk.sessions.closesAt", { time: when(session.closesAt) })}`
-                : ""}
-            </button>
-            {session.state === "draft" && session.plannedStart && (
-              <button type="button" style={button} onClick={() => desk.arm(session.id)}>
-                {text("core.desk.sessions.arm")}
-              </button>
-            )}
-            {session.state === "armed" && (
-              <button type="button" style={button} onClick={() => desk.disarm(session.id)}>
-                {text("core.desk.sessions.disarm")}
-              </button>
-            )}
-            {(session.state === "draft" || session.state === "armed") && (
-              <button type="button" data-open style={button} onClick={() => desk.open(session.id)}>
-                {text("core.desk.sessions.open")}
-              </button>
-            )}
-            {session.state === "open" && (
-              <>
-                <button type="button" style={button} onClick={() => desk.extend(session.id, 10)}>
-                  {text("core.desk.sessions.extend")}
-                </button>
-                {session.kind === "rehearsal" && closing === session.id ? (
-                  <>
-                    <span style={{ color: "#5d616b" }}>
-                      {text("core.desk.review.timed", { session: session.name })}
-                    </span>
-                    <button
-                      type="button"
-                      data-close-timed
-                      style={button}
-                      onClick={() => {
-                        setClosing(undefined);
-                        void desk.close(session.id, true);
-                      }}
-                    >
-                      {text("core.desk.review.timedYes")}
-                    </button>
-                    <button
-                      type="button"
-                      data-close-untimed
-                      style={button}
-                      onClick={() => {
-                        setClosing(undefined);
-                        void desk.close(session.id, false);
-                      }}
-                    >
-                      {text("core.desk.review.timedNo")}
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="button"
-                    data-close
-                    style={button}
-                    onClick={() =>
-                      session.kind === "rehearsal"
-                        ? setClosing(session.id)
-                        : void desk.close(session.id)
-                    }
-                  >
-                    {text("core.desk.sessions.close")}
-                  </button>
-                )}
-              </>
-            )}
-          </li>
-        ))}
-      </ul>
-      {!showAll && ordered.length > shown.length && (
-        <button type="button" data-show-all style={button} onClick={() => setShowAll(true)}>
-          {text("core.desk.sessions.older", { count: ordered.length - shown.length })} ·{" "}
-          {text("core.desk.sessions.showAll")}
-        </button>
+            {text("core.desk.start.continue")} →
+          </button>
+        </section>
       )}
-      <form
-        data-create
-        style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end" }}
-        onSubmit={(event) => {
-          event.preventDefault();
-          if (!name.trim()) return;
-          void desk.create({
-            name: name.trim(),
-            kind,
-            ...(plannedStart ? { plannedStart: new Date(plannedStart).toISOString() } : {}),
-          });
-          setName("");
-        }}
-      >
-        <label style={{ display: "grid", gap: 4, fontSize: 14, flex: 1, minWidth: 160 }}>
-          {text("core.desk.sessions.name")}
-          <input
-            aria-label={text("core.desk.sessions.name")}
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            style={field}
+      <section style={{ display: "grid", gap: 12 }}>
+        <h2 style={{ margin: 0, fontSize: 20 }}>
+          {text(running ? "core.desk.start.another" : "core.desk.start.title")}
+        </h2>
+        <div
+          style={{
+            display: "grid",
+            gap: 16,
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          }}
+        >
+          <Choice
+            kind="rehearsal"
+            title={text("core.desk.start.rehearse")}
+            hint={text("core.desk.start.rehearseHint")}
+            busy={busy}
+            onChoose={() => void begin("rehearsal")}
           />
-        </label>
-        <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
-          {text("core.desk.sessions.kind")}
-          <select
-            aria-label={text("core.desk.sessions.kind")}
-            value={kind}
-            onChange={(event) => setKind(event.target.value as Session["kind"])}
-            style={field}
-          >
-            <option value="live">{text("core.desk.sessions.live")}</option>
-            <option value="rehearsal">{text("core.desk.sessions.rehearsal")}</option>
-          </select>
-        </label>
-        <label style={{ display: "grid", gap: 4, fontSize: 14 }}>
-          {text("core.desk.sessions.plannedStart")}
-          <input
-            aria-label={text("core.desk.sessions.plannedStart")}
-            type="datetime-local"
-            value={plannedStart}
-            onChange={(event) => setPlannedStart(event.target.value)}
-            style={field}
+          <Choice
+            kind="live"
+            title={text("core.desk.start.live")}
+            hint={text("core.desk.start.liveHint")}
+            busy={busy}
+            onChoose={() => void begin("live")}
           />
-        </label>
-        <button type="submit" style={button}>
-          {text("core.desk.sessions.create")}
-        </button>
-      </form>
-      {desk.presence && (
-        <p data-presence style={{ margin: 0, color: "#5d616b" }}>
-          {text("core.desk.presence.stages", { count: desk.presence.stages.length })} ·{" "}
-          {text("core.desk.presence.desks", { count: desk.presence.desks.length })} ·{" "}
-          {text("core.desk.presence.phones", { count: desk.presence.phones })}
-        </p>
-      )}
+        </div>
+      </section>
       {desk.problem && (
-        <p data-problem style={{ margin: 0, color: "#c2372b" }}>
+        <p data-problem style={{ margin: 0, color: light.bad }}>
           {desk.problem}
         </p>
       )}
-    </Card>
-  );
-}
-
-function JoinCard({ desk, secret, hosted }: { desk: Desk; secret?: string; hosted: boolean }) {
-  const text = useText();
-  const [qr, setQr] = useState<string>();
-  const url = desk.join ? `${window.location.origin}${desk.join.joinPath}` : undefined;
-
-  useEffect(() => {
-    if (!url) return setQr(undefined);
-    let current = true;
-    import("qrcode").then(
-      ({ default: qrcode }) =>
-        qrcode
-          .toDataURL(url, { margin: 1, width: 220 })
-          .then((image) => current && setQr(image))
-          .catch(() => {}),
-      () => {},
-    );
-    return () => {
-      current = false;
-    };
-  }, [url]);
-
-  return (
-    <Card title={text("core.desk.join.title")}>
-      {!hosted && <p style={{ margin: 0 }}>{text("core.desk.join.local")}</p>}
-      {url && (
-        <>
-          <p style={{ margin: 0 }}>{text("core.desk.join.phone")}</p>
-          <a data-join href={url} style={{ wordBreak: "break-all" }}>
-            {url}
-          </a>
-          {qr && <img src={qr} alt={url} width={220} height={220} />}
-        </>
-      )}
-      <button
-        type="button"
-        data-open-stage
-        style={button}
-        onClick={() => {
-          const sessionId = desk.selected?.id ?? "local";
-          const fragment = secret ? `#key=${encodeURIComponent(secret)}` : "";
-          window.open(`/stage/${sessionId}${fragment}`, "_blank", "noopener");
-        }}
-      >
-        {text("core.desk.join.openStage")}
-      </button>
-    </Card>
-  );
-}
-
-function DeckCard({ sessionMinutes }: { sessionMinutes?: number }) {
-  const text = useText();
-  const presentation = usePresentation();
-  const planned = Math.round(presentation.plannedMinutes * 10) / 10;
-  const over = sessionMinutes ? Math.round((planned - sessionMinutes) * 10) / 10 : 0;
-  return (
-    <Card title={text("core.desk.deck.title")}>
-      <p style={{ margin: 0 }}>
-        {text("core.desk.deck.counts", {
-          slides: presentation.slides.length,
-          steps: presentation.steps.length,
-        })}
-      </p>
-      <p style={{ margin: 0 }}>{text("core.desk.deck.planned", { planned })}</p>
-      {sessionMinutes !== undefined && (
-        <p style={{ margin: 0 }}>{text("core.desk.deck.session", { minutes: sessionMinutes })}</p>
-      )}
-      {over > 0 && (
-        <p data-over style={{ margin: 0, color: "#c2372b" }}>
-          {text("core.desk.deck.over", { over })}
-        </p>
-      )}
-    </Card>
+      <PlanLater desk={desk} />
+      <History desk={desk} onPresent={onPresent} onReview={onReview} />
+    </div>
   );
 }
 
 /**
- * The desk at `/desk` (spec §12). Prepare reads top to bottom like a checklist: who holds
- * control, the sessions, how the audience joins, and what the deck plans. Present and Review
- * follow in their own tickets.
+ * The desk at `/desk` (spec §12, amended 2026-10-03): one flow for someone holding a talk for the
+ * first time. Start offers rehearsing or going live in one click; Present is the speaker's view,
+ * notes first; Review shows what a session measured once it has ended.
  */
 export function DeskView({ platform }: DeskViewProps) {
-  const text = useText();
   const presentation = usePresentation();
   const [secret, setSecret] = useState<string | undefined>(() => takeControlSecret());
-  const [label, setLabel] = useState(() => deviceLabel());
+  const [label, setLabel] = useState(() => deviceLabel() || suggestedDeviceLabel());
   const desk = useDesk({
     ...(platform ? { platform } : {}),
     ...(secret ? { secret } : {}),
@@ -423,33 +581,50 @@ export function DeskView({ platform }: DeskViewProps) {
       setSecret(value);
     },
   });
+  const [stage, setStage] = useState<Stage>("start");
 
   useEffect(() => {
-    const timer = setInterval(() => setLabel(deviceLabel()), 1000);
+    const timer = setInterval(() => setLabel(deviceLabel() || suggestedDeviceLabel()), 1000);
     return () => clearInterval(timer);
   }, []);
 
+  // The desk fills the window edge to edge; the browser's default margin would frame it.
+  useEffect(() => {
+    const previous = document.body.style.margin;
+    document.body.style.margin = "0";
+    return () => {
+      document.body.style.margin = previous;
+    };
+  }, []);
+
   const accents = presentation.design.tokens.base.accents;
-  const [tab, setTab] = useState<"prepare" | "present" | "review">("prepare");
   const openStage = () => {
     const sessionId = desk.selected?.id ?? "local";
     const fragment = secret ? `#key=${encodeURIComponent(secret)}` : "";
     window.open(`/stage/${sessionId}${fragment}`, "_blank", "noopener");
   };
-  const canPresent = Boolean(platform && secret && desk.selected);
+  const show = (next: Stage) => (id: string) => {
+    if (id) desk.select(id);
+    setStage(next);
+  };
+  const release = () => {
+    forgetControlSecret();
+    setSecret(undefined);
+    setStage("start");
+  };
+  const presenting = stage === "present" && platform && secret && desk.selected;
+  const reviewing = stage === "review" && platform && secret && desk.selected;
+
   return (
     <main
       data-desk
+      data-view={presenting ? "present" : reviewing ? "review" : "start"}
       data-control={desk.inControl || undefined}
       style={{
-        fontFamily: "system-ui, sans-serif",
-        color: "#1c1d21",
-        background: "#f7f7f4",
+        fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
+        color: light.text,
+        background: light.page,
         minHeight: "100dvh",
-        padding: 16,
-        display: "grid",
-        gap: 16,
-        alignContent: "start",
         // The desk takes only the chapter accents from the design (spec §7).
         ...({
           [accentVariable]: chapterAccent(presentation.design, 0),
@@ -459,67 +634,45 @@ export function DeskView({ platform }: DeskViewProps) {
         } as Record<string, string>),
       }}
     >
-      <header style={{ display: "flex", gap: 12, alignItems: "baseline", flexWrap: "wrap" }}>
-        <h1 style={{ margin: 0, fontSize: 20 }}>
-          {text("core.desk.title")} · {presentation.meta.title}
-        </h1>
-        <nav style={{ display: "flex", gap: 8 }}>
-          {(["prepare", "present", "review"] as const).map((name) => (
-            <button
-              key={name}
-              type="button"
-              data-tab={name}
-              data-active={tab === name || undefined}
-              onClick={() => setTab(name)}
-              disabled={name !== "prepare" && !canPresent}
-              style={{
-                ...button,
-                fontWeight: tab === name ? 600 : 400,
-                background: tab === name ? "#ffffff" : "#f7f7f4",
-              }}
-            >
-              {text(`core.desk.tab.${name}`)}
-            </button>
-          ))}
-        </nav>
-      </header>
-      {tab === "prepare" ? (
-        <div
-          style={{
-            display: "grid",
-            gap: 16,
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            alignItems: "start",
+      {presenting ? (
+        <PresentTab
+          platform={platform}
+          secret={secret}
+          session={desk.selected as Session}
+          {...(desk.presence ? { presence: desk.presence } : {})}
+          {...(desk.join ? { join: desk.join } : {})}
+          openStage={openStage}
+          onBack={() => setStage("start")}
+          onExtend={(minutes) => desk.extend((desk.selected as Session).id, minutes)}
+          onEnd={async (keepTimings) => {
+            await desk.close((desk.selected as Session).id, keepTimings);
+            setStage("review");
           }}
-        >
-          <ControlCard desk={desk} onSecret={(value) => setSecret(value)} />
-          {platform && <SessionCard desk={desk} />}
-          <JoinCard desk={desk} {...(secret ? { secret } : {})} hosted={Boolean(platform)} />
-          <DeckCard {...(desk.selected ? { sessionMinutes: desk.selected.plannedMinutes } : {})} />
-        </div>
-      ) : tab === "review" ? (
-        platform &&
-        secret &&
-        desk.selected && (
-          <ReviewTab
-            platform={platform}
-            secret={secret}
-            session={desk.selected}
-            onChanged={desk.refresh}
-          />
-        )
+        />
       ) : (
-        platform &&
-        secret &&
-        desk.selected && (
-          <PresentTab
-            platform={platform}
-            secret={secret}
-            session={desk.selected}
-            {...(desk.presence ? { presence: desk.presence } : {})}
-            openStage={openStage}
+        <div style={{ display: "grid", gap: 24, padding: "24px clamp(16px, 4vw, 48px)" }}>
+          <Header
+            desk={desk}
+            onRelease={release}
+            {...(reviewing ? { back: () => setStage("start") } : {})}
           />
-        )
+          {reviewing ? (
+            <ReviewTab
+              platform={platform}
+              secret={secret}
+              session={desk.selected as Session}
+              onChanged={desk.refresh}
+            />
+          ) : (
+            <Start
+              desk={desk}
+              hosted={Boolean(platform)}
+              openStage={openStage}
+              onPresent={show("present")}
+              onReview={show("review")}
+            />
+          )}
+        </div>
       )}
     </main>
   );

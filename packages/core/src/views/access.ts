@@ -52,6 +52,34 @@ export function deviceLabel(): string {
   }
 }
 
+/**
+ * A label for this device when nobody has named it: its system and browser, e.g. "Mac · Chrome".
+ * Good enough for a warning to say which device holds control; the desk's menu renames it.
+ */
+export function suggestedDeviceLabel(userAgent = globalThis.navigator?.userAgent ?? ""): string {
+  const system = /iPhone|iPad/.test(userAgent)
+    ? "iPhone or iPad"
+    : /Android/.test(userAgent)
+      ? "Android"
+      : /Mac OS X|Macintosh/.test(userAgent)
+        ? "Mac"
+        : /Windows/.test(userAgent)
+          ? "Windows"
+          : /Linux/.test(userAgent)
+            ? "Linux"
+            : "";
+  const browser = /Edg\//.test(userAgent)
+    ? "Edge"
+    : /Firefox\//.test(userAgent)
+      ? "Firefox"
+      : /Chrome\//.test(userAgent)
+        ? "Chrome"
+        : /Safari\//.test(userAgent)
+          ? "Safari"
+          : "";
+  return [system, browser].filter(Boolean).join(" · ") || "Desk";
+}
+
 /** Renames this desk. */
 export function setDeviceLabel(label: string): void {
   try {
