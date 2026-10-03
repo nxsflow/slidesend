@@ -30,7 +30,7 @@ export interface WorkflowInput {
  */
 export const pinnedActions = {
   checkout: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
-  pnpm: "pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10",
+  pnpm: "pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0",
   node: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0",
   awsCredentials:
     "aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0",

@@ -1,5 +1,8 @@
 # Keeps the actions in .github/workflows current. They are pinned to commit SHAs, with the
-# version as a comment; Dependabot updates both.
+# version as a comment; Dependabot updates both. It cannot update the same pins in
+# packages/aws/src/workflow/template.ts (the workflow written for talks) and in
+# packages/aws/docs/continuous-deployment.md: tests/workflow-pins.test.ts fails such a pull
+# request until they are updated in it, with a changeset for @slidesend/aws.
 version: 2
 updates:
   - package-ecosystem: github-actions
