@@ -1,5 +1,12 @@
 # @slidesend/basics
 
+## 0.1.0-alpha.1
+
+### Patch Changes
+
+- Updated dependencies [283b3a6]
+  - @slidesend/core@0.1.0-alpha.1
+
 ## 0.1.0-alpha.0
 
 ### Minor Changes
