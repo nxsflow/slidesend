@@ -1,10 +1,14 @@
-import { readdirSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { serverImportsOfBrowserEntry } from "./entry-separation";
 
 const root = join(import.meta.dirname, "..");
-const packages = readdirSync(join(root, "packages"));
+// Packages with a browser entry; a command-line package such as create-slidesend has none.
+const packages = readdirSync(join(root, "packages")).filter((name) => {
+  const manifest = JSON.parse(readFileSync(join(root, "packages", name, "package.json"), "utf8"));
+  return Boolean(manifest.exports?.["."]);
+});
 
 describe("browser entries never import server code", () => {
   it.each(packages)("packages/%s", async (name) => {

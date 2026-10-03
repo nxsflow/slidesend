@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-label="The desk steers the stage; phones follow the same session">
+  <g font-family="system-ui, sans-serif" font-size="26" fill="#2b2118" text-anchor="middle">
+    <rect x="20" y="150" width="240" height="150" rx="14" fill="#f1e9dc" stroke="#7a6a5a" stroke-width="3"/>
+    <text x="140" y="235">Desk</text>
+    <text x="140" y="340" font-size="20" fill="#7a6a5a">your laptop: notes, clock</text>
+    <rect x="360" y="40" width="300" height="190" rx="14" fill="#f1e9dc" stroke="#c4532d" stroke-width="4"/>
+    <text x="510" y="145">Stage</text>
+    <text x="510" y="265" font-size="20" fill="#7a6a5a">the projector</text>
+    <rect x="740" y="230" width="80" height="150" rx="14" fill="#2b2118"/>
+    <rect x="850" y="250" width="80" height="150" rx="14" fill="#2b2118"/>
+    <text x="835" y="210">Phones</text>
+    <path d="M260 210 L360 150" stroke="#c4532d" stroke-width="4" fill="none"/>
+    <path d="M660 160 L760 230" stroke="#3f7f8f" stroke-width="4" fill="none" stroke-dasharray="10 8"/>
+  </g>
+</svg>

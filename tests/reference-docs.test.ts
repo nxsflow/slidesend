@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { expect, it } from "vitest";
 import { agent } from "../packages/slidesend-agent/src/index";
@@ -49,4 +50,13 @@ it("keeps packages/slidesend-aws/docs/commands.md in step with the commands", ()
   expect(committed(join(packages, "slidesend-aws", "docs", "commands.md"), expected)).toBe(
     expected,
   );
+});
+
+// The starter talk's AGENTS.md is the section every talk adds, taken from the docs (one source).
+it("keeps the starter talk's AGENTS.md in step with packages/slidesend-core/docs/agents-md.md", () => {
+  const section = readFileSync(join(packages, "slidesend-core", "docs", "agents-md.md"), "utf8");
+  const expected = section.split("```markdown\n")[1]?.split("\n```")[0] ?? "";
+  expect(expected).toContain("## Slidesend");
+  const file = join(packages, "create-slidesend", "template", "AGENTS.md");
+  expect(committed(file, `${expected}\n`)).toBe(`${expected}\n`);
 });

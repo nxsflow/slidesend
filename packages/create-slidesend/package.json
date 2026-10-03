@@ -1,0 +1,17 @@
+{
+  "name": "@nxsflow/create-slidesend",
+  "version": "0.0.0",
+  "description": "npm create @nxsflow/slidesend: a new Slidesend talk that explains how it is made.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "files": [
+    "template",
+    "template-aws",
+    "!template/node_modules",
+    "!template/dist",
+    "!template/test-results"
+  ],
+  "engines": {
+    "node": ">=24"
+  }
+}
