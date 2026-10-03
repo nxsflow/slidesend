@@ -1,4 +1,4 @@
-import { defineAgents } from "@slidesend/agent";
+import { defineAgents } from "@nxsflow/slidesend-agent";
 
 /**
  * The talk's agents, in one file both halves import (spec §10): the backend builds a block from

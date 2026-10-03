@@ -1,4 +1,4 @@
-import { cssVariable, defineDesign } from "@slidesend/core";
+import { cssVariable, defineDesign } from "@nxsflow/slidesend-core";
 
 const accent = `var(--slidesend-accent)`;
 

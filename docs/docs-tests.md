@@ -53,11 +53,11 @@ These files are generated from the code and must not be edited by hand:
 
 | File | Generated from |
 |---|---|
-| `packages/core/docs/commands.md` | core's command definitions |
-| `packages/core/docs/tokens.md` | the design token list |
-| `packages/core/docs/messages.md` | the UI strings of every package |
-| `packages/basics/docs/nodes.md`, `packages/agent/docs/nodes.md` | each node's Zod schema (`nodeReferenceTable`) |
-| `packages/aws/docs/commands.md` | the commands of `aws()` |
+| `packages/slidesend-core/docs/commands.md` | core's command definitions |
+| `packages/slidesend-core/docs/tokens.md` | the design token list |
+| `packages/slidesend-core/docs/messages.md` | the UI strings of every package |
+| `packages/slidesend-basics/docs/nodes.md`, `packages/slidesend-agent/docs/nodes.md` | each node's Zod schema (`nodeReferenceTable`) |
+| `packages/slidesend-aws/docs/commands.md` | the commands of `aws()` |
 
 **Failure: "keeps … in step"**: the code changed. Run `UPDATE_DOCS=1 pnpm test`, read the diff
 (it is the change users will see), and commit it. If a slot or reference shows up as `unknown`,

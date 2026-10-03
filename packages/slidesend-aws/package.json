@@ -1,0 +1,58 @@
+{
+  "name": "@nxsflow/slidesend-aws",
+  "version": "0.0.0",
+  "description": "Slidesend platform implementation on AWS Blocks: backend, hosting, bootstrap and deploy commands.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./package.json": "./package.json",
+    "./commands": {
+      "types": "./dist/commands.d.ts",
+      "import": "./dist/commands.js"
+    },
+    "./infra": {
+      "types": "./dist/infra.d.ts",
+      "import": "./dist/infra.js"
+    }
+  },
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "peerDependencies": {
+    "@aws-blocks/blocks": "^0.6.0",
+    "@nxsflow/slidesend-core": "workspace:^",
+    "zod": "^4.0.0",
+    "aws-cdk-lib": "^2.270.0",
+    "constructs": "^10.8.1"
+  },
+  "devDependencies": {
+    "@aws-blocks/blocks": "0.6.0",
+    "@nxsflow/slidesend-core": "workspace:*",
+    "@types/node": "^24.0.0",
+    "aws-cdk-lib": "^2.270.0",
+    "constructs": "^10.8.1",
+    "vitest": "^5.0.1",
+    "zod": "^4.6.5"
+  },
+  "peerDependenciesMeta": {
+    "aws-cdk-lib": {
+      "optional": true
+    },
+    "constructs": {
+      "optional": true
+    }
+  }
+}

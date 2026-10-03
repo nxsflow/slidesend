@@ -1,6 +1,6 @@
 // A deck that is valid and still does not fit: the render pass must say so, with slide and step.
-import { basics, defaultDesign, list, section } from "@slidesend/basics";
-import { defineDeck, definePresentation } from "@slidesend/core";
+import { basics, defaultDesign, list, section } from "@nxsflow/slidesend-basics";
+import { defineDeck, definePresentation } from "@nxsflow/slidesend-core";
 
 const tooMany = Array.from(
   { length: 24 },

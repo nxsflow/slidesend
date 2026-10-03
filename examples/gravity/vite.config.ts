@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { slidesendDev } from "@slidesend/core/server";
+import { slidesendDev } from "@nxsflow/slidesend-core/server";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 

@@ -8,7 +8,7 @@ const packages = readdirSync(join(root, "packages"));
 
 // npm only packs a LICENSE that sits in the package folder, so each package carries a copy.
 describe("every package ships the repository license", () => {
-  it.each(packages)("@slidesend/%s", (name) => {
+  it.each(packages)("packages/%s", (name) => {
     const dir = join(root, "packages", name);
     const manifest = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
     expect(manifest.license).toBe("Apache-2.0");

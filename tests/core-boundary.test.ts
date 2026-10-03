@@ -4,12 +4,12 @@ import { describe, expect, it } from "vitest";
 import { externalImportsOf } from "./entry-separation";
 
 const root = join(import.meta.dirname, "..");
-const core = join(root, "packages", "core");
+const core = join(root, "packages", "slidesend-core");
 const fromAwsBlocks = (path: string) => path.startsWith("@aws-blocks/");
 
 // Core's server logic is written against the platform contract only (spec §8); AWS lives in
-// @slidesend/aws.
-describe("@slidesend/core never imports @aws-blocks", () => {
+// @nxsflow/slidesend-aws.
+describe("@nxsflow/slidesend-core never imports @aws-blocks", () => {
   it.each(["index", "server", "testing"])("entry %s", async (entry) => {
     const imports = await externalImportsOf(join(core, "src", `${entry}.ts`));
     expect(imports.filter(fromAwsBlocks)).toEqual([]);

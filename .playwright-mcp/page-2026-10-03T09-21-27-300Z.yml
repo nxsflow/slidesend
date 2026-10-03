@@ -1,0 +1,13 @@
+- generic [ref=f1e2]:
+  - generic [ref=f1e5]:
+    - heading [level=1] [ref=f1e6]: Your first Slidesend talk
+    - paragraph [ref=f1e7]: It explains how it is made
+  - generic [ref=f1e9]:
+    - heading "Your own nodes" [level=1] [ref=f1e11]
+    - generic [ref=f1e13]:
+      - paragraph [ref=f1e17]:
+        - text: The code blocks in this talk are
+        - strong [ref=f1e18]: not part of Slidesend
+        - text: ": src/plugin.tsx defines them."
+      - figure "The block that shows this code" [ref=f1e22]:
+        - code [ref=f1e24]: No snippet "code-block" in src/plugin.tsx.

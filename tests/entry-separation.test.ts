@@ -7,12 +7,12 @@ const root = join(import.meta.dirname, "..");
 const packages = readdirSync(join(root, "packages"));
 
 describe("browser entries never import server code", () => {
-  it.each(packages)("@slidesend/%s", async (name) => {
+  it.each(packages)("packages/%s", async (name) => {
     expect(await serverImportsOfBrowserEntry(join(root, "packages", name))).toEqual([]);
   });
 
   it("detects a leak through an intermediate module and a foreign server entry", async () => {
     const leaks = await serverImportsOfBrowserEntry(join(import.meta.dirname, "fixtures", "leaky"));
-    expect(leaks).toEqual(["src/server.ts", "src/helper.ts -> @slidesend/core/server"]);
+    expect(leaks).toEqual(["src/server.ts", "src/helper.ts -> @nxsflow/slidesend-core/server"]);
   });
 });

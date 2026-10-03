@@ -1,0 +1,41 @@
+{
+  "name": "@nxsflow/slidesend-agent",
+  "version": "0.0.0",
+  "description": "The agent chat activity for Slidesend: phone UI plus a server half.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "peerDependencies": {
+    "@nxsflow/slidesend-core": "workspace:^",
+    "react": "^19.0.0",
+    "zod": "^4.0.0",
+    "@aws-blocks/blocks": "^0.6.0"
+  },
+  "devDependencies": {
+    "@nxsflow/slidesend-core": "workspace:*",
+    "react": "^19.3.0",
+    "@types/react": "^19.3.0",
+    "zod": "^4.6.5",
+    "vitest": "^5.0.1",
+    "@types/node": "^24.0.0",
+    "@aws-blocks/blocks": "0.6.0"
+  }
+}

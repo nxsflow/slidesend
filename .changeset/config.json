@@ -6,7 +6,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "ignore": [],
-  "fixed": [["@slidesend/*"]],
+  "fixed": [["@nxsflow/slidesend-*"]],
   "linked": [],
   "updateInternalDependencies": "patch"
 }

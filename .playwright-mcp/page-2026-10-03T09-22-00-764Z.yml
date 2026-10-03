@@ -1,0 +1,13 @@
+- generic [ref=f2e2]:
+  - generic [ref=f2e5]:
+    - heading [level=1] [ref=f2e6]: Your first Slidesend talk
+    - paragraph [ref=f2e7]: It explains how it is made
+  - generic [ref=f2e9]:
+    - heading "Your own nodes" [level=1] [ref=f2e11]
+    - generic [ref=f2e13]:
+      - paragraph [ref=f2e17]:
+        - text: The code blocks in this talk are
+        - strong [ref=f2e18]: not part of Slidesend
+        - text: ": src/plugin.tsx defines them."
+      - figure "The block that shows this code" [ref=f2e22]:
+        - code [ref=f2e24]: "/** Shows a piece of this project's source code on the stage, cut out by snippet markers. */ export const code = defineBlock({ type: \"code\", schema: z.object({ /** A file of this project, e.g. \"src/deck.ts\" or \"presentation.config.ts\". */ file: z.string(), /** The name after `// snippet:` in that file; without it, the whole file. */ region: z.string().optional(), caption: z.string().optional(), }), Component: ({ data }) => { const key = data.file.startsWith(\"src/\") ? `./${data.file.slice(4)}` : `../${data.file}`; const source = sources()[key]; const text = source === undefined ? `${data.file} is not a file of this project.` : (excerpt(source, data.region) ?? `${data.file} has no \"// snippet: ${data.region}\".`); const lines = text.split(\"\\n\"); const longest = Math.max(1, ...lines.map((line) => line.length)); // As large as fits: by height (lines) and by width (the longest line). const size = Math.max(14, Math.min(34, 660 / (lines.length * 1.35), 1500 / (longest * 0.62))); return ( <figure style={{ margin: 0, display: \"grid\", gap: 16 }}> <pre style={{ margin: 0, padding: \"24px 32px\", borderRadius: `var(${cssVariable(\"radius\", \"large\")})`, background: `var(${cssVariable(\"color\", \"surface\")})`, fontFamily: `var(${cssVariable(\"font\", \"mono\")})`, fontSize: Math.floor(size), lineHeight: 1.35, }} > <code>{text}</code> </pre> <figcaption style={{ fontSize: 28, color: `var(${cssVariable(\"color\", \"textMuted\")})` }}> {data.caption ?? data.file} </figcaption> </figure> ); }, });"

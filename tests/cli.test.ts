@@ -2,10 +2,10 @@ import { spawn, spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { commandReferenceTable } from "../packages/core/src/cli/commands";
+import { commandReferenceTable } from "../packages/slidesend-core/src/cli/commands";
 
 const root = join(import.meta.dirname, "..");
-const cli = join(root, "packages", "core", "dist", "cli.js");
+const cli = join(root, "packages", "slidesend-core", "dist", "cli.js");
 const gravity = join(root, "examples", "gravity");
 
 function slidesend(...args: string[]) {
@@ -103,8 +103,8 @@ describe("slidesend", () => {
 });
 
 // The command reference is generated from the command definitions (spec §15).
-it("keeps packages/core/docs/commands.md in step with the commands", () => {
-  const file = join(root, "packages", "core", "docs", "commands.md");
+it("keeps packages/slidesend-core/docs/commands.md in step with the commands", () => {
+  const file = join(root, "packages", "slidesend-core", "docs", "commands.md");
   const expected = `# The slidesend command\n\nGenerated from the code; run the tests with UPDATE_DOCS=1 to refresh.\n\n${commandReferenceTable()}`;
   if (process.env.UPDATE_DOCS) writeFileSync(file, expected);
   expect(readFileSync(file, "utf8")).toBe(expected);
