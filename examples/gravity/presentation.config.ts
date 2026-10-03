@@ -1,7 +1,7 @@
-import { agent } from "@nxsflow/slidesend-agent";
-import { aws } from "@nxsflow/slidesend-aws";
-import { basics } from "@nxsflow/slidesend-basics";
-import { definePresentation } from "@nxsflow/slidesend-core";
+import { agent } from "@slidesend/agent";
+import { aws } from "@slidesend/aws";
+import { basics } from "@slidesend/basics";
+import { definePresentation } from "@slidesend/core";
 import { agents } from "./src/agents";
 import { deck } from "./src/deck";
 import { gravityDesign } from "./src/design";

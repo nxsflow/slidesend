@@ -17,6 +17,6 @@ describe("browser entries never import server code", () => {
 
   it("detects a leak through an intermediate module and a foreign server entry", async () => {
     const leaks = await serverImportsOfBrowserEntry(join(import.meta.dirname, "fixtures", "leaky"));
-    expect(leaks).toEqual(["src/server.ts", "src/helper.ts -> @nxsflow/slidesend-core/server"]);
+    expect(leaks).toEqual(["src/server.ts", "src/helper.ts -> @slidesend/core/server"]);
   });
 });

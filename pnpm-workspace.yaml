@@ -1,6 +1,6 @@
 packages:
   - packages/*
   - examples/*
-  - packages/create-slidesend/template
+  - packages/create/template
 allowBuilds:
   esbuild: true

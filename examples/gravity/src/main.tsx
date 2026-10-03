@@ -1,9 +1,4 @@
-import {
-  httpPlatformClient,
-  mount,
-  type PlatformClient,
-  type Presentation,
-} from "@nxsflow/slidesend-core";
+import { httpPlatformClient, mount, type PlatformClient, type Presentation } from "@slidesend/core";
 import defaultPresentation from "../presentation.config";
 
 /**
@@ -35,7 +30,7 @@ async function platform(): Promise<PlatformClient | undefined> {
   const mode = import.meta.env.VITE_SLIDESEND_PLATFORM;
   if (mode === "aws") {
     const [{ awsClient }, blocks] = await Promise.all([
-      import("@nxsflow/slidesend-aws"),
+      import("@slidesend/aws"),
       import("aws-blocks"),
     ]);
     // Every API namespace the backend exports is handed over: core's `slidesend` and, when the

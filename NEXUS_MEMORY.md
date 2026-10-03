@@ -11,7 +11,7 @@
 - **pr-workflow**: Merge your own PRs when CI is green, close the item and continue with nxf next; still ask before spec changes, AWS deploys or destructive steps.
 - **typescript-6-pin**: Keep TypeScript on 6.0.x: TS 7 has no compiler API for tsup's DTS build; tsup configs need ignoreDeprecations 6.0.
 - **pnpm-peer-suffix**: If a newly added dependency is a dangling symlink, run 'pnpm --filter <pkg> update <dep>'; pnpm 12 sometimes drops the peer suffix.
-- **npm-scope**: Publish as @nxsflow/slidesend-*, never @slidesend/*: the slidesend npm org is taken; folders are packages/slidesend-<name>.
+- **npm-scope**: Publish as @slidesend/<name> (Carsten owns the npm org), never @nxsflow/slidesend-*; folders are packages/<name>.
 
 ## Full text
 
@@ -35,10 +35,10 @@ TypeScript is pinned to ~6.0.x, not 7.x. TypeScript 7 is the native (Go) compile
 
 ### `pnpm-peer-suffix`
 
-pnpm 12 in this workspace sometimes links a newly added dependency of a workspace package WITHOUT its peer suffix (e.g. node_modules/.pnpm/vite@8.3.0 instead of vite@8.3.0_@types+node@...), which leaves a dangling symlink and 'Cannot find module' errors in tsc. It happened for react-dom/@types/react-dom and vite in @nxsflow/slidesend-core (then @slidesend/core). Fix: 'pnpm --filter <package> update <dep> [<dep>...]', which rewrites the lockfile entry with the peer suffix. Reinstalling from scratch does not help.
+pnpm 12 in this workspace sometimes links a newly added dependency of a workspace package WITHOUT its peer suffix (e.g. node_modules/.pnpm/vite@8.3.0 instead of vite@8.3.0_@types+node@...), which leaves a dangling symlink and 'Cannot find module' errors in tsc. It happened for react-dom/@types/react-dom and vite in @slidesend/core. Fix: 'pnpm --filter <package> update <dep> [<dep>...]', which rewrites the lockfile entry with the peer suffix. Reinstalling from scratch does not help.
 
 ---
 
 ### `npm-scope`
 
-The npm packages are published under Carsten's scope @nxsflow: @nxsflow/slidesend-core, -basics, -aws, -agent, and @nxsflow/create-slidesend (so 'npm create @nxsflow/slidesend' works); the npm org 'slidesend' belongs to someone else. Package folders are packages/slidesend-<name>, matching the name in node_modules, so relative links between package docs (../../slidesend-aws/docs/...) work in the repository and in node_modules alike. The CLI command stays 'slidesend', CSS variables stay --slidesend-*.
+The npm packages are published under the scope @slidesend, whose npm org belongs to Carsten: @slidesend/core, @slidesend/basics, @slidesend/aws, @slidesend/agent, and @slidesend/create (so 'npm create @slidesend' works; its bin is create-slidesend). A short detour through @nxsflow/slidesend-* on 2026-10-03 was reverted the same day, because the slidesend org had looked taken but was Carsten's own. Package folders are packages/<name> (core, basics, aws, agent, create), matching the last part of the name in node_modules, so relative links between package docs (../../aws/docs/...) work in the repository and in node_modules alike. The CLI command stays 'slidesend', CSS variables stay --slidesend-*.

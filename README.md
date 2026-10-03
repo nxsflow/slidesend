@@ -15,7 +15,7 @@ full version.
 ## Getting started
 
 ```sh
-npm create @nxsflow/slidesend@latest my-talk
+npm create @slidesend@latest my-talk
 cd my-talk
 npm run dev
 ```
@@ -23,48 +23,48 @@ npm run dev
 creates a talk, installs it and starts it, with phones from your network and no cloud account.
 The talk explains how it is made: its own design, its own plugin, the blocks of the basics and
 questions for the phones. With `--aws` it is ready to deploy. Until the first release, the
-command runs from a packed tarball. → [getting-started](packages/slidesend-core/docs/getting-started.md)
+command runs from a packed tarball. → [getting-started](packages/core/docs/getting-started.md)
 
 ## Writing slides
 
 Everything in a deck is a node, `{ type, ...data }`: slides own the stage, blocks fill a
 slide's slots, activities run on the phones. Each click is a step with its own notes, cue,
 planned minutes and print rule. There are no clock times in a deck; the planned length is the
-sum of the steps. `@nxsflow/slidesend-basics` brings a carousel-like `section`, text blocks, polls with
-live results, free-text questions and more. → [writing-slides](packages/slidesend-core/docs/writing-slides.md)
+sum of the steps. `@slidesend/basics` brings a carousel-like `section`, text blocks, polls with
+live results, free-text questions and more. → [writing-slides](packages/core/docs/writing-slides.md)
 
 ## Plugins
 
 When the basics are not enough, write a node of your own: one function per node, a Zod schema,
 a React component. The example talk draws the Moon's orbit in three clicks with a block of its
-own. A plugin bundles nodes with their UI strings. → [plugins](packages/slidesend-core/docs/plugins.md)
+own. A plugin bundles nodes with their UI strings. → [plugins](packages/core/docs/plugins.md)
 
 ## Design
 
 A design is a fixed list of tokens (colors, fonts, radii and one accent color per chapter) plus
 the frames around stage and phone and the three pages a phone shows before, after and between
-talks. Templates use only tokens, so every node fits every design. → [design](packages/slidesend-core/docs/design.md)
+talks. Templates use only tokens, so every node fits every design. → [design](packages/core/docs/design.md)
 
 ## Agents
 
 The audience can ask an AI agent on their phones: a chat with history that survives a locked
 phone, running on Amazon Bedrock when deployed and on a canned provider locally. It only answers
 while a session is open, with a cap on turns and message length per phone; a question costs
-about USD 0.0005 on the fast tier. → [agents](packages/slidesend-agent/docs/agents.md)
+about USD 0.0005 on the fast tier. → [agents](packages/agent/docs/agents.md)
 
 ## Sessions and the desk
 
 A session is one run of the talk, a rehearsal or the real thing, each with its own answers and
 timings. The desk prepares a session (control, joining, the deck's timing), presents it (now,
 next, notes, cue, clock, connected devices) and reviews it (planned against measured time per
-step, adopt as plan, export, delete). → [sessions-and-desk](packages/slidesend-core/docs/sessions-and-desk.md)
+step, adopt as plan, export, delete). → [sessions-and-desk](packages/core/docs/sessions-and-desk.md)
 
 ## Deploy to AWS
 
-`@nxsflow/slidesend-aws` deploys a talk with one command: `slidesend deploy` builds the site, deploys it
+`@slidesend/aws` deploys a talk with one command: `slidesend deploy` builds the site, deploys it
 with AWS Blocks and prints the desk link with the control secret. You need an AWS account, a
 signed-in AWS CLI profile and a region. Between talks it costs about USD 1 a month;
-`slidesend destroy` removes it. → [deploy-aws](packages/slidesend-aws/docs/deploy-aws.md)
+`slidesend destroy` removes it. → [deploy-aws](packages/aws/docs/deploy-aws.md)
 
 ## Continuous deployment
 
@@ -72,28 +72,28 @@ signed-in AWS CLI profile and a region. Between talks it costs about USD 1 a mon
 repository's `production` environment can assume, through OIDC and without access keys.
 `slidesend workflow` writes the GitHub Actions workflow. When role assumption is denied,
 CloudTrail tells a wrong trust policy from an organization policy.
-→ [continuous-deployment](packages/slidesend-aws/docs/continuous-deployment.md)
+→ [continuous-deployment](packages/aws/docs/continuous-deployment.md)
 
 ## Hosting adapters
 
 AWS is the only platform today. Core's server logic is written against a small contract
 (storage, push channels, secrets, a clock) with an in-memory reference implementation, so
-another platform is a package of its own. → [hosting-adapters](packages/slidesend-core/docs/hosting-adapters.md)
+another platform is a package of its own. → [hosting-adapters](packages/core/docs/hosting-adapters.md)
 
 ## Packages
 
 | Package | Contents |
 |---|---|
-| [`@nxsflow/slidesend-core`](packages/slidesend-core) | deck schema, plugin, design and platform contracts, sessions, sync, the views, the `slidesend` command |
-| [`@nxsflow/slidesend-basics`](packages/slidesend-basics) | the `section` template, generic blocks, simple activities, the default design |
-| [`@nxsflow/slidesend-aws`](packages/slidesend-aws) | platform implementation and hosting on AWS Blocks, bootstrap, deploy, workflow |
-| [`@nxsflow/slidesend-agent`](packages/slidesend-agent) | the agent chat activity |
+| [`@slidesend/core`](packages/core) | deck schema, plugin, design and platform contracts, sessions, sync, the views, the `slidesend` command |
+| [`@slidesend/basics`](packages/basics) | the `section` template, generic blocks, simple activities, the default design |
+| [`@slidesend/aws`](packages/aws) | platform implementation and hosting on AWS Blocks, bootstrap, deploy, workflow |
+| [`@slidesend/agent`](packages/agent) | the agent chat activity |
 
-Every package has a browser entry (`.`) and a server entry (`./server`); `@nxsflow/slidesend-core` also
+Every package has a browser entry (`.`) and a server entry (`./server`); `@slidesend/core` also
 has `./testing` and `./checks`. The browser entry never imports server code, and a test
 enforces that.
 
-[`packages/create-slidesend`](packages/create-slidesend) is `npm create @nxsflow/slidesend` and
+[`packages/create`](packages/create) is `npm create @slidesend` and
 its starter talk. [`examples/gravity`](examples/gravity) is the example talk "How does gravity work?". It consumes
 the packages like any other talk project would, and the code samples in the docs are cut from
 it.
