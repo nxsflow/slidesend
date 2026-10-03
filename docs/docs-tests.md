@@ -73,3 +73,17 @@ are not checked.
 heading". Fix the link, or the heading it points to; when you rename a heading, search the docs
 for its old anchor. Links between packages are written as `../../<package>/docs/<file>.md`,
 which works in the repository and in `node_modules` alike.
+
+## 5. The starter talk (`pnpm check:starter`)
+
+`scripts/starter-check.mjs` does what a new user does: it packs the packages, runs the create
+command from its own tarball, and checks the talk it writes — the local variant installed with
+npm, the AWS variant with pnpm — with `typecheck`, `check:render` and `build`. The starter's code
+samples in getting-started, design and plugins are embedded from `packages/create-slidesend/template`.
+
+**Failure**: the log ends with "The starter check failed; the files are in <folder>". The talk
+it wrote is still there: `cd` into it and rerun the failing command. A type error or an
+overflowing step is fixed in `packages/create-slidesend/template` (a workspace package, so
+`pnpm --filter slidesend-starter …` runs its scripts in place); a missing file in the new talk
+usually means `files` in `packages/create-slidesend/package.json` leaves it out.
+

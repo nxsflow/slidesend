@@ -14,11 +14,16 @@ full version.
 
 ## Getting started
 
-From an empty folder to a talk running in your browser takes four files: the deck, a
-`presentation.config.ts` that puts deck, design and plugins together, a `main.ts` that mounts
-it, and an `index.html`. `slidesend check` validates the deck, `slidesend dev` runs it. No cloud
-account is needed: stage and desk share one browser, and the dev bridge adds phones on your
-network. → [getting-started](packages/slidesend-core/docs/getting-started.md)
+```sh
+npm create @nxsflow/slidesend@latest my-talk
+cd my-talk
+npm run dev
+```
+
+creates a talk, installs it and starts it, with phones from your network and no cloud account.
+The talk explains how it is made: its own design, its own plugin, the blocks of the basics and
+questions for the phones. With `--aws` it is ready to deploy. Until the first release, the
+command runs from a packed tarball. → [getting-started](packages/slidesend-core/docs/getting-started.md)
 
 ## Writing slides
 
@@ -88,7 +93,8 @@ Every package has a browser entry (`.`) and a server entry (`./server`); `@nxsfl
 has `./testing` and `./checks`. The browser entry never imports server code, and a test
 enforces that.
 
-[`examples/gravity`](examples/gravity) is the example talk "How does gravity work?". It consumes
+[`packages/create-slidesend`](packages/create-slidesend) is `npm create @nxsflow/slidesend` and
+its starter talk. [`examples/gravity`](examples/gravity) is the example talk "How does gravity work?". It consumes
 the packages like any other talk project would, and the code samples in the docs are cut from
 it.
 

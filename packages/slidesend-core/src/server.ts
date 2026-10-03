@@ -14,7 +14,12 @@ export {
   type ServerMethod,
   session,
 } from "./server/api";
-export { createDevBridge, type DevBridgeOptions, slidesendDev } from "./server/dev-bridge";
+export {
+  createDevBridge,
+  type DevBridgeOptions,
+  deskLinks,
+  slidesendDev,
+} from "./server/dev-bridge";
 export {
   type CoreApi,
   createRuntime,

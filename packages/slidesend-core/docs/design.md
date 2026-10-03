@@ -20,72 +20,59 @@ defineDesign({
 `defineDesign` throws if a token or a component is missing and names each one, e.g.
 `missing tokens.base.color.focus`.
 
-This is the example talk's design:
+This is the design of the starter talk (`npm create @nxsflow/slidesend`). Its values live in
+`src/tokens.ts`, the components in `src/design.tsx`:
 
-<!-- snippet: examples/gravity/src/design.tsx#define-design -->
+<!-- snippet: packages/create-slidesend/template/src/design.tsx#design -->
 ```tsx
-export const gravityDesign = defineDesign({
-  name: "gravity",
-  tokens: {
-    base: {
-      color: {
-        background: "#0b1020",
-        surface: "#151c33",
-        text: "#eef1f8",
-        textMuted: "#9aa3b8",
-        primary: "#7aa2ff",
-        onPrimary: "#0b1020",
-        border: "#2a3350",
-        positive: "#5fd39a",
-        negative: "#ff7a7a",
-        focus: "#ffd166",
-      },
-      font: {
-        display: "Georgia, 'Times New Roman', serif",
-        sans: "system-ui, -apple-system, 'Segoe UI', sans-serif",
-        mono: "ui-monospace, 'SF Mono', Menlo, monospace",
-      },
-      radius: { small: "6px", large: "18px" },
-      accents: ["#7aa2ff", "#ffd166", "#5fd39a"],
-    },
-    phone: { color: { background: "#10162b" } },
-  },
-  StageFrame: ({ progress, children }) => (
+export const starterDesign = defineDesign({
+  name: "starter",
+  tokens,
+  StageFrame: ({ progress, frame, children }) => (
     <>
       {children}
+      {/* The logo is large while a hero title is centered, small otherwise. */}
+      <img
+        src="/logo.svg"
+        alt=""
+        style={{
+          position: "absolute",
+          top: 48,
+          right: 64,
+          height: frame.heroTitle ? 120 : 56,
+          transition: "height 600ms",
+        }}
+      />
       <div
-        data-progress
         style={{
           position: "absolute",
           left: 0,
           bottom: 0,
-          height: 8,
+          height: 10,
           width: `${((progress.index + 1) / progress.total) * 100}%`,
           background: accent,
-          transition: "width 400ms ease-out",
+          transition: "width 400ms",
         }}
       />
     </>
   ),
   PhoneFrame: ({ chapter, children }) => (
-    <div style={{ minHeight: "100dvh", padding: 20, color: token.text }}>
-      {chapter && (
-        <header style={{ color: accent, fontWeight: 600, marginBottom: 16 }}>
-          {chapter.title}
-        </header>
-      )}
+    <div style={{ minHeight: "100dvh", padding: 20, color: color("text") }}>
+      <header style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 20 }}>
+        <img src="/logo-mark.svg" alt="" style={{ height: 28 }} />
+        {chapter && <span style={{ color: accent, fontWeight: 600 }}>{chapter.title}</span>}
+      </header>
       {children}
     </div>
   ),
-  StartPage: ({ title, subtitle }) => (
-    <div data-page="start">
-      <h1 style={{ fontFamily: token.display }}>{title}</h1>
-      {subtitle && <p style={{ color: token.muted }}>{subtitle}</p>}
-      <p style={{ color: token.muted }}>Questions appear here.</p>
+  StartPage: ({ title }) => (
+    <div style={{ textAlign: "center", paddingTop: 48 }}>
+      <h1 style={{ fontFamily: display }}>{title}</h1>
+      <p style={{ color: color("textMuted") }}>Questions appear here during the talk.</p>
     </div>
   ),
-  ClosedPage: ({ title }) => <p data-page="closed">Thanks for joining “{title}”.</p>,
-  IdlePage: () => <p data-page="idle">Nothing is happening right now.</p>,
+  ClosedPage: ({ title }) => <p>Thank you for joining “{title}”.</p>,
+  IdlePage: () => <p style={{ color: color("textMuted") }}>No talk is running right now.</p>,
 });
 ```
 <!-- end snippet -->
@@ -96,6 +83,25 @@ The contract is a fixed list of token names; [tokens](tokens.md) lists every one
 variable. Core writes them as CSS variables onto stage and phone, and every template, block and
 activity uses them instead of literal values. That is why a block written for one talk fits the
 design of another.
+
+The starter talk's colors, from `src/tokens.ts`:
+
+<!-- snippet: packages/create-slidesend/template/src/tokens.ts#colors -->
+```ts
+color: {
+  background: "#fbf7f0",
+  surface: "#f1e9dc",
+  text: "#2b2118",
+  textMuted: "#7a6a5a",
+  primary: "#c4532d",
+  onPrimary: "#fbf7f0",
+  border: "#dccfbd",
+  positive: "#3f8f5b",
+  negative: "#b93a3a",
+  focus: "#e3a33b",
+},
+```
+<!-- end snippet -->
 
 - `base` is complete: every color, font and radius, and at least one chapter accent.
 - `stage` and `phone` override colors for one surface. Fonts and radii are the same everywhere.

@@ -271,6 +271,7 @@ export const deck = defineDeck({
           }),
           minutes: 0.5,
         },
+        // snippet: use-code-block
         {
           content: code({
             file: "src/plugin.tsx",
@@ -280,6 +281,7 @@ export const deck = defineDeck({
           notes: "A type, a Zod schema, a React component. The plugin lists it; the deck calls it.",
           minutes: 1.5,
         },
+        // end snippet
       ],
     }),
     section({

@@ -159,7 +159,7 @@ describe("nextSteps", () => {
     expect(text).toContain("pnpm run dev");
     expect(text).toContain("#key=");
     expect(text).toContain("Open the stage");
-    expect(text).toContain("network address");
+    expect(text).toContain("for phones on this network");
     expect(text).not.toContain("pnpm install");
   });
 
