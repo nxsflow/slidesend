@@ -39,5 +39,11 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - run: node scripts/changeset-check.mjs "origin/${{ github.base_ref }}"
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/changeset-check.mjs "origin/$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}
 

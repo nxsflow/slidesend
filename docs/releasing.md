@@ -1,6 +1,7 @@
 # Releasing
 
-Every merge into `main` that carries a changeset is a release. Nobody publishes by hand.
+Every merge into `main` that carries a changeset with a version bump is a release. Nobody
+publishes by hand.
 
 ## In a pull request
 
@@ -17,15 +18,32 @@ The `changeset` job of the check workflow fails without one. All five packages s
 
 ## What the release workflow does
 
-After the merge, `.github/workflows/release.yml`:
+After every push to `main`, `.github/workflows/release.yml` runs two jobs.
 
-1. runs `pnpm changeset version`: new versions, changelogs, the changesets consumed;
-2. runs `pnpm check` on exactly that state;
-3. commits it as `chore(release): vX.Y.Z` to `main` and tags `vX.Y.Z`;
-4. publishes the five packages to npm with provenance;
-5. creates the GitHub release `vX.Y.Z` with the changelog.
+**`prepare`** has read access only, and checks out the newest `main` (not the commit that
+triggered it, which may be older by the time a queued run starts). `scripts/release-plan.mjs`:
 
-A merge without a changeset finds nothing to version and stops.
+1. runs `pnpm changeset version` if changesets are pending: new versions, changelogs, the
+   changesets consumed;
+2. decides: something to **commit** (changesets were consumed), a new version to **tag** (the
+   version changed), packages to **publish** (any package is not on npm in this version), and
+   the npm dist-tag, taken from the version (`0.2.0-alpha.1` → `alpha`, `1.0.0` → `latest`);
+3. writes the release notes from the changelog.
+
+If something is to be published, it runs `pnpm check` on exactly that state. It hands over the
+changes as a patch and the built packages as an artifact.
+
+**`release`** runs in the environment `npm`, with write access and the token, and runs no code
+of this repository:
+
+1. pushes `chore(release): vX.Y.Z` and the tag `vX.Y.Z` in one atomic push; if `main` moved in
+   the meantime, the push fails, nothing is published, and the run of the newer push releases;
+2. publishes the five packages to npm with provenance (install and lifecycle scripts off);
+3. creates the GitHub release `vX.Y.Z` on the release commit, with the changelog.
+
+A merge without a changeset finds nothing and stops. An empty changeset (`--empty`) is consumed
+in a commit `chore(release): consume changesets without a release`: no version, no tag, nothing
+published.
 
 ## Pre-releases
 
@@ -61,9 +79,20 @@ packages, then delete the token and the secret.
 
 ## When a release stops halfway
 
-- **Before the release commit** (the check failed): fix it on `main`; the changesets are still
-  there, and the next merge releases.
-- **After the commit, before npm** (publishing failed): the version is on `main` but not on npm.
-  Fix the cause (e.g. the token) and start the workflow by hand (**Actions → release → Run
-  workflow**): it publishes what is missing, skips what is already there, and creates the GitHub
-  release.
+- **In `prepare`** (the check failed): nothing was pushed. Fix it on `main`; the changesets are
+  still there, and that merge releases.
+- **The push was rejected** (`main` moved): nothing was published; the run started by the newer
+  push releases.
+- **After the push, before npm is complete** (publishing failed, or failed for some packages):
+  the version is on `main` but not on npm. Fix the cause (e.g. the token) and start the workflow
+  by hand (**Actions → release → Run workflow**) — or let the next merge do it: every run
+  publishes the packages missing in the current version, skips those already there, tags the
+  release commit if the tag is missing, and creates a missing GitHub release.
+
+## Protecting main
+
+The `release` job pushes the release commit with the workflow's own token. That works while
+`main` accepts pushes from GitHub Actions. Should `main` get branch protection or a ruleset that
+requires pull requests, allow the GitHub Actions app to bypass it, or the release commit is
+rejected (and nothing is published). Likewise, the environment `npm` admits only `main`; adding
+required reviewers to it turns every release into one more click.

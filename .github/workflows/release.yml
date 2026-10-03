@@ -1,14 +1,16 @@
 name: release
 
-# Every merge into main that carries a changeset is a release (docs/releasing.md): the versions
-# are bumped by Changesets, committed back to main and tagged, the packages are published to npm
-# with provenance, and a GitHub release carries the changelog. In pre mode
-# (`pnpm changeset pre enter alpha`) the version and the tag carry alpha or beta, npm gets the
-# dist-tag of the same name, and the GitHub release is marked as a pre-release.
+# Every merge into main that carries a changeset is a release (docs/releasing.md).
 #
-# A merge without a changeset releases nothing. A version that is on main but not yet on npm
-# (a run that failed after the commit) is published by the next run; start one by hand with
-# "Run workflow".
+# `prepare` holds no write access: it versions the pending changesets on the newest main,
+# decides with scripts/release-plan.mjs what to commit, tag and publish, and checks exactly that
+# state. `release` holds the write access and the npm token and runs no code of this repository:
+# it pushes the release commit and its tag in one atomic push, and only then publishes to npm
+# and creates the GitHub release. If main moved in between, the push fails, nothing is
+# published, and the run of the newer push releases instead.
+#
+# A version that is on main but not on npm (a run that stopped after its push) is published by
+# the next run; start one by hand with "Run workflow".
 
 on:
   push:
@@ -16,8 +18,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # the release commit, the tag and the GitHub release
-  id-token: write # npm provenance
+  contents: read
 
 # One release at a time, never cancelled halfway.
 concurrency:
@@ -25,77 +26,130 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  prepare:
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    environment: npm
+    outputs:
+      base: ${{ steps.base.outputs.sha }}
+      version: ${{ steps.plan.outputs.version }}
+      dist-tag: ${{ steps.plan.outputs.dist-tag }}
+      commit: ${{ steps.plan.outputs.commit }}
+      tag: ${{ steps.plan.outputs.tag }}
+      publish: ${{ steps.plan.outputs.publish }}
     steps:
       - uses: actions/checkout@v7
         with:
+          # The newest main, not the commit that triggered the run: a run that waited behind
+          # another one must not release an older state.
+          ref: main
           fetch-depth: 0
-      - name: Look for changesets
-        id: pending
-        run: |
-          if find .changeset -maxdepth 1 -name '*.md' ! -name README.md | grep -q .; then
-            echo "version=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "No changeset: nothing to version."
-          fi
+          persist-credentials: false
+      - id: base
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
-          registry-url: https://registry.npmjs.org
       - run: pnpm install --frozen-lockfile
-      - name: Version
-        if: steps.pending.outputs.version == 'true'
-        run: pnpm changeset version
-      - name: What to release
-        id: release
-        run: |
-          version=$(node -p "require('./packages/core/package.json').version")
-          tag=$(node -p "const fs=require('fs');const p='.changeset/pre.json';fs.existsSync(p)&&JSON.parse(fs.readFileSync(p,'utf8')).mode==='pre'?JSON.parse(fs.readFileSync(p,'utf8')).tag:'latest'")
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          if npm view "@slidesend/core@$version" version >/dev/null 2>&1; then
-            echo "v$version is on npm already."
-          elif [ "$version" = "0.0.0" ]; then
-            echo "Nothing has been versioned yet."
-          else
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-          fi
+      - id: plan
+        run: node scripts/release-plan.mjs
       - run: pnpm --filter gravity exec playwright install --with-deps chromium
-        if: steps.release.outputs.publish == 'true'
-      # The release is the code that was just checked, versions included.
+        if: steps.plan.outputs.publish == 'true'
+      # What is published is what was just checked, versions included.
       - run: pnpm check
-        if: steps.release.outputs.publish == 'true'
-      - name: Commit and tag the release
-        if: steps.pending.outputs.version == 'true'
+        if: steps.plan.outputs.publish == 'true'
+      - name: Hand over the release
+        if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
+        run: |
+          git add -A -- . ':!release'
+          git diff --cached --binary > release/release.patch
+      - uses: actions/upload-artifact@v4
+        if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
+        with:
+          name: release
+          path: |
+            release/
+            packages/*/dist/
+          if-no-files-found: error
+
+  release:
+    needs: prepare
+    if: needs.prepare.outputs.commit == 'true' || needs.prepare.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: npm
+    permissions:
+      contents: write # the release commit, the tag and the GitHub release
+      id-token: write # npm provenance
+    env:
+      VERSION: ${{ needs.prepare.outputs.version }}
+      DIST_TAG: ${{ needs.prepare.outputs.dist-tag }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.prepare.outputs.base }}
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+      - name: Push the release commit and its tag, atomically
+        if: needs.prepare.outputs.commit == 'true'
         env:
-          VERSION: ${{ steps.release.outputs.version }}
+          TAG: ${{ needs.prepare.outputs.tag }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "chore(release): v$VERSION"
-          git tag "v$VERSION"
-          git push origin HEAD:main "v$VERSION"
+          git apply --index release/release.patch
+          if [ "$TAG" = "true" ]; then
+            git commit -m "chore(release): v$VERSION"
+            git tag "v$VERSION"
+            git push --atomic origin HEAD:main "v$VERSION"
+          else
+            git commit -m "chore(release): consume changesets without a release"
+            git push origin HEAD:main
+          fi
+      - name: Find the release commit
+        if: needs.prepare.outputs.publish == 'true'
+        id: target
+        run: |
+          # The commit that set this version, wherever main is by now; its tag if it has one.
+          sha=$(git rev-parse -q --verify "refs/tags/v$VERSION^{commit}" || true)
+          if [ -z "$sha" ]; then
+            sha=$(git log --format=%H --grep="^chore(release): v$VERSION\$" -1)
+            [ -n "$sha" ] || { echo "No release commit for v$VERSION on main."; exit 1; }
+            git tag "v$VERSION" "$sha"
+            git push origin "v$VERSION"
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: pnpm/action-setup@v6
+        if: needs.prepare.outputs.publish == 'true'
+      - uses: actions/setup-node@v7
+        if: needs.prepare.outputs.publish == 'true'
+        with:
+          node-version-file: .nvmrc
+          registry-url: https://registry.npmjs.org
+      # Only to resolve workspace:^ while packing; no install script runs here.
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+        if: needs.prepare.outputs.publish == 'true'
       - name: Publish to npm
-        if: steps.release.outputs.publish == 'true'
+        if: needs.prepare.outputs.publish == 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          TAG: ${{ steps.release.outputs.tag }}
-        # Packages already on npm in this version are skipped, so a rerun finishes a release.
-        run: pnpm -r --filter "./packages/*" publish --tag "$TAG" --access public --provenance --no-git-checks
+        # Packages already on npm in this version are skipped, so a rerun finishes a release. No
+        # lifecycle script runs while the token is in reach.
+        run: pnpm -r --filter "./packages/*" publish --tag "$DIST_TAG" --access public --provenance --no-git-checks --ignore-scripts
       - name: GitHub release
-        if: steps.release.outputs.publish == 'true'
+        if: needs.prepare.outputs.publish == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.release.outputs.version }}
-          TAG: ${{ steps.release.outputs.tag }}
+          TARGET: ${{ steps.target.outputs.sha }}
         run: |
-          git tag "v$VERSION" 2>/dev/null && git push origin "v$VERSION" || true
-          awk -v v="## $VERSION" '$0==v{on=1;next} /^## /{if(on)exit} on' packages/core/CHANGELOG.md > notes.md
-          prerelease=""; [ "$TAG" != "latest" ] && prerelease="--prerelease"
-          gh release view "v$VERSION" >/dev/null 2>&1 || gh release create "v$VERSION" --title "v$VERSION" --notes-file notes.md $prerelease
+          if gh release view "v$VERSION" >/dev/null 2>&1; then
+            echo "The GitHub release v$VERSION exists."
+            exit 0
+          fi
+          prerelease=()
+          [ "$DIST_TAG" != "latest" ] && prerelease=(--prerelease)
+          gh release create "v$VERSION" --target "$TARGET" --title "v$VERSION" \
+            --notes-file release/notes.md "${prerelease[@]}"

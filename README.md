@@ -116,8 +116,8 @@ from the example talk between `// snippet: <name>` and `// end snippet`; after c
 every docs check and how to fix it.
 
 Every change to a package needs a changeset (`pnpm changeset`, or `pnpm changeset --empty` when
-users will not notice it). Merging one into `main` releases all packages to npm; in pre mode as
-alpha or beta. [docs/releasing.md](docs/releasing.md) explains the release workflow.
+users will not notice it). Merging one with a version bump into `main` releases all packages to
+npm; in pre mode as alpha or beta. [docs/releasing.md](docs/releasing.md) explains the release workflow.
 
 ## License
 
