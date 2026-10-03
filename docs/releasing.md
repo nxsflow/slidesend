@@ -78,7 +78,9 @@ A **new package** cannot use trusted publishing before it exists on npm. Publish
 version with a granular access token (a secret `NPM_TOKEN` in the environment `npm`, passed as
 `NODE_AUTH_TOKEN` to the publish step), then, on the package's **Settings → Trusted Publisher**
 on npmjs.com, add GitHub Actions with organization `nxsflow`, repository `slidesend`, workflow
-`release.yml` and environment `npm`, and remove the token again. With every package trusting the
+`release.yml` and environment `npm`, and under **Allowed actions** enable direct `npm publish`
+as well — a new trusted publisher may only stage publishes, and the workflow then fails with
+"403 OIDC permission denied for this action". Remove the token again afterwards. With every package trusting the
 workflow, **Publishing access → disallow tokens** on npmjs.com closes the token path entirely.
 
 ## When a release stops halfway
