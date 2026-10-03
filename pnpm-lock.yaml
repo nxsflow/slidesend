@@ -189,7 +189,14 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
 
-  packages/create-slidesend: {}
+  packages/create-slidesend:
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.5
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1
 
   packages/create-slidesend/template:
     dependencies:
