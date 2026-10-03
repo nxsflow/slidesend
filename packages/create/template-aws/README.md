@@ -9,7 +9,7 @@ npm run check      # validates the deck
 ```
 
 Open the desk link that `npm run dev` prints (with `#key=…`), and open the stage from the desk
-(**Prepare → Join → Open the stage**). No AWS account is needed for this.
+(**Rehearse**, then **Open the stage**). No AWS account is needed for this.
 
 To put the talk online, follow `node_modules/@slidesend/aws/docs/deploy-aws.md`: sign
 in with an AWS profile, then `npm run deploy -- --profile <name>`. `npm run destroy` removes it

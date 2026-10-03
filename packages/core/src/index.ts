@@ -233,6 +233,7 @@ export {
   forgetControlSecret,
   setDeviceLabel,
   storeControlSecret,
+  suggestedDeviceLabel,
   takeControlSecret,
 } from "./views/access";
 export { activityById, type VisibleActivity, visibleActivities } from "./views/activities";

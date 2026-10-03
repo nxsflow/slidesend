@@ -1,5 +1,5 @@
 /**
- * The Review tab (spec §12): what a rehearsal was worth, per session.
+ * The review (spec §12): what a rehearsal was worth, per session.
  *
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
  * colours are literal here: slidesend-allow-literal-styles.

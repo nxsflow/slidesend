@@ -10,7 +10,7 @@ import { deviceId } from "../device";
 /** How often the desk asks for the sessions and who is connected. */
 export const deskPollMs = 5000;
 
-/** What a desk knows and can do (spec §12, Prepare). */
+/** What a desk knows and can do (spec §12). */
 export interface Desk {
   /** Whether this device holds control. */
   inControl: boolean;
@@ -28,6 +28,13 @@ export interface Desk {
   takeControl(secret: string): Promise<boolean>;
   /** Creates a session and selects it. */
   create(input: { name: string; kind: Session["kind"]; plannedStart?: string }): Promise<void>;
+  /**
+   * Creates a session, opens it and selects it, in one step: what "Rehearse" and "Go live" do.
+   * Resolves with whether it worked, so the desk can move on to presenting.
+   */
+  start(input: { name: string; kind: Session["kind"] }): Promise<boolean>;
+  /** Creates a session with a planned start and arms it, so it opens by itself (spec §9). */
+  plan(input: { name: string; kind: Session["kind"]; plannedStart: string }): Promise<boolean>;
   arm(sessionId: string): Promise<void>;
   disarm(sessionId: string): Promise<void>;
   open(sessionId: string): Promise<void>;
@@ -173,6 +180,36 @@ export function useDesk({ platform, secret, onSecret, label }: DeskOptions): Des
         if (created) setSelectedId(created.id);
         return created;
       }),
+    async start(input) {
+      if (!api || !secret) return false;
+      try {
+        const created = await api.sessionCreate(secret, input);
+        setSelectedId(created.id);
+        await api.sessionOpen(secret, created.id);
+        setProblem(undefined);
+        refresh();
+        return true;
+      } catch (error) {
+        setProblem(error instanceof Error ? error.message : String(error));
+        refresh();
+        return false;
+      }
+    },
+    async plan(input) {
+      if (!api || !secret) return false;
+      try {
+        const created = await api.sessionCreate(secret, input);
+        setSelectedId(created.id);
+        await api.sessionArm(secret, created.id);
+        setProblem(undefined);
+        refresh();
+        return true;
+      } catch (error) {
+        setProblem(error instanceof Error ? error.message : String(error));
+        refresh();
+        return false;
+      }
+    },
     arm: (id) => run(() => api?.sessionArm(secret ?? "", id) ?? Promise.resolve()),
     disarm: (id) => run(() => api?.sessionDisarm(secret ?? "", id) ?? Promise.resolve()),
     open: (id) => run(() => api?.sessionOpen(secret ?? "", id) ?? Promise.resolve()),

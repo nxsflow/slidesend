@@ -228,7 +228,7 @@ export const rating = defineActivity({
 - `useResponseStore()` writes a response (`write`), reads the device's own (`mine`) and follows
   all of them (`follow`). It is `undefined` in local mode, where no phone exists.
 - `useResponses(id)` follows every response of an activity, for a stage block or the desk tile.
-- `Monitor` is the optional live tile in the desk's Present tab.
+- `Monitor` is the optional live tile in the desk's speaker view.
 
 The server enforces the session: outside an open session every write is refused, and a response
 is at most 500 characters.

@@ -192,7 +192,7 @@ export default definePresentation({
   deck,
   design: defaultDesign,
   plugins: [basics()],
-  messages: { de: { "core.desk.tab.prepare": "Vorbereiten" } },
+  messages: { de: { "core.desk.start.rehearse": "Proben" } },
 });
 ```
 

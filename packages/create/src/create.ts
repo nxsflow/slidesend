@@ -217,14 +217,16 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
       : "desk links that end in #key=… — the key gives that browser control of the talk.",
     "",
     "  1. Open the desk link. The desk shows your notes, the clock and what comes next.",
-    "  2. In the desk, Prepare: create a session and open it.",
-    "  3. Join → Open the stage: the stage opens in a new window. Put it on the projector.",
+    "  2. Click Rehearse (or Go live). The desk opens a session and shows your speaker notes.",
+    "  3. Open the stage from the banner at the top. Put its window on the projector.",
     "  4. Phones scan the code on the stage, or open the address under Join.",
     ...(plan.aws
       ? []
       : ["     For that, open the desk link for phones on this network, not the localhost one."]),
     "",
     "Then read src/deck.ts next to the talk: the talk explains how it is made.",
+    "Slidesend is made for AI coding agents: open this folder in yours and ask it to change the",
+    `talk. AGENTS.md tells it where the docs are, and \`${run("check")}\` tells it what is wrong.`,
     `For \`${run("check:render")}\` and \`${run("pdf")}\`, run \`${exec} playwright install chromium\` once.`,
     ...(plan.aws
       ? [

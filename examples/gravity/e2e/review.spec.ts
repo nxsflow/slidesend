@@ -32,7 +32,6 @@ async function rehearsed(browser: Browser, request: APIRequestContext) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const desk = await context.newPage();
   await desk.goto(`${base}/desk#key=${key}`);
-  await desk.locator(`[data-session="${session.id}"] button`).first().click();
   return { rpc, session, desk, context };
 }
 
@@ -42,7 +41,8 @@ test("the Review tab measures, adopts a plan and deletes a session's data on con
   request,
 }) => {
   const { rpc, session, desk, context } = await rehearsed(browser, request);
-  await desk.locator('[data-tab="review"]').click();
+  await desk.locator("[data-history] summary").click();
+  await desk.locator(`[data-session="${session.id}"] [data-review-session]`).click();
   const review = desk.locator("[data-review]");
   await expect(review).toBeVisible();
 
@@ -73,14 +73,17 @@ test("the Review tab measures, adopts a plan and deletes a session's data on con
   await review.locator("[data-delete-confirm]").click();
   await expect(desk.locator("[data-note]")).toContainText("close it before deleting");
 
-  // Closing a rehearsal asks whether it was a timed run; "yes" keeps the times.
-  await desk.locator('[data-tab="prepare"]').click();
-  await desk.locator(`[data-session="${session.id}"] [data-close]`).click();
-  await desk.locator(`[data-session="${session.id}"] [data-close-timed]`).click();
+  // Ending a rehearsal asks whether it was a timed run; "yes" keeps the times, and the desk
+  // comes back to its review.
+  await desk.locator("[data-back]").click();
+  await desk.locator("[data-history] summary").click();
+  await desk.locator(`[data-session="${session.id}"] [data-present-session]`).click();
+  await desk.locator("[data-close]").click();
+  await desk.locator("[data-close-timed]").click();
   await expect.poll(async () => (await rpc("timingsList", [key, session.id])).length).toBe(2);
+  await expect(review).toBeVisible();
 
   // Now the deletion goes through, and it is verified by listing, not by announcement.
-  await desk.locator('[data-tab="review"]').click();
   await review.locator("[data-delete]").click();
   await review.locator("[data-delete-confirm]").click();
   await expect(desk.locator("[data-note]")).toContainText("0 timings left");
@@ -98,10 +101,11 @@ test("closing a rehearsal that was not a timed run discards its times", async ({
   request,
 }) => {
   const { rpc, session, desk, context } = await rehearsed(browser, request);
-  await desk.locator(`[data-session="${session.id}"] [data-close]`).click();
-  await desk.locator(`[data-session="${session.id}"] [data-close-untimed]`).click();
+  await desk.locator("[data-history] summary").click();
+  await desk.locator(`[data-session="${session.id}"] [data-present-session]`).click();
+  await desk.locator("[data-close]").click();
+  await desk.locator("[data-close-untimed]").click();
   await expect.poll(async () => (await rpc("timingsList", [key, session.id])).length).toBe(0);
-  await desk.locator('[data-tab="review"]').click();
   await expect(desk.locator("[data-review] [data-empty]")).toBeVisible();
   await context.close();
 });
