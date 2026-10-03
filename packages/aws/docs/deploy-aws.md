@@ -236,6 +236,18 @@ zone comes from the bootstrap stack (`slidesend bootstrap --deploy`, see
 Delegate the domain to them before the first `slidesend deploy`: the certificate is validated
 over DNS.
 
+## Runtimes
+
+Everything runs on Node.js 24: your machine and CI (`.nvmrc`, `engines`), and every Lambda of
+the stack. `@slidesend/aws` moves each Node.js function to `nodejs24.x`, whatever runtime AWS
+Blocks or the CDK would pick, and names every exception in a warning when the stack is
+synthesized. There are two, both from libraries:
+
+| What | Runtime | Why |
+|---|---|---|
+| The two functions that copy the site to S3 (`Custom::CDKBucketDeployment`) | Python 3.13 | The CDK's `BucketDeployment` is written in Python and has no Node.js variant. They run only during a deploy. |
+| The agent's AgentCore runtime (with `@slidesend/agent`) | Node.js 22 | AgentCore offers no Node.js 24 runtime yet. |
+
 ## Updating and removing
 
 Run `slidesend deploy` again after every change; only what changed is updated. Answers and

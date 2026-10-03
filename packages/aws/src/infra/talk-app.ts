@@ -9,7 +9,8 @@
  */
 import { join } from "node:path";
 import { BlocksPresets, BlocksStack, Hosting } from "@aws-blocks/blocks/cdk";
-import { App, RemovalPolicy } from "aws-cdk-lib";
+import { App, Aspects, RemovalPolicy } from "aws-cdk-lib";
+import { NodeRuntimePolicy } from "./runtime-policy";
 import { publicVariables, talkInput } from "./talk-input";
 
 const input = talkInput(process.env.SLIDESEND_DEPLOY);
@@ -43,5 +44,8 @@ new Hosting(stack, "Web", {
   api: stack,
   ...(input.domain ? { domain: { domainName: input.domain, hostedZone: input.domain } } : {}),
 });
+
+// Every Lambda on Node.js 24, whatever the libraries default to.
+Aspects.of(app).add(new NodeRuntimePolicy());
 
 app.synth();
