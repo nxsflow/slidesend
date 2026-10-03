@@ -1,0 +1,101 @@
+name: release
+
+# Every merge into main that carries a changeset is a release (docs/releasing.md): the versions
+# are bumped by Changesets, committed back to main and tagged, the packages are published to npm
+# with provenance, and a GitHub release carries the changelog. In pre mode
+# (`pnpm changeset pre enter alpha`) the version and the tag carry alpha or beta, npm gets the
+# dist-tag of the same name, and the GitHub release is marked as a pre-release.
+#
+# A merge without a changeset releases nothing. A version that is on main but not yet on npm
+# (a run that failed after the commit) is published by the next run; start one by hand with
+# "Run workflow".
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # the release commit, the tag and the GitHub release
+  id-token: write # npm provenance
+
+# One release at a time, never cancelled halfway.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    environment: npm
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Look for changesets
+        id: pending
+        run: |
+          if find .changeset -maxdepth 1 -name '*.md' ! -name README.md | grep -q .; then
+            echo "version=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No changeset: nothing to version."
+          fi
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - run: pnpm install --frozen-lockfile
+      - name: Version
+        if: steps.pending.outputs.version == 'true'
+        run: pnpm changeset version
+      - name: What to release
+        id: release
+        run: |
+          version=$(node -p "require('./packages/core/package.json').version")
+          tag=$(node -p "const fs=require('fs');const p='.changeset/pre.json';fs.existsSync(p)&&JSON.parse(fs.readFileSync(p,'utf8')).mode==='pre'?JSON.parse(fs.readFileSync(p,'utf8')).tag:'latest'")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          if npm view "@slidesend/core@$version" version >/dev/null 2>&1; then
+            echo "v$version is on npm already."
+          elif [ "$version" = "0.0.0" ]; then
+            echo "Nothing has been versioned yet."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+      - run: pnpm --filter gravity exec playwright install --with-deps chromium
+        if: steps.release.outputs.publish == 'true'
+      # The release is the code that was just checked, versions included.
+      - run: pnpm check
+        if: steps.release.outputs.publish == 'true'
+      - name: Commit and tag the release
+        if: steps.pending.outputs.version == 'true'
+        env:
+          VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(release): v$VERSION"
+          git tag "v$VERSION"
+          git push origin HEAD:main "v$VERSION"
+      - name: Publish to npm
+        if: steps.release.outputs.publish == 'true'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          TAG: ${{ steps.release.outputs.tag }}
+        # Packages already on npm in this version are skipped, so a rerun finishes a release.
+        run: pnpm -r --filter "./packages/*" publish --tag "$TAG" --access public --provenance --no-git-checks
+      - name: GitHub release
+        if: steps.release.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.release.outputs.version }}
+          TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          git tag "v$VERSION" 2>/dev/null && git push origin "v$VERSION" || true
+          awk -v v="## $VERSION" '$0==v{on=1;next} /^## /{if(on)exit} on' packages/core/CHANGELOG.md > notes.md
+          prerelease=""; [ "$TAG" != "latest" ] && prerelease="--prerelease"
+          gh release view "v$VERSION" >/dev/null 2>&1 || gh release create "v$VERSION" --title "v$VERSION" --notes-file notes.md $prerelease

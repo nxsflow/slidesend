@@ -52,6 +52,7 @@ describe("links in the docs", () => {
     ...documents(),
     join(repositoryRoot, "examples", "gravity", "AGENTS.md"),
     join(repositoryRoot, "docs", "docs-tests.md"),
+    join(repositoryRoot, "docs", "releasing.md"),
   ];
   for (const file of files) {
     it(`lead somewhere in ${relative(repositoryRoot, file)}`, () => {

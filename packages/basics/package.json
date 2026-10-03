@@ -1,7 +1,7 @@
 {
   "name": "@slidesend/basics",
   "version": "0.0.0",
-  "description": "The section template, generic blocks, simple activities and the default design for Slidesend.",
+  "description": "The section template, generic blocks, polls and text questions, and the default design for Slidesend talks.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
@@ -39,5 +39,24 @@
   },
   "dependencies": {
     "qrcode": "^1.5.4"
+  },
+  "homepage": "https://github.com/nxsflow/slidesend/tree/main/packages/basics#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxsflow/slidesend.git",
+    "directory": "packages/basics"
+  },
+  "bugs": {
+    "url": "https://github.com/nxsflow/slidesend/issues"
+  },
+  "keywords": [
+    "slidesend",
+    "presentation",
+    "slides",
+    "audience",
+    "talk"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
