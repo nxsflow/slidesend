@@ -4,7 +4,7 @@ name: release
 #
 # `prepare` holds no write access: it versions the pending changesets on the newest main,
 # decides with scripts/release-plan.mjs what to commit, tag and publish, and checks exactly that
-# state. `release` holds the write access and the npm token and runs no code of this repository:
+# state. `release` holds the write access and npm's trust and runs no code of this repository:
 # it pushes the release commit and its tag in one atomic push, and only then publishes to npm
 # and creates the GitHub release. If main moved in between, the push fails, nothing is
 # published, and the run of the newer push releases instead.
@@ -82,7 +82,7 @@ jobs:
     environment: npm
     permissions:
       contents: write # the release commit, the tag and the GitHub release
-      id-token: write # npm provenance
+      id-token: write # npm trusted publishing (OIDC) and provenance
     env:
       VERSION: ${{ needs.prepare.outputs.version }}
       DIST_TAG: ${{ needs.prepare.outputs.dist-tag }}
@@ -129,16 +129,15 @@ jobs:
         if: needs.prepare.outputs.publish == 'true'
         with:
           node-version-file: .nvmrc
-          registry-url: https://registry.npmjs.org
       # Only to resolve workspace:^ while packing; no install script runs here.
       - run: pnpm install --frozen-lockfile --ignore-scripts
         if: needs.prepare.outputs.publish == 'true'
       - name: Publish to npm
         if: needs.prepare.outputs.publish == 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        # Packages already on npm in this version are skipped, so a rerun finishes a release. No
-        # lifecycle script runs while the token is in reach.
+        # No token: npm trusts this workflow in the environment npm (trusted publishing), and pnpm
+        # exchanges the job's OIDC token for a short-lived one per package. Packages already on
+        # npm in this version are skipped, so a rerun finishes a release. No lifecycle script
+        # runs while publishing.
         run: pnpm -r --filter "./packages/*" publish --tag "$DIST_TAG" --access public --provenance --no-git-checks --ignore-scripts
       - name: GitHub release
         if: needs.prepare.outputs.publish == 'true'

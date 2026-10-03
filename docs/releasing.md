@@ -33,7 +33,7 @@ triggered it, which may be older by the time a queued run starts). `scripts/rele
 If something is to be published, it runs `pnpm check` on exactly that state. It hands over the
 changes as a patch and the built packages as an artifact.
 
-**`release`** runs in the environment `npm`, with write access and the token, and runs no code
+**`release`** runs in the environment `npm`, with write access and npm's trust, and runs no code
 of this repository:
 
 1. pushes `chore(release): vX.Y.Z` and the tag `vX.Y.Z` in one atomic push; if `main` moved in
@@ -61,8 +61,10 @@ release can collect them into one changelog entry; they are not pending changese
 
 ## Access to npm
 
-The workflow runs in the GitHub environment `npm`, which admits only `main`, and reads the secret
-`NPM_TOKEN` from it: a granular npm access token that may publish the `@slidesend` packages.
+There is no npm token. Every package trusts this repository's workflow `release.yml` in the
+GitHub environment `npm` (npm **trusted publishing**): the job proves who it is with its OIDC
+token, and npm hands out a short-lived publish token for that one package. The environment admits
+only `main`:
 
 ```sh
 REPO=nxsflow/slidesend
@@ -70,12 +72,14 @@ gh api --method PUT repos/$REPO/environments/npm \
   -F "deployment_branch_policy[protected_branches]=false" \
   -F "deployment_branch_policy[custom_branch_policies]=true"
 gh api --method POST repos/$REPO/environments/npm/deployment-branch-policies -f name=main
-gh secret set NPM_TOKEN --env npm      # paste the token
 ```
 
-Once the packages exist on npm, switch to trusted publishing: on npmjs.com, add this repository
-and the workflow `release.yml` (environment `npm`) as trusted publisher of each of the five
-packages, then delete the token and the secret.
+A **new package** cannot use trusted publishing before it exists on npm. Publish its first
+version with a granular access token (a secret `NPM_TOKEN` in the environment `npm`, passed as
+`NODE_AUTH_TOKEN` to the publish step), then, on the package's **Settings → Trusted Publisher**
+on npmjs.com, add GitHub Actions with organization `nxsflow`, repository `slidesend`, workflow
+`release.yml` and environment `npm`, and remove the token again. With every package trusting the
+workflow, **Publishing access → disallow tokens** on npmjs.com closes the token path entirely.
 
 ## When a release stops halfway
 
@@ -84,7 +88,7 @@ packages, then delete the token and the secret.
 - **The push was rejected** (`main` moved): nothing was published; the run started by the newer
   push releases.
 - **After the push, before npm is complete** (publishing failed, or failed for some packages):
-  the version is on `main` but not on npm. Fix the cause (e.g. the token) and start the workflow
+  the version is on `main` but not on npm. Fix the cause (e.g. a missing trusted publisher) and start the workflow
   by hand (**Actions → release → Run workflow**) — or let the next merge do it: every run
   publishes the packages missing in the current version, skips those already there, tags the
   release commit if the tag is missing, and creates a missing GitHub release.
