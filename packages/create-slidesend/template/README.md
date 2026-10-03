@@ -8,8 +8,8 @@ npm run check      # validates the deck
 ```
 
 Open the desk link that `npm run dev` prints (with `#key=…`), and open the stage from the desk
-(**Prepare → Join → Open the stage**). For phones on your network, open the desk with the
-network address Vite prints instead of `localhost`, so the join code points at your machine.
+(**Prepare → Join → Open the stage**). For phones, use the desk link "for phones on this
+network": the join code points at the address the desk was opened with.
 
 `npm run check:render` and `npm run pdf` use a browser: run `npx playwright install chromium`
 once before.

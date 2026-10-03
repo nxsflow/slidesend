@@ -2,7 +2,7 @@
 
 A **session** is one run of the talk: a rehearsal on Tuesday, the live talk on Thursday, the
 same talk again next month. The **desk** at `/desk` is where you prepare, hold and review it.
-Both need a platform (AWS, or the dev bridge from [getting-started](getting-started.md#5-phones-still-without-a-cloud-account));
+Both need a platform (AWS, or the dev bridge from [getting-started](getting-started.md#2-run-it));
 in local mode the desk drives the stage in the same browser, and no audience can join.
 
 ## Sessions

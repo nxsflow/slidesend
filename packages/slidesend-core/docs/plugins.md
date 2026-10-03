@@ -12,9 +12,46 @@ deck calls.
 
 ## A block
 
-The example talk draws the Moon's orbit in three clicks. `steps` says how many clicks the block
-takes, `describe` hands each step's fields to the desk, and the component gets the current
-`step`:
+The starter talk (`npm create @nxsflow/slidesend`) brings a block of its own: a piece of the
+project's source code on the stage. A type, a Zod schema of its data, and a React component:
+
+<!-- snippet: packages/create-slidesend/template/src/plugin.tsx#code-block -->
+```tsx
+/** A block of this talk's own: a piece of this project's source code, on the stage. */
+export const code = defineBlock({
+  type: "code",
+  schema: z.object({
+    file: z.string(), // e.g. "src/deck.ts"
+    region: z.string().optional(), // the name after "// snippet:" in that file
+    caption: z.string().optional(),
+  }),
+  Component: ({ data }) => <CodeView {...data} />,
+});
+```
+<!-- end snippet -->
+
+The component gets the node's `data`, validated and with defaults applied. The deck calls the
+block like any other:
+
+<!-- snippet: packages/create-slidesend/template/src/deck.ts#use-code-block -->
+```ts
+{
+  content: code({
+    file: "src/plugin.tsx",
+    region: "code-block",
+    caption: "The block that shows this code",
+  }),
+  notes: "A type, a Zod schema, a React component. The plugin lists it; the deck calls it.",
+  minutes: 1.5,
+},
+```
+<!-- end snippet -->
+
+### A block that builds up over several clicks
+
+The example talk `examples/gravity` draws the Moon's orbit in three clicks. `steps` says how many
+clicks the block takes, `describe` hands each step's fields to the desk, and the component gets
+the current `step`:
 
 <!-- snippet: examples/gravity/src/plugin.tsx#define-block -->
 ```tsx
@@ -76,7 +113,7 @@ export const orbit = defineBlock({
 ```
 <!-- end snippet -->
 
-The deck uses it like any other block:
+The deck gives each click its caption and minutes:
 
 <!-- snippet: examples/gravity/src/deck.ts#own-block -->
 ```ts

@@ -212,7 +212,9 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
     plan.aws
       ? "That starts the AWS Blocks dev server with local mocks (no AWS account needed) and prints"
       : "That starts the dev server, with phones allowed to join from your network, and prints",
-    "a desk link that ends in #key=… — the key gives that browser control of the talk.",
+    plan.aws
+      ? "a desk link that ends in #key=… — the key gives that browser control of the talk."
+      : "desk links that end in #key=… — the key gives that browser control of the talk.",
     "",
     "  1. Open the desk link. The desk shows your notes, the clock and what comes next.",
     "  2. In the desk, Prepare: create a session and open it.",
@@ -220,9 +222,7 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
     "  4. Phones scan the code on the stage, or open the address under Join.",
     ...(plan.aws
       ? []
-      : [
-          "     Open the desk with your network address instead of localhost, so phones can reach it.",
-        ]),
+      : ["     For that, open the desk link for phones on this network, not the localhost one."]),
     "",
     "Then read src/deck.ts next to the talk: the talk explains how it is made.",
     `For \`${run("check:render")}\` and \`${run("pdf")}\`, run \`${exec} playwright install chromium\` once.`,

@@ -132,6 +132,22 @@ interface ViteLikeServer {
   };
   config?: { logger?: { info(message: string): void } };
   httpServer?: { on(event: "listening", listener: () => void): void; address(): unknown } | null;
+  /** Where Vite listens, known once it does: `local` and, with `--host`, `network` addresses. */
+  resolvedUrls?: { local: string[]; network: string[] } | null;
+  /** Prints Vite's addresses; the CLI calls it once the server listens. */
+  printUrls?(): void;
+}
+
+/** The desk links for the addresses Vite listens on: local first, then every network address. */
+export function deskLinks(
+  urls: { local: readonly string[]; network: readonly string[] },
+  secret: string,
+): string[] {
+  const link = (base: string) => `${base.replace(/\/$/, "")}/desk#key=${secret}`;
+  return [
+    ...urls.local.slice(0, 1).map((base) => `  Slidesend desk: ${link(base)}`),
+    ...urls.network.map((base) => `  Slidesend desk for phones on this network: ${link(base)}`),
+  ];
 }
 
 /**
@@ -151,10 +167,26 @@ export function slidesendDev(options: DevBridgeOptions) {
           response.end(String(error));
         });
       });
+      const log = (line: string) => (vite.config?.logger ?? console).info(line);
+      const printUrls = vite.printUrls?.bind(vite);
+      if (printUrls) {
+        // Right after Vite's own addresses, when it knows them — including the network address
+        // that phones need, so nobody has to put the desk link together by hand.
+        vite.printUrls = () => {
+          printUrls();
+          for (const line of deskLinks(
+            vite.resolvedUrls ?? { local: [], network: [] },
+            bridge.secret,
+          )) {
+            log(line);
+          }
+        };
+        return;
+      }
       vite.httpServer?.on("listening", () => {
         const address = vite.httpServer?.address() as { port?: number } | null;
         const link = `http://localhost:${address?.port ?? 5173}/desk#key=${bridge.secret}`;
-        (vite.config?.logger ?? console).info(`  Slidesend desk: ${link}`);
+        log(`  Slidesend desk: ${link}`);
       });
     },
   };
