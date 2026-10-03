@@ -62,7 +62,8 @@ jobs:
       - name: Hand over the release
         if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
         run: |
-          git add -A -- . ':!release'
+          # release/ is ignored by .gitignore, so the patch carries the versioned files only.
+          git add -A
           git diff --cached --binary > release/release.patch
       - uses: actions/upload-artifact@v4
         if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
