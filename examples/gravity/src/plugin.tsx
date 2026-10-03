@@ -1,4 +1,4 @@
-import { defineBlock, definePlugin, stepMeta } from "@nxsflow/slidesend-core";
+import { defineBlock, definePlugin, stepMeta } from "@slidesend/core";
 import { z } from "zod";
 import { token } from "./design";
 
@@ -42,7 +42,7 @@ export const sequence = defineBlock({
  * and the sideways motion that turns the fall into a circle.
  *
  * A talk-specific block: it says one thing, in one talk, and it is the reason a plugin exists at
- * all — nothing in `@nxsflow/slidesend-basics` should know what an orbit is.
+ * all — nothing in `@slidesend/basics` should know what an orbit is.
  */
 // snippet: define-block
 export const orbit = defineBlock({

@@ -39,7 +39,7 @@ export default defineConfig({
         "rm -rf .bb-data .blocks-sandbox",
         "mkdir -p .bb-data",
         `printf '{"gravity-sd-control": "${blocksSecret}"}' > .bb-data/settings.json`,
-        `node ../../packages/slidesend-core/dist/cli.js dev --port ${blocksPort}`,
+        `node ../../packages/core/dist/cli.js dev --port ${blocksPort}`,
       ].join(" && "),
       url: `http://localhost:${blocksPort}`,
       reuseExistingServer: false,

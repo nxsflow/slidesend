@@ -14,13 +14,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const root = join(import.meta.dirname, "..");
-const packages = [
-  "slidesend-core",
-  "slidesend-basics",
-  "slidesend-aws",
-  "slidesend-agent",
-  "create-slidesend",
-];
+const packages = ["core", "basics", "aws", "agent", "create"];
 const variants = [
   { name: "starter-local", packageManager: "npm", aws: false },
   { name: "starter-aws", packageManager: "pnpm", aws: true },
@@ -49,11 +43,11 @@ for (const name of packages) {
   run("pnpm", ["pack", "--pack-destination", packs], { cwd: join(root, "packages", name) });
 }
 const { version } = JSON.parse(
-  readFileSync(join(root, "packages", "create-slidesend", "package.json"), "utf8"),
+  readFileSync(join(root, "packages", "create", "package.json"), "utf8"),
 );
 const create = join(scratch, "create");
 mkdirSync(create);
-run("tar", ["-xzf", join(packs, `nxsflow-create-slidesend-${version}.tgz`), "-C", create]);
+run("tar", ["-xzf", join(packs, `slidesend-create-${version}.tgz`), "-C", create]);
 const cli = join(create, "package", "dist", "cli.js");
 
 for (const variant of variants) {

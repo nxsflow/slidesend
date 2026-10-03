@@ -3,8 +3,8 @@
  * and it takes the name of each exported variable as an API namespace (spec §4.1).
  */
 import { Scope } from "@aws-blocks/blocks";
-import { createAgentChat } from "@nxsflow/slidesend-agent/server";
-import { createAwsBackend } from "@nxsflow/slidesend-aws/server";
+import { createAgentChat } from "@slidesend/agent/server";
+import { createAwsBackend } from "@slidesend/aws/server";
 import config from "../presentation.config";
 import { agents } from "../src/agents";
 import { newtonTools } from "./tools";

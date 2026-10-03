@@ -1,7 +1,7 @@
 # A document with one sample that does not compile
 
 ```ts file=src/deck.ts
-import { defineDeck } from "@nxsflow/slidesend-core";
+import { defineDeck } from "@slidesend/core";
 
 export const deck = defineDeck({ meta: { title: "T", language: "en" }, chapters: [], slides: [] });
 ```

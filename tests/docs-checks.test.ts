@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
-import { tokenReferenceTable } from "../packages/slidesend-core/src/index";
+import { tokenReferenceTable } from "../packages/core/src/index";
 import { brokenLinks } from "./doc-links";
 import { compileSamples, samplesOf } from "./doc-samples";
 import { documents, embedSnippets, repositoryRoot } from "./doc-snippets";

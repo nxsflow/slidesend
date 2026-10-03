@@ -53,11 +53,11 @@ These files are generated from the code and must not be edited by hand:
 
 | File | Generated from |
 |---|---|
-| `packages/slidesend-core/docs/commands.md` | core's command definitions |
-| `packages/slidesend-core/docs/tokens.md` | the design token list |
-| `packages/slidesend-core/docs/messages.md` | the UI strings of every package |
-| `packages/slidesend-basics/docs/nodes.md`, `packages/slidesend-agent/docs/nodes.md` | each node's Zod schema (`nodeReferenceTable`) |
-| `packages/slidesend-aws/docs/commands.md` | the commands of `aws()` |
+| `packages/core/docs/commands.md` | core's command definitions |
+| `packages/core/docs/tokens.md` | the design token list |
+| `packages/core/docs/messages.md` | the UI strings of every package |
+| `packages/basics/docs/nodes.md`, `packages/agent/docs/nodes.md` | each node's Zod schema (`nodeReferenceTable`) |
+| `packages/aws/docs/commands.md` | the commands of `aws()` |
 
 **Failure: "keeps … in step"**: the code changed. Run `UPDATE_DOCS=1 pnpm test`, read the diff
 (it is the change users will see), and commit it. If a slot or reference shows up as `unknown`,
@@ -79,11 +79,11 @@ which works in the repository and in `node_modules` alike.
 `scripts/starter-check.mjs` does what a new user does: it packs the packages, runs the create
 command from its own tarball, and checks the talk it writes — the local variant installed with
 npm, the AWS variant with pnpm — with `typecheck`, `check:render` and `build`. The starter's code
-samples in getting-started, design and plugins are embedded from `packages/create-slidesend/template`.
+samples in getting-started, design and plugins are embedded from `packages/create/template`.
 
 **Failure**: the log ends with "The starter check failed; the files are in <folder>". The talk
 it wrote is still there: `cd` into it and rerun the failing command. A type error or an
-overflowing step is fixed in `packages/create-slidesend/template` (a workspace package, so
+overflowing step is fixed in `packages/create/template` (a workspace package, so
 `pnpm --filter slidesend-starter …` runs its scripts in place); a missing file in the new talk
-usually means `files` in `packages/create-slidesend/package.json` leaves it out.
+usually means `files` in `packages/create/package.json` leaves it out.
 

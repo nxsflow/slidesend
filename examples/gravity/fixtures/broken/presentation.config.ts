@@ -1,6 +1,6 @@
 // A deliberately broken deck for the tests of `slidesend check`.
-import { basics, defaultDesign, section } from "@nxsflow/slidesend-basics";
-import { defineDeck, definePresentation } from "@nxsflow/slidesend-core";
+import { basics, defaultDesign, section } from "@slidesend/basics";
+import { defineDeck, definePresentation } from "@slidesend/core";
 
 export default definePresentation({
   deck: defineDeck({

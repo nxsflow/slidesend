@@ -1,4 +1,4 @@
-import { agentChat } from "@nxsflow/slidesend-agent";
+import { agentChat } from "@slidesend/agent";
 import {
   diff,
   image,
@@ -14,8 +14,8 @@ import {
   text,
   textList,
   timeline,
-} from "@nxsflow/slidesend-basics";
-import { defineDeck } from "@nxsflow/slidesend-core";
+} from "@slidesend/basics";
+import { defineDeck } from "@slidesend/core";
 import { agentEnabled } from "./agents";
 import { fact, orbit, sequence } from "./plugin";
 

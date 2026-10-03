@@ -142,18 +142,18 @@ importers:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@nxsflow/slidesend-agent':
+      '@slidesend/agent':
         specifier: workspace:*
-        version: link:../../packages/slidesend-agent
-      '@nxsflow/slidesend-aws':
+        version: link:../../packages/agent
+      '@slidesend/aws':
         specifier: workspace:*
-        version: link:../../packages/slidesend-aws
-      '@nxsflow/slidesend-basics':
+        version: link:../../packages/aws
+      '@slidesend/basics':
         specifier: workspace:*
-        version: link:../../packages/slidesend-basics
-      '@nxsflow/slidesend-core':
+        version: link:../../packages/basics
+      '@slidesend/core':
         specifier: workspace:*
-        version: link:../../packages/slidesend-core
+        version: link:../../packages/core
       aws-blocks:
         specifier: link:./aws-blocks
         version: link:aws-blocks
@@ -189,63 +189,14 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
 
-  packages/create-slidesend:
-    devDependencies:
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.13.5
-      vitest:
-        specifier: ^5.0.1
-        version: 5.0.1
-
-  packages/create-slidesend/template:
-    dependencies:
-      '@nxsflow/slidesend-basics':
-        specifier: workspace:*
-        version: link:../../slidesend-basics
-      '@nxsflow/slidesend-core':
-        specifier: workspace:*
-        version: link:../../slidesend-core
-      react:
-        specifier: ^19.3.0
-        version: 19.3.0
-      react-dom:
-        specifier: ^19.3.0
-        version: 19.3.0(react@19.3.0)
-      zod:
-        specifier: ^4.6.5
-        version: 4.6.5
-    devDependencies:
-      '@playwright/test':
-        specifier: ^1.63.0
-        version: 1.63.0
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.13.5
-      '@types/react':
-        specifier: ^19.3.0
-        version: 19.3.0
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.0)
-      '@vitejs/plugin-react':
-        specifier: ^6.1.1
-        version: 6.1.1(vite@8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1))
-      typescript:
-        specifier: ~6.0.3
-        version: 6.0.3
-      vite:
-        specifier: ^8.3.0
-        version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
-
-  packages/slidesend-agent:
+  packages/agent:
     devDependencies:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@nxsflow/slidesend-core':
+      '@slidesend/core':
         specifier: workspace:*
-        version: link:../slidesend-core
+        version: link:../core
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.5
@@ -262,14 +213,14 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/slidesend-aws:
+  packages/aws:
     devDependencies:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@nxsflow/slidesend-core':
+      '@slidesend/core':
         specifier: workspace:*
-        version: link:../slidesend-core
+        version: link:../core
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.5
@@ -286,15 +237,15 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/slidesend-basics:
+  packages/basics:
     dependencies:
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
     devDependencies:
-      '@nxsflow/slidesend-core':
+      '@slidesend/core':
         specifier: workspace:*
-        version: link:../slidesend-core
+        version: link:../core
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.6
@@ -314,7 +265,7 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/slidesend-core:
+  packages/core:
     dependencies:
       qrcode:
         specifier: ^1.5.4
@@ -350,6 +301,55 @@ importers:
       zod:
         specifier: ^4.6.5
         version: 4.6.5
+
+  packages/create:
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.5
+      vitest:
+        specifier: ^5.0.1
+        version: 5.0.1(@opentelemetry/api@1.9.1)(@types/node@24.13.5)(vite@8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1))
+
+  packages/create/template:
+    dependencies:
+      '@slidesend/basics':
+        specifier: workspace:*
+        version: link:../../basics
+      '@slidesend/core':
+        specifier: workspace:*
+        version: link:../../core
+      react:
+        specifier: ^19.3.0
+        version: 19.3.0
+      react-dom:
+        specifier: ^19.3.0
+        version: 19.3.0(react@19.3.0)
+      zod:
+        specifier: ^4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@playwright/test':
+        specifier: ^1.63.0
+        version: 1.63.0
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.13.5
+      '@types/react':
+        specifier: ^19.3.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.3.0
+        version: 19.3.0(@types/react@19.3.0)
+      '@vitejs/plugin-react':
+        specifier: ^6.1.1
+        version: 6.1.1(vite@8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1))
+      typescript:
+        specifier: ~6.0.3
+        version: 6.0.3
+      vite:
+        specifier: ^8.3.0
+        version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
 
 packages:
 
