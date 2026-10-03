@@ -25,5 +25,24 @@
   "devDependencies": {
     "@types/node": "^24.0.0",
     "vitest": "^5.0.1"
+  },
+  "homepage": "https://github.com/nxsflow/slidesend/tree/main/packages/create#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxsflow/slidesend.git",
+    "directory": "packages/create"
+  },
+  "bugs": {
+    "url": "https://github.com/nxsflow/slidesend/issues"
+  },
+  "keywords": [
+    "slidesend",
+    "presentation",
+    "slides",
+    "audience",
+    "talk"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }

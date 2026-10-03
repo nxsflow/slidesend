@@ -29,3 +29,21 @@ jobs:
           name: gravity-print
           path: examples/gravity/dist/*.pdf
           if-no-files-found: error
+
+  # A pull request that changes what a package ships needs a changeset, or it never reaches npm
+  # (docs/releasing.md); an empty one says "nothing for users" on purpose.
+  changeset:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: node scripts/changeset-check.mjs "origin/$BASE_REF"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+

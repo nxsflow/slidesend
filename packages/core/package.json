@@ -1,7 +1,7 @@
 {
   "name": "@slidesend/core",
   "version": "0.0.0",
-  "description": "Deck schema, plugin, design and platform contracts, sessions, sync and the views of Slidesend.",
+  "description": "The core of Slidesend: decks in TypeScript, plugins, designs, sessions, the stage, phone and desk views, and the slidesend command.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {
@@ -67,5 +67,24 @@
   },
   "dependencies": {
     "qrcode": "^1.5.4"
+  },
+  "homepage": "https://github.com/nxsflow/slidesend/tree/main/packages/core#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nxsflow/slidesend.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/nxsflow/slidesend/issues"
+  },
+  "keywords": [
+    "slidesend",
+    "presentation",
+    "slides",
+    "audience",
+    "talk"
+  ],
+  "publishConfig": {
+    "access": "public"
   }
 }
