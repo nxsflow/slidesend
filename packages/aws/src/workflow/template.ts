@@ -23,6 +23,19 @@ export interface WorkflowInput {
   branch: string;
 }
 
+/**
+ * The actions the workflow uses, pinned to the commit of a release that runs on Node.js 24: a tag
+ * can be moved to other code, a commit cannot. The version is kept as a comment, which is what
+ * Dependabot reads to propose updates.
+ */
+export const pinnedActions = {
+  checkout: "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
+  pnpm: "pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6.0.10",
+  node: "actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0",
+  awsCredentials:
+    "aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0",
+} as const;
+
 /** A GitHub Actions expression that reads a secret of the job's environment. */
 const secret = (name: string) => `$${"{{"} secrets.${name} }}`;
 
@@ -72,15 +85,15 @@ export function deployWorkflow(input: WorkflowInput): string {
     "    timeout-minutes: 60",
     `    environment: ${input.environment}`,
     "    steps:",
-    "      - uses: actions/checkout@v7",
-    ...(input.packageManager === "pnpm" ? ["      - uses: pnpm/action-setup@v6"] : []),
-    "      - uses: actions/setup-node@v7",
+    `      - uses: ${pinnedActions.checkout}`,
+    ...(input.packageManager === "pnpm" ? [`      - uses: ${pinnedActions.pnpm}`] : []),
+    `      - uses: ${pinnedActions.node}`,
     "        with:",
     `          ${node}`,
     `          cache: ${input.packageManager}`,
     `      - run: ${install}`,
     ...check,
-    "      - uses: aws-actions/configure-aws-credentials@v6",
+    `      - uses: ${pinnedActions.awsCredentials}`,
     "        with:",
     `          role-to-assume: ${secret("AWS_DEPLOY_ROLE")}`,
     `          aws-region: ${secret("AWS_REGION")}`,
