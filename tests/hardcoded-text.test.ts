@@ -7,7 +7,7 @@ const root = join(import.meta.dirname, "..");
 // Everything a person reads in core comes from the message catalog (spec §6.5).
 describe("core shows no hardcoded text", () => {
   it("has none in its components", () => {
-    expect(findHardcodedText(join(root, "packages", "core", "src"))).toEqual([]);
+    expect(findHardcodedText(join(root, "packages", "slidesend-core", "src"))).toEqual([]);
   });
 
   it("finds text and image descriptions in a deliberately wrong fixture", () => {

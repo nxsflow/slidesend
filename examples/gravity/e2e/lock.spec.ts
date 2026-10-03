@@ -1,4 +1,4 @@
-import { lockCheck } from "@slidesend/core/checks";
+import { lockCheck } from "@nxsflow/slidesend-core/checks";
 import { hostedPort, hostedSecret } from "../playwright.config";
 
 const base = `http://localhost:${hostedPort}`;

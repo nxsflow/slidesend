@@ -1,5 +1,5 @@
+import { overflowChecks } from "@nxsflow/slidesend-core/checks";
 import { expect, type Page, test } from "@playwright/test";
-import { overflowChecks } from "@slidesend/core/checks";
 import presentation from "../presentation.config";
 
 const box = async (page: Page, selector: string) => {

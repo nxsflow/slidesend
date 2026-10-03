@@ -1,0 +1,71 @@
+{
+  "name": "@nxsflow/slidesend-core",
+  "version": "0.0.0",
+  "description": "Deck schema, plugin, design and platform contracts, sessions, sync and the views of Slidesend.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.js"
+    },
+    "./testing": {
+      "types": "./dist/testing.d.ts",
+      "import": "./dist/testing.js"
+    },
+    "./package.json": "./package.json",
+    "./checks": {
+      "types": "./dist/checks.d.ts",
+      "import": "./dist/checks.js"
+    }
+  },
+  "files": [
+    "dist",
+    "docs"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --project tsconfig.json && tsc --project tsconfig.cli.json"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "vite": "^8.0.0",
+    "vitest": "^5.0.0",
+    "zod": "^4.0.0",
+    "@playwright/test": "^1.50.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
+    "zod": "^4.6.5",
+    "@types/qrcode": "^1.5.5",
+    "@playwright/test": "^1.63.0"
+  },
+  "peerDependenciesMeta": {
+    "vitest": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    },
+    "@playwright/test": {
+      "optional": true
+    }
+  },
+  "bin": {
+    "slidesend": "./dist/cli.js"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}

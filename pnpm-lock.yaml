@@ -142,18 +142,18 @@ importers:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@slidesend/agent':
+      '@nxsflow/slidesend-agent':
         specifier: workspace:*
-        version: link:../../packages/agent
-      '@slidesend/aws':
+        version: link:../../packages/slidesend-agent
+      '@nxsflow/slidesend-aws':
         specifier: workspace:*
-        version: link:../../packages/aws
-      '@slidesend/basics':
+        version: link:../../packages/slidesend-aws
+      '@nxsflow/slidesend-basics':
         specifier: workspace:*
-        version: link:../../packages/basics
-      '@slidesend/core':
+        version: link:../../packages/slidesend-basics
+      '@nxsflow/slidesend-core':
         specifier: workspace:*
-        version: link:../../packages/core
+        version: link:../../packages/slidesend-core
       aws-blocks:
         specifier: link:./aws-blocks
         version: link:aws-blocks
@@ -189,14 +189,14 @@ importers:
         specifier: ^8.3.0
         version: 8.3.0(@types/node@24.13.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.13)(yaml@2.9.1)
 
-  packages/agent:
+  packages/slidesend-agent:
     devDependencies:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@slidesend/core':
+      '@nxsflow/slidesend-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../slidesend-core
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.5
@@ -213,14 +213,14 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/aws:
+  packages/slidesend-aws:
     devDependencies:
       '@aws-blocks/blocks':
         specifier: 0.6.0
         version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@slidesend/core':
+      '@nxsflow/slidesend-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../slidesend-core
       '@types/node':
         specifier: ^24.0.0
         version: 24.13.5
@@ -237,15 +237,15 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/basics:
+  packages/slidesend-basics:
     dependencies:
       qrcode:
         specifier: ^1.5.4
         version: 1.5.4
     devDependencies:
-      '@slidesend/core':
+      '@nxsflow/slidesend-core':
         specifier: workspace:*
-        version: link:../core
+        version: link:../slidesend-core
       '@types/qrcode':
         specifier: ^1.5.5
         version: 1.5.6
@@ -265,7 +265,7 @@ importers:
         specifier: ^4.6.5
         version: 4.6.5
 
-  packages/core:
+  packages/slidesend-core:
     dependencies:
       qrcode:
         specifier: ^1.5.4

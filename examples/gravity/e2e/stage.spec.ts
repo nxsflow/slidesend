@@ -1,5 +1,5 @@
+import { currentSlide, stageChecks } from "@nxsflow/slidesend-core/checks";
 import { expect, type Page, test } from "@playwright/test";
-import { currentSlide, stageChecks } from "@slidesend/core/checks";
 
 const current = (page: Page) => currentSlide(page);
 
