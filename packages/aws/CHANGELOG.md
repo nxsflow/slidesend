@@ -1,5 +1,12 @@
 # @slidesend/aws
 
+## 0.1.0-alpha.3
+
+### Patch Changes
+
+- 1babc9e: The workflow `slidesend workflow` writes uses pnpm/action-setup 6.1.0.
+- @slidesend/core@0.1.0-alpha.3
+
 ## 0.1.0-alpha.2
 
 ### Patch Changes

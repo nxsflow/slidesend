@@ -1,6 +1,6 @@
 {
   "name": "@slidesend/basics",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "The section template, generic blocks, polls and text questions, and the default design for Slidesend talks.",
   "license": "Apache-2.0",
   "type": "module",
