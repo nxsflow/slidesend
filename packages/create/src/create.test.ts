@@ -143,6 +143,17 @@ describe("writeProject", () => {
     expect(manifest(aws.target).dependencies["aws-blocks"]).toBe("link:./aws-blocks");
   });
 
+  it("allows esbuild's install script for pnpm, which fails an install over an ignored one", () => {
+    const withPnpm = plan({ aws: true, packageManager: "pnpm" });
+    writeProject(withPnpm);
+    expect(read(join(withPnpm.target, "pnpm-workspace.yaml"))).toContain(
+      "allowBuilds:\n  esbuild: true",
+    );
+    const withNpm = plan({ name: "npm-talk" });
+    writeProject(withNpm);
+    expect(existsSync(join(withNpm.target, "pnpm-workspace.yaml"))).toBe(false);
+  });
+
   it("refuses a folder that is not empty, and leaves it alone", () => {
     const taken = plan();
     mkdirSync(taken.target);
