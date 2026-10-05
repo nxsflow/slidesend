@@ -1,5 +1,16 @@
 # @slidesend/basics
 
+## 0.2.0
+
+### Minor Changes
+
+- f659da8: `pollMatrix` is easier to read on stage: a centered grid with large cells, each axis captioned (the first question beside the rows, the second above the columns, by their `short`), and cells shaded relative to the fullest one. `axes: { x, y }` overrides the captions.
+- b4fb76c: `section` takes an optional `eyebrow`: a short line above the title, e.g. the event or the series, in mono type and the chapter's accent. It sits in the title's own block, so it travels with a hero title and fits titles of any length.
+
+### Patch Changes
+
+- @slidesend/core@0.2.0
+
 ## 0.1.3
 
 ### Patch Changes
