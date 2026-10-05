@@ -115,6 +115,8 @@ export const deck = defineDeck({
           content: pollMatrix({
             id: "mood",
             message: "Two quick questions about falling.",
+            // The rows are the first question, the columns the second.
+            axes: { y: "Heavy things fall faster", x: "The air changes it" },
             questions: [
               {
                 id: "weight",

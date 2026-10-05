@@ -135,6 +135,9 @@ A block.
 | `questions[].options[].id` | string | yes |  |
 | `questions[].options[].label` | string | yes |  |
 | `message` | string |  |  |
+| `axes` | object |  |  |
+| `axes.x` | string |  |  |
+| `axes.y` | string |  |  |
 
 ## `pollList`
 

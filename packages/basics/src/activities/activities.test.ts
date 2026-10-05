@@ -107,6 +107,13 @@ describe("a block that shows a poll", () => {
     ]);
   });
 
+  it("takes captions for the matrix's axes, but none that are empty", () => {
+    expect(() =>
+      registry.parse("block", pollMatrix({ of: "mood", axes: { x: "Air" } })),
+    ).not.toThrow();
+    expect(problems(pollMatrix({ of: "mood", axes: { x: "" } }))).not.toEqual([]);
+  });
+
   it("does the same for free text", () => {
     expect(registry.describe(textList({ id: "ask", prompt: "What else?" })).steps).toEqual([
       {

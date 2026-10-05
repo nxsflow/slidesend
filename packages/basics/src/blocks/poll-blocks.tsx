@@ -77,10 +77,23 @@ const describeInline = (data: {
 const schemaOf = (shape: Record<string, z.ZodTypeAny>): NodeSchema =>
   z.object({ ...pollSource, ...shape }).superRefine(oneSource) as unknown as NodeSchema;
 
-/** Two questions counted against each other, one cell per participant (spec §6.5). */
+const axesSchema = z
+  .object({
+    /** The caption above the columns, i.e. the second question; defaults to its `short`. */
+    x: z.string().min(1).optional(),
+    /** The caption beside the rows, i.e. the first question; defaults to its `short`. */
+    y: z.string().min(1).optional(),
+  })
+  .optional();
+
+/**
+ * Two questions counted against each other, one cell per participant (spec §6.5): the first
+ * question's options are the rows, the second's the columns, each axis with its caption, the
+ * grid centered and as large as the panel allows.
+ */
 export const pollMatrix = defineBlock({
   type: "pollMatrix",
-  schema: schemaOf({}),
+  schema: schemaOf({ axes: axesSchema }),
   describe: (data) => ({ label: "poll", steps: describeInline(data) }),
   Component: ({ data }) => {
     const text = useText();
@@ -90,60 +103,102 @@ export const pollMatrix = defineBlock({
     if (!rows || !columns) {
       return <p data-block="pollMatrix">{text("basics.poll.needsTwo")}</p>;
     }
+    const axes = (data as { axes?: z.infer<typeof axesSchema> }).axes;
     const { cells, answered } = countMatrix(responses, rows.id, columns.id);
+    const most = Math.max(1, ...Object.values(cells).flatMap((row) => Object.values(row)));
+    const largest = Math.max(columns.options.length, rows.options.length);
+    const cell = largest <= 2 ? 190 : largest <= 3 ? 160 : 124;
+    const caption = {
+      fontSize: 30,
+      fontWeight: 600,
+      letterSpacing: "0.04em",
+      color: color("textMuted"),
+    } as const;
+    const label = { fontSize: 36, fontWeight: 600, padding: "0 20px" } as const;
     return (
-      <table
+      <div
         data-block="pollMatrix"
         data-answered={answered}
-        style={{ borderCollapse: "collapse", fontSize: 36 }}
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
       >
-        <caption
-          style={{ captionSide: "bottom", fontSize: 28, color: color("textMuted"), paddingTop: 16 }}
-        >
-          {text("basics.poll.answered", { count: answered })}
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col" style={{ padding: 16, textAlign: "left" }}>
-              {rows.short ?? rows.text} ↓ / {columns.short ?? columns.text} →
-            </th>
-            {columns.options.map((option) => (
-              <th key={option.id} scope="col" style={{ padding: 16 }}>
-                {option.label}
+        <table style={{ borderCollapse: "separate", borderSpacing: 12 }}>
+          <thead>
+            <tr>
+              <td colSpan={2} />
+              <th
+                data-axis="x"
+                scope="colgroup"
+                colSpan={columns.options.length}
+                style={{ ...caption, paddingBottom: 4 }}
+              >
+                {axes?.x ?? columns.short ?? columns.text}
               </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.options.map((row) => (
-            <tr key={row.id}>
-              <th scope="row" style={{ padding: 16, textAlign: "left" }}>
-                {row.label}
-              </th>
-              {columns.options.map((column) => {
-                const count = cells[row.id]?.[column.id] ?? 0;
-                return (
-                  <td
-                    key={column.id}
-                    data-cell={`${row.id}/${column.id}`}
+            </tr>
+            <tr>
+              <td colSpan={2} />
+              {columns.options.map((option) => (
+                <th key={option.id} scope="col" style={{ ...label, padding: "0 0 4px" }}>
+                  {option.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.options.map((row, index) => (
+              <tr key={row.id}>
+                {index === 0 && (
+                  <th
+                    data-axis="y"
+                    scope="rowgroup"
+                    rowSpan={rows.options.length}
                     style={{
-                      padding: 16,
-                      textAlign: "center",
-                      border: `2px solid ${color("border")}`,
-                      background:
-                        count > 0
-                          ? `color-mix(in oklab, var(--slidesend-accent) ${Math.min(100, 20 + count * 20)}%, transparent)`
-                          : "transparent",
+                      ...caption,
+                      writingMode: "vertical-rl",
+                      transform: "rotate(180deg)",
+                      padding: "0 4px",
                     }}
                   >
-                    {count}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    {axes?.y ?? rows.short ?? rows.text}
+                  </th>
+                )}
+                <th scope="row" style={{ ...label, textAlign: "right" }}>
+                  {row.label}
+                </th>
+                {columns.options.map((column) => {
+                  const count = cells[row.id]?.[column.id] ?? 0;
+                  return (
+                    <td
+                      key={column.id}
+                      data-cell={`${row.id}/${column.id}`}
+                      style={{
+                        width: cell,
+                        height: cell,
+                        textAlign: "center",
+                        fontSize: 56,
+                        fontWeight: 700,
+                        fontVariantNumeric: "tabular-nums",
+                        borderRadius: `var(${cssVariable("radius", "large")})`,
+                        border: `2px solid ${color("border")}`,
+                        color: count > 0 ? color("text") : color("textMuted"),
+                        background:
+                          count > 0
+                            ? `color-mix(in oklab, var(--slidesend-accent) ${Math.round(25 + (count / most) * 55)}%, transparent)`
+                            : "transparent",
+                        transition: "background 400ms ease-out",
+                      }}
+                    >
+                      {count}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ fontSize: 28, color: color("textMuted"), margin: "12px 0 0" }}>
+          {text("basics.poll.answered", { count: answered })}
+        </p>
+      </div>
     );
   },
 });

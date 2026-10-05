@@ -172,7 +172,7 @@ a line break.
 | `diff` | block | `before` and `after` side by side, with an optional `number`. |
 | `image` | block | `src`, `alt` (required), `caption`, `fit`. Put files in the project's `public/`. |
 | `qr` | block | The join code of the running session. Live only: say what paper shows. |
-| `pollMatrix` | block | Two poll questions counted against each other. Inline (`id`, `questions`) or `of` a poll. |
+| `pollMatrix` | block | Two poll questions counted against each other: the first question's options are the rows, the second's the columns. Inline (`id`, `questions`) or `of` a poll. Each axis is captioned with its question's `short`; `axes: { x, y }` overrides the captions. |
 | `pollList` | block | A poll's answers as bars, one group per question. Inline or `of` a poll. |
 | `textList` | block | Answers to a `text` question, newest first. Inline (`id`, `prompt`, `multiple`) or `of` a `text` activity; `limit` (default 8). |
 | `poll` | activity | One to four questions with two to eight `options` each. A question's `short` labels a matrix axis. |
