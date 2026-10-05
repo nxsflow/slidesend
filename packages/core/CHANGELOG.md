@@ -1,5 +1,12 @@
 # @slidesend/core
 
+## 0.1.2
+
+### Patch Changes
+
+- 2d76422: The dev bridge serves all subscriptions of a page over one event stream. With a stream per subscription, desk, stage and phone in one browser used up the browser's six connections per host a few steps into the talk: the stage stopped following the desk, phones missed the current poll, and the desk counted no stage.
+- 00a9adb: Editing a talk no longer throws the desk out of a rehearsal. The dev bridge keeps its control secret and its sessions when Vite restarts its server (after a change to `vite.config.ts`), and a reloaded desk comes back to the session it presented, at its current step.
+
 ## 0.1.1
 
 ### Patch Changes
