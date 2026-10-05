@@ -1,5 +1,12 @@
 # @slidesend/core
 
+## 0.3.0
+
+### Patch Changes
+
+- 05156ee: The desk's Present header groups what it shows under labels: Now (step and elapsed time), Against the plan (ahead or behind, in words and colour, and where the plan is at this step) and Session (kind, stages and phones, when it closes, +10 min).
+- f4c3b08: `pollMatrix`, `pollList` and `textList` take `qr: true`: a small join QR code beside the results, so latecomers can still join while the answers come in. It shows the running session's own address (a rehearsal's private link included) and nothing in local mode or in print. The plugins guide shows how a block of your own reads the join address (`useSessionInfo`, `joinUrl`).
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @slidesend/aws
 
+## 0.3.0
+
+### Patch Changes
+
+- Updated dependencies [05156ee]
+- Updated dependencies [f4c3b08]
+  - @slidesend/core@0.3.0
+
 ## 0.2.2
 
 ### Patch Changes

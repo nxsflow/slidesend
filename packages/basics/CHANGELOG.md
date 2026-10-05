@@ -1,5 +1,17 @@
 # @slidesend/basics
 
+## 0.3.0
+
+### Minor Changes
+
+- f4c3b08: `pollMatrix`, `pollList` and `textList` take `qr: true`: a small join QR code beside the results, so latecomers can still join while the answers come in. It shows the running session's own address (a rehearsal's private link included) and nothing in local mode or in print. The plugins guide shows how a block of your own reads the join address (`useSessionInfo`, `joinUrl`).
+
+### Patch Changes
+
+- Updated dependencies [05156ee]
+- Updated dependencies [f4c3b08]
+  - @slidesend/core@0.3.0
+
 ## 0.2.2
 
 ### Patch Changes
