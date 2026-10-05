@@ -11,7 +11,7 @@ const call = async (method: string, args: unknown[]) => {
     body: JSON.stringify({ method, args }),
   });
   const body = (await response.json()) as { ok: boolean; result?: unknown };
-  return body.result as { id: string; joinToken: string };
+  return body.result as { id: string; joinToken: string } & Record<string, unknown>;
 };
 
 // Desk, stage and phone in ONE browser on the dev bridge (GH #50). A browser allows six HTTP/1.1
@@ -52,5 +52,33 @@ test("desk, stage and phone in one browser stay on the same step", async ({ brow
   await expect(desk.locator("[data-status]")).toContainText("1 stage(s) · 1 phone(s)", {
     timeout: 10_000,
   });
+  await context.close();
+});
+
+// The dev server reloads the page after an edit (GH #51). The desk comes back where it was: in
+// control, presenting the same session at the same step.
+test("a reloaded desk comes back to the session it presented", async ({ browser }) => {
+  const session = await call("sessionCreate", [
+    key,
+    { kind: "rehearsal", name: `Reload ${Date.now()}` },
+  ]);
+  await call("sessionOpen", [key, session.id]);
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const desk = await context.newPage();
+  await desk.goto(`${base}/desk#key=${key}`);
+  await desk.locator("[data-history] summary").click();
+  await desk.locator(`[data-session="${session.id}"] [data-present-session]`).click();
+  await desk.locator("[data-present]").click();
+  for (let i = 0; i < 4; i++) await desk.keyboard.press("ArrowRight");
+  await expect(desk.locator("[data-position]")).toContainText("5 / ");
+  // The move has reached the server before the reload.
+  await expect
+    .poll(async () => ((await call("cursorRead", [key, session.id])) as { index?: number })?.index)
+    .toBe(4);
+
+  await desk.reload();
+  await expect(desk.locator(`[data-present][data-session-id="${session.id}"]`)).toBeVisible();
+  await expect(desk.locator("[data-position]")).toContainText("5 / ");
+  await expect(desk.locator("[data-desk]")).toHaveAttribute("data-control", "true");
   await context.close();
 });

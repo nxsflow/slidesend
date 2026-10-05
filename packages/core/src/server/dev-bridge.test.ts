@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deskLinks, parseSubscriptions, slidesendDev } from "./dev-bridge";
+import { createDevBridge, deskLinks, parseSubscriptions, slidesendDev } from "./dev-bridge";
 
 describe("the dev bridge's desk links", () => {
   it("prints one for this machine and one for each network address", () => {
@@ -44,5 +44,53 @@ describe("the dev bridge's event stream", () => {
     for (const value of [null, "", "cursor", '{"cursor":"s-1"}', '[["cursor"]]', "[[1,2]]"]) {
       expect(parseSubscriptions(value)).toBeUndefined();
     }
+  });
+});
+
+describe("a dev bridge that replaces another", () => {
+  const call = async (
+    bridge: ReturnType<typeof createDevBridge>,
+    method: string,
+    args: unknown[],
+  ) => {
+    let body = "";
+    const request = {
+      url: "/__slidesend/call",
+      method: "POST",
+      on: () => {},
+      async *[Symbol.asyncIterator]() {
+        yield JSON.stringify({ method, args });
+      },
+    };
+    const response = {
+      statusCode: 200,
+      setHeader: () => {},
+      writeHead: () => {},
+      write: () => {},
+      end: (chunk?: string) => {
+        body = chunk ?? "";
+      },
+    };
+    await bridge.middleware(request, response, () => {});
+    return JSON.parse(body) as { ok: boolean; result?: unknown };
+  };
+
+  it("keeps the secret and the sessions, as across a restart of Vite's server", async () => {
+    const first = createDevBridge({ defaultPlannedMinutes: 10 });
+    await call(first, "sessionCreate", [first.secret, { kind: "rehearsal", name: "Before" }]);
+    const second = createDevBridge({ defaultPlannedMinutes: 10 }, first);
+    expect(second.secret).toBe(first.secret);
+    const list = await call(second, "sessionList", [second.secret]);
+    expect(list.result).toEqual([expect.objectContaining({ name: "Before" })]);
+    second.close();
+  });
+
+  it("starts afresh when it is given another secret", async () => {
+    const first = createDevBridge({ defaultPlannedMinutes: 10, secret: "one" });
+    await call(first, "sessionCreate", ["one", { kind: "rehearsal", name: "Before" }]);
+    const second = createDevBridge({ defaultPlannedMinutes: 10, secret: "two" }, first);
+    expect((await call(second, "sessionList", ["two"])).result).toEqual([]);
+    expect((await call(second, "sessionList", ["one"])).ok).toBe(false);
+    second.close();
   });
 });
