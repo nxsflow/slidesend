@@ -48,6 +48,12 @@ starts the AWS Blocks dev server instead, with local mocks of the backend; it ne
 account either. It prints one desk link, on `localhost`, so phones cannot join there: for phones,
 deploy the talk ([deploy-aws](../../aws/docs/deploy-aws.md)).
 
+**Only looking at the slides?** `npm run local` starts local mode: no sessions, no phones, and
+the stage at `/stage/local`, which also takes a deep link such as
+`/stage/local?slide=welcome&step=2`. Do not reach for `vite preview` of a build for this: its `/`
+is the phone page, which waits for a session, and `?slide=` works only on a stage address. For
+paper, `npm run pdf` (below).
+
 ## 3. What you got
 
 | File | What it is |
@@ -95,6 +101,10 @@ const bridge = import.meta.env.MODE === "bridge";
 mount(presentation, { platform: bridge ? httpPlatformClient() : undefined });
 ```
 <!-- end snippet -->
+
+Every other mode is local mode; plain `vite` is one. Do not name a mode `local`: Vite refuses it
+("local cannot be used as a mode name"), because it clashes with its `.env.local` files.
+`npm run local` is `slidesend dev`, not a mode.
 
 ## 4. Change it
 
@@ -151,8 +161,9 @@ npm run pdf            # the talk and a storyboard (every slide with its notes) 
 These scripts run the `slidesend` command (`npm run check` is `npx slidesend check`); AGENTS.md
 uses the latter. `check:render` and `pdf` use a browser: run `npx playwright install chromium`
 once. They start their own dev server, take about half a minute, and print "Port 5173 is in use"
-when another one is running — harmless. A slide
-without an `id` gets one from its chapter and position, e.g. `intro-1`; give an id to every slide
+when another one is running — harmless. A script of your own that drives the browser imports
+it from the package the talk depends on, `import { chromium } from "@playwright/test"`; the bare
+`playwright` package is not installed. A slide without an `id` gets one from its chapter and position, e.g. `intro-1`; give an id to every slide
 something refers to.
 
 ## 5. Where next
