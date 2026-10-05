@@ -59,14 +59,24 @@ interface ServerResponse {
  * `{ channel, topic, message }`. `POST <base>/drop` closes every event stream, so tests can cut connections the way a
  * lost network does. Returns a connect-style middleware, the platform and the control secret.
  */
-export function createDevBridge(options: DevBridgeOptions) {
+export function createDevBridge(
+  options: DevBridgeOptions,
+  /** A bridge this one replaces: its secret and its data carry over, unless the secret changed. */
+  previous?: { secret: string; memory: MemoryPlatform; close(): void },
+) {
+  previous?.close();
+  const carried = previous && (options.secret ?? previous.secret) === previous.secret;
   const secret =
     options.secret ??
+    previous?.secret ??
     Array.from(crypto.getRandomValues(new Uint8Array(16)), (byte) =>
       byte.toString(16).padStart(2, "0"),
     ).join("");
   const base = options.basePath ?? "/__slidesend";
-  const memory: MemoryPlatform = createMemoryPlatform({ secrets: { [controlSecretName]: secret } });
+  const memory: MemoryPlatform =
+    carried && previous
+      ? previous.memory
+      : createMemoryPlatform({ secrets: { [controlSecretName]: secret } });
   // The in-memory clock only moves when told to; a dev server follows the real one.
   memory.clock.set(Date.now());
   const clockTimer = setInterval(() => memory.clock.set(Date.now()), 250);
@@ -154,6 +164,18 @@ export function createDevBridge(options: DevBridgeOptions) {
   };
 }
 
+/** A running dev bridge. */
+export type DevBridge = ReturnType<typeof createDevBridge>;
+
+/** Where the bridges of this process are kept across Vite's server restarts. */
+const bridgesKey = Symbol.for("slidesend.dev-bridges");
+
+function bridgesOfProcess(): Map<string, DevBridge> {
+  const scope = globalThis as { [bridgesKey]?: Map<string, DevBridge> };
+  if (!scope[bridgesKey]) scope[bridgesKey] = new Map();
+  return scope[bridgesKey];
+}
+
 /** The part of a Vite dev server the plugin needs. */
 interface ViteLikeServer {
   middlewares: {
@@ -189,7 +211,12 @@ export function slidesendDev(options: DevBridgeOptions) {
     name: "slidesend-dev",
     apply: "serve" as const,
     configureServer(vite: ViteLikeServer) {
-      const bridge = createDevBridge(options);
+      // Vite restarts its server in the same process when its config changes. The bridge
+      // carries over, so the printed desk link, control and the running sessions survive it.
+      const bridges = bridgesOfProcess();
+      const basePath = options.basePath ?? "/__slidesend";
+      const bridge = createDevBridge(options, bridges.get(basePath));
+      bridges.set(basePath, bridge);
       vite.middlewares.use((request, response, next) => {
         bridge.middleware(request, response, next).catch((error: unknown) => {
           response.statusCode = 500;

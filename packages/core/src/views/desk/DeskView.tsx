@@ -2,7 +2,7 @@
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
  * colours are literal here: slidesend-allow-literal-styles.
  */
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { chapterAccent } from "../../design/css";
 import { accentVariable, accentVariableAt } from "../../design/tokens";
 import type { PlatformClient } from "../../platform/contract";
@@ -10,6 +10,8 @@ import type { Session } from "../../sessions/types";
 import {
   deviceLabel,
   forgetControlSecret,
+  rememberDeskPlace,
+  rememberedDeskPlace,
   setDeviceLabel,
   storeControlSecret,
   suggestedDeviceLabel,
@@ -581,7 +583,30 @@ export function DeskView({ platform }: DeskViewProps) {
       setSecret(value);
     },
   });
-  const [stage, setStage] = useState<Stage>("start");
+  // A reload — the dev server reloads the page after an edit — comes back to where this tab was.
+  const [remembered] = useState(() => rememberedDeskPlace());
+  const [stage, setStage] = useState<Stage>(remembered?.view ?? "start");
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: once, for the remembered session
+  useEffect(() => {
+    if (remembered?.sessionId) desk.select(remembered.sessionId);
+  }, []);
+
+  // A remembered session that has ended in the meantime is not presented again; checked once,
+  // when it has loaded.
+  const restoring = useRef(remembered?.view === "present" ? remembered.sessionId : undefined);
+  useEffect(() => {
+    if (!restoring.current || desk.selected?.id !== restoring.current) return;
+    restoring.current = undefined;
+    if (desk.selected.state !== "open") setStage("start");
+  }, [desk.selected]);
+
+  useEffect(() => {
+    rememberDeskPlace({
+      view: stage,
+      ...(desk.selected ? { sessionId: desk.selected.id } : {}),
+    });
+  }, [stage, desk.selected]);
 
   useEffect(() => {
     const timer = setInterval(() => setLabel(deviceLabel() || suggestedDeviceLabel()), 1000);

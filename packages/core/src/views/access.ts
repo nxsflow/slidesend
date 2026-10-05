@@ -88,3 +88,33 @@ export function setDeviceLabel(label: string): void {
     // See above.
   }
 }
+
+const viewKey = "slidesend.desk-view";
+
+/** Where this desk tab was: the view and its session. */
+export interface DeskPlace {
+  view: "start" | "present" | "review";
+  sessionId?: string;
+}
+
+/**
+ * Where this desk tab was before the page loaded again, e.g. after the dev server reloaded it.
+ * Kept per tab, so two desks in one browser do not pull each other along.
+ */
+export function rememberedDeskPlace(): DeskPlace | undefined {
+  try {
+    const stored = JSON.parse(window.sessionStorage.getItem(viewKey) ?? "null") as DeskPlace | null;
+    return stored && ["start", "present", "review"].includes(stored.view) ? stored : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Remembers where this desk tab is. */
+export function rememberDeskPlace(place: DeskPlace): void {
+  try {
+    window.sessionStorage.setItem(viewKey, JSON.stringify(place));
+  } catch {
+    // Without storage a reload starts on the start page; nothing else to do.
+  }
+}

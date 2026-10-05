@@ -72,7 +72,8 @@ large choices:
 - **Go live** — the real talk. The audience joins at `/` with the code on the stage.
 
 One click creates the session, opens it and switches to Present; the name comes from the kind and
-the date. While a session is open, the start page puts it first, with **Continue presenting**; Rehearse and
+the date. A reload, e.g. when the dev server reloads the page after an edit, comes
+back to the session this tab presented. While a session is open, the start page puts it first, with **Continue presenting**; Rehearse and
 Go live stay below it, under "Or start another session".
 
 Folded away below:
