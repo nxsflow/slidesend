@@ -23,24 +23,6 @@ creates `./my-talk`, installs it and prints what to do next. Without a name it a
 
 With npm, options go after `--`: `npm create @slidesend@latest my-talk -- --aws`.
 
-**Until the first release**, build the packages from the repository and run the command from its
-tarball instead. This needs `git` and `pnpm` as well; the build takes a few minutes. In an empty
-folder:
-
-```sh
-git clone https://github.com/nxsflow/slidesend.git
-cd slidesend
-pnpm install
-pnpm build
-for p in core basics aws agent create; do (cd packages/$p && pnpm pack --pack-destination ../../../packs); done
-cd ..
-SLIDESEND_CREATE_TARBALLS=$PWD/packs npx --yes --package ./packs/slidesend-create-0.0.0.tgz create-slidesend my-talk
-```
-
-`SLIDESEND_CREATE_TARBALLS` makes the new talk install the packed packages instead of the
-released ones. Its `package.json` then points at the files in `packs/` by absolute path, so keep
-that folder where it is for as long as you reinstall.
-
 ## 2. Run it
 
 ```sh
@@ -173,6 +155,8 @@ something refers to.
 
 ## 5. Where next
 
+- [building-a-talk](building-a-talk.md): turn the starter into your talk, with your coding
+  agent: the decisions it asks for, the structure, the design, own templates.
 - [writing-slides](writing-slides.md): chapters, steps, notes, timing and every node of
   `@slidesend/basics`.
 - [design](design.md): your colors, fonts and logo.

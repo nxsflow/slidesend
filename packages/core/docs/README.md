@@ -3,12 +3,15 @@
 Slidesend is a presentation tool for talks in which the audience takes part on their phones. A
 deck is TypeScript; the design, the hosting platform and every slide type come from plugins.
 These docs ship inside the packages, so a coding agent in a talk project finds them under
-`node_modules/@slidesend/*/docs`.
+`node_modules/@slidesend/*/docs`. An agent building a talk starts with
+[building-a-talk](building-a-talk.md).
 
 | Document | Question it answers |
 |---|---|
 | [getting-started](getting-started.md) | From an empty folder to a running talk, locally. |
+| [building-a-talk](building-a-talk.md) | For the agent: the decisions to ask for, setting up, structuring the content, design, own templates. |
 | [writing-slides](writing-slides.md) | Deck, chapters, nodes, steps, timing; the nodes of `@slidesend/basics`. |
+| [nodes of the basics](../../basics/docs/nodes.md) | Every node of `@slidesend/basics`, with an example each. |
 | [plugins](plugins.md) | Your own template, block and activity; coupled plugins. |
 | [design](design.md) | Tokens, surfaces, frames, the three phone pages. |
 | [agents](../../agent/docs/agents.md) | Defining an agent, the chat, the cost guard. |
