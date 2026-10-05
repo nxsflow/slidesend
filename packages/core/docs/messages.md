@@ -41,12 +41,16 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.present.back` | Start page |
 | `core.desk.present.close` | Close |
 | `core.desk.present.cue` | Cue |
+| `core.desk.present.elapsed` | elapsed |
 | `core.desk.present.end` | End session |
 | `core.desk.present.endCancel` | Keep going |
 | `core.desk.present.endConfirm` | End it |
 | `core.desk.present.endLive` | End the live session? Phones show the closing page. |
 | `core.desk.present.extend` | +10 min |
 | `core.desk.present.fullscreen` | Fullscreen |
+| `core.desk.present.groupNow` | Now |
+| `core.desk.present.groupPlan` | Against the plan |
+| `core.desk.present.groupSession` | Session |
 | `core.desk.present.join` | Phones join at |
 | `core.desk.present.jump` | Jump |
 | `core.desk.present.jumpTitle` | Jump to a slide |
@@ -60,10 +64,15 @@ that no installed package has is a validation error. Plugins ship their own keys
 | `core.desk.present.now` | Now on stage |
 | `core.desk.present.openStage` | Open the stage |
 | `core.desk.present.phones` | Phones · {count} |
-| `core.desk.present.planned` | plan {time} |
+| `core.desk.present.planned` | the plan is at {time} here |
 | `core.desk.present.position` | {step} / {total} |
 | `core.desk.present.previous` | Back |
 | `core.desk.present.shortcuts` | → or space: next · ←: back · G: jump · ?: this list · Esc: close |
+| `core.desk.present.stepUnit` | step |
+| `core.desk.present.tone.ahead` | ahead |
+| `core.desk.present.tone.behind` | behind |
+| `core.desk.present.tone.late` | late |
+| `core.desk.present.tone.onTime` | on time |
 | `core.desk.review.adopt` | Adopt as plan |
 | `core.desk.review.adopted` | Adopted. The plan now wins over the deck's minutes. |
 | `core.desk.review.back` | Start page |
