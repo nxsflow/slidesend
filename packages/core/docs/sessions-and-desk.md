@@ -45,7 +45,9 @@ A session moves through `draft` → `armed` → `open` → `closed`.
 | Storyboard | `/storyboard`: the whole talk on one page |
 
 Phones always come back to the right slide on their own: after a reconnect, after the phone was
-locked, when the network returns.
+locked, when the network returns. On AWS a phone also opens its live connection afresh whenever it wakes up,
+because a locked phone's connection can die without anyone noticing, and then reads what it
+missed: the slide and the answers.
 
 ## Control
 

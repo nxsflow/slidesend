@@ -1,4 +1,8 @@
-import { type PlatformClient, PlatformDisconnectedError } from "@slidesend/core";
+import {
+  browserEnvironment,
+  type PlatformClient,
+  PlatformDisconnectedError,
+} from "@slidesend/core";
 
 /** A live subscription, as the Blocks client middleware hands it out. */
 interface BlocksChannel {
@@ -11,6 +15,15 @@ interface BlocksChannel {
 /** The generated client of the `slidesend` API namespace from the project's `aws-blocks`. */
 export type SlidesendNamespace = Record<string, (...args: never[]) => Promise<unknown>>;
 
+/** Options of `awsClient`. */
+export interface AwsClientOptions {
+  /**
+   * Calls `handler` when the page wakes up: visible again, back online, shown from the
+   * back-forward cache. Defaults to the browser's signals; tests pass their own.
+   */
+  onWake?(handler: () => void): () => void;
+}
+
 /**
  * The browser's `PlatformClient` on AWS (spec §8): calls go through the typed client that AWS
  * Blocks generates, subscriptions through the Realtime channels the backend hands out.
@@ -21,11 +34,14 @@ export type SlidesendNamespace = Record<string, (...args: never[]) => Promise<un
  * mount(presentation, { platform: awsClient({ slidesend }) });
  * ```
  */
-export function awsClient(namespaces: {
-  slidesend: unknown;
-  /** Further namespaces a plugin's server half exports, e.g. `agentChat` (spec §4.1). */
-  [name: string]: unknown;
-}): PlatformClient {
+export function awsClient(
+  namespaces: {
+    slidesend: unknown;
+    /** Further namespaces a plugin's server half exports, e.g. `agentChat` (spec §4.1). */
+    [name: string]: unknown;
+  },
+  options: AwsClientOptions = {},
+): PlatformClient {
   type Namespace = Record<string, (...args: unknown[]) => Promise<unknown>>;
   const api = namespaces.slidesend as Namespace;
   /** `"agentChat.send"` is the method `send` of the namespace `agentChat`; a bare name is core's. */
@@ -42,6 +58,24 @@ export function awsClient(namespaces: {
     connected = next;
     for (const handler of statusHandlers) handler(next);
   };
+  /** Tells every listener the client is connected, also if it was: they read again. */
+  const announce = () => {
+    connected = true;
+    for (const handler of statusHandlers) handler(true);
+  };
+  /** Every open subscription, to open again when the page wakes up. */
+  const live = new Set<{ reopen(): Promise<void> }>();
+  // A socket can die silently while a phone is locked; nothing reports it until a message is
+  // missed. So every subscription is opened afresh on waking, as the talk this tool came from
+  // did, and the listeners read what they missed (spec §11).
+  const onWake =
+    options.onWake ??
+    ((handler: () => void) =>
+      typeof document === "undefined" ? () => {} : browserEnvironment().onWake(handler));
+  onWake(() => {
+    if (live.size === 0) return;
+    void Promise.allSettled([...live].map((entry) => entry.reopen())).then(announce);
+  });
 
   return {
     async call(method, args) {
@@ -63,6 +97,8 @@ export function awsClient(namespaces: {
       let stopped = false;
       let subscription: { unsubscribe(): void } | undefined;
       let attempt = 0;
+      /** The opening in flight; a second wake-up while it runs joins it instead of racing it. */
+      let opening: Promise<void> | undefined;
       const open = async () => {
         if (stopped) return;
         try {
@@ -75,12 +111,15 @@ export function awsClient(namespaces: {
             own ? await own(...topic.split("/")) : await api.subscribe?.(channel, topic)
           ) as BlocksChannel;
           if (stopped) return;
-          const created = descriptor.subscribe({
+          // The subscription this one replaces, if any; its own disconnect is not a failure.
+          subscription?.unsubscribe();
+          const created: ReturnType<BlocksChannel["subscribe"]> = descriptor.subscribe({
             onMessage: handler,
             onDisconnect(reason) {
-              if (reason === "client" || stopped) return;
+              // A replaced subscription's end is expected, not a lost connection.
+              if (reason === "client" || stopped || subscription !== created) return;
               setStatus(false);
-              setTimeout(() => void open(), Math.min(8000, 500 * 2 ** attempt++));
+              setTimeout(() => void entry.reopen(), Math.min(8000, 500 * 2 ** attempt++));
             },
           });
           subscription = created;
@@ -89,12 +128,22 @@ export function awsClient(namespaces: {
           setStatus(true);
         } catch {
           setStatus(false);
-          setTimeout(() => void open(), Math.min(8000, 500 * 2 ** attempt++));
+          setTimeout(() => void entry.reopen(), Math.min(8000, 500 * 2 ** attempt++));
         }
       };
-      void open();
+      const entry = {
+        reopen() {
+          opening ??= open().finally(() => {
+            opening = undefined;
+          });
+          return opening;
+        },
+      };
+      live.add(entry);
+      void entry.reopen();
       return () => {
         stopped = true;
+        live.delete(entry);
         subscription?.unsubscribe();
       };
     },
