@@ -15,7 +15,7 @@ const backend = createAwsBackend(scope, config);
 export const slidesend = backend.api;
 
 // The agent chat's own namespace: one Agent block per defined agent, wired by explicit
-// composition rather than discovered (spec §4.1, D4).
+// composition rather than discovered.
 export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,

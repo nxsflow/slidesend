@@ -19,7 +19,7 @@ facts, numbers or quotes for the content: ask, or leave a visible placeholder.
 | **Length** in minutes | `meta.plannedMinutes`; `minutes` on every step | 20 |
 | **Language** | `meta.language`; `messages` for the phone and desk strings ([messages](messages.md)) | `"en"` |
 | **Storyline**: the three to six chapters, each with one sentence it argues | `chapters` (`title`, and the sentence as `claim`) | proposed by the agent, confirmed by the speaker |
-| **Participation**: whether the audience answers on their phones, what and where | activities on steps; the `qr` slide | one question early, one per chapter |
+| **Participation**: whether the audience answers on their phones, what and where | activities on steps; a `qr` block on an early step | one question early, one per chapter |
 | **Design**: brand colors, fonts, logo files | `src/tokens.ts`, `src/design.tsx`, `public/` | the starter design with the speaker's colors |
 | **Own templates**: content the basics cannot show (code, a diagram that builds up, a live demo) | a plugin in the talk ([plugins](plugins.md)) | none |
 | **Hosting**: only the speaker's network, or online | `npm run dev`, or the `--aws` variant ([deploy-aws](../../aws/docs/deploy-aws.md)) | local |
@@ -51,7 +51,8 @@ tutorial about itself; turn it into the speaker's talk:
    `presentation.config.ts`.
 3. Rename the design (`name` in `src/design.tsx`), replace `public/logo.svg` and
    `public/logo-mark.svg`, and delete `public/how-it-fits.svg` once no slide shows it.
-4. Set `name` and `description` in `package.json`, and rewrite `README.md` for the talk.
+4. Set `description` in `package.json` (the name is already the folder's), and rewrite
+   `README.md` for the talk.
 5. `npm run check`.
 
 Keep `AGENTS.md`: it points every later agent session at these docs. A talk in an existing

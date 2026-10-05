@@ -52,8 +52,13 @@
     "presentation",
     "slides",
     "audience",
-    "talk"
+    "talk",
+    "ai",
+    "agent",
+    "chat",
+    "amazon-bedrock"
   ],
+  "author": "Carsten Koch",
   "publishConfig": {
     "access": "public"
   },

@@ -69,8 +69,13 @@
     "presentation",
     "slides",
     "audience",
-    "talk"
+    "talk",
+    "aws",
+    "aws-blocks",
+    "deploy",
+    "oidc"
   ],
+  "author": "Carsten Koch",
   "publishConfig": {
     "access": "public"
   },

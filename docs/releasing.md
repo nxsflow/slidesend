@@ -75,8 +75,8 @@ gh api --method POST repos/$REPO/environments/npm/deployment-branch-policies -f 
 ```
 
 A **new package** cannot use trusted publishing before it exists on npm. Publish its first
-version with a granular access token (a secret `NPM_TOKEN` in the environment `npm`, passed as
-`NODE_AUTH_TOKEN` to the publish step), then, on the package's **Settings → Trusted Publisher**
+version with a granular access token (a secret `NPM_TOKEN` in the environment `npm`; for that
+one release, add `env: NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}` to the step "Publish to npm"), then, on the package's **Settings → Trusted Publisher**
 on npmjs.com, add GitHub Actions with organization `nxsflow`, repository `slidesend`, workflow
 `release.yml` and environment `npm`, and under **Allowed actions** enable direct `npm publish`
 as well — a new trusted publisher may only stage publishes, and the workflow then fails with

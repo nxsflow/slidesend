@@ -219,7 +219,7 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
     "  1. Open the desk link. The desk shows your notes, the clock and what comes next.",
     "  2. Click Rehearse (or Go live). The desk opens a session and shows your speaker notes.",
     "  3. Open the stage from the banner at the top. Put its window on the projector.",
-    "  4. Phones scan the code on the stage, or open the address under Join.",
+    "  4. Phones scan the code on the stage, or open the address under Phones join at.",
     ...(plan.aws
       ? []
       : ["     For that, open the desk link for phones on this network, not the localhost one."]),

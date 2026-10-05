@@ -17,8 +17,10 @@ prefer it over anything you remember about Slidesend.
 - Every node of the basics: `node_modules/@slidesend/basics/docs/nodes.md`
 - Own templates (blocks, slides, activities): `node_modules/@slidesend/core/docs/plugins.md`
 - Design: `node_modules/@slidesend/core/docs/design.md`
-- Agents: `node_modules/@slidesend/agent/docs/agents.md`
-- Deploying to AWS: `node_modules/@slidesend/aws/docs/deploy-aws.md` and `continuous-deployment.md`
+- With `@slidesend/agent` installed, an AI agent for the audience:
+  `node_modules/@slidesend/agent/docs/agents.md`
+- With `@slidesend/aws` installed, deploying to AWS:
+  `node_modules/@slidesend/aws/docs/deploy-aws.md` and `continuous-deployment.md`
 
 Rules:
 

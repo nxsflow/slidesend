@@ -54,8 +54,11 @@
     "presentation",
     "slides",
     "audience",
-    "talk"
+    "talk",
+    "poll",
+    "quiz"
   ],
+  "author": "Carsten Koch",
   "publishConfig": {
     "access": "public"
   },

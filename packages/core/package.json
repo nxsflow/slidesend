@@ -82,8 +82,11 @@
     "presentation",
     "slides",
     "audience",
-    "talk"
+    "talk",
+    "react",
+    "cli"
   ],
+  "author": "Carsten Koch",
   "publishConfig": {
     "access": "public"
   },

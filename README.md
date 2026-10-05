@@ -19,7 +19,7 @@ npm run dev
 
 creates a talk, installs it and starts it, with phones from your network and no cloud account.
 The talk explains how it is made: its own design, its own plugin, the blocks of the basics and
-questions for the phones. With `--aws` it is ready to deploy. → [getting-started](packages/core/docs/getting-started.md)
+questions for the phones. With `npm create @slidesend@latest my-talk -- --aws` it is ready to deploy. → [getting-started](packages/core/docs/getting-started.md)
 
 ## Building a talk with an agent
 
@@ -70,8 +70,8 @@ afterwards (planned against measured time per step, adopt as plan, export, delet
 
 `@slidesend/aws` deploys a talk with one command: `slidesend deploy` builds the site, deploys it
 with AWS Blocks and prints the desk link with the control secret. You need an AWS account, a
-signed-in AWS CLI profile and a region. Between talks it costs about USD 1 a month;
-`slidesend destroy` removes it. → [deploy-aws](packages/aws/docs/deploy-aws.md)
+signed-in AWS CLI profile, a region, and the account bootstrapped once for the AWS CDK. Between
+talks it costs about USD 1 a month; `slidesend destroy` removes it. → [deploy-aws](packages/aws/docs/deploy-aws.md)
 
 ## Continuous deployment
 
@@ -95,15 +95,16 @@ another platform is a package of its own. → [hosting-adapters](packages/core/d
 | [`@slidesend/basics`](packages/basics) | the `section` template, generic blocks, simple activities, the default design |
 | [`@slidesend/aws`](packages/aws) | platform implementation and hosting on AWS Blocks, bootstrap, deploy, workflow |
 | [`@slidesend/agent`](packages/agent) | the agent chat activity |
+| [`@slidesend/create`](packages/create) | `npm create @slidesend`: the starter talk, local or `--aws` |
 
-Every package has a browser entry (`.`) and a server entry (`./server`); `@slidesend/core` also
-has `./testing` and `./checks`. The browser entry never imports server code, and a test
-enforces that.
+Every library package has a browser entry (`.`) and a server entry (`./server`);
+`@slidesend/core` also has `./testing` and `./checks`, `@slidesend/aws` also `./commands` and
+`./infra`. The browser entry never imports server code, and a test enforces that.
+`@slidesend/create` is only a command.
 
-[`packages/create`](packages/create) is `npm create @slidesend` and
-its starter talk. [`examples/gravity`](examples/gravity) is the example talk "How does gravity work?". It consumes
-the packages like any other talk project would, and the code samples in the docs are cut from
-it.
+[`examples/gravity`](examples/gravity) is the example talk "How does gravity work?". It consumes
+the packages like any other talk project would. The code samples in the docs are cut from it and
+from the starter talk in [`packages/create/template`](packages/create/template).
 
 ## Development
 
@@ -113,7 +114,7 @@ Requires the Node version in [`.nvmrc`](.nvmrc) and pnpm (the version is pinned 
 ```sh
 pnpm install
 pnpm --filter gravity exec playwright install chromium   # once, for the browser checks
-pnpm check                                               # build, types, lint, unit and browser tests
+pnpm check                                               # build, types, lint, tests, deck, browser, starter
 pnpm --filter gravity dev                                # run the example talk
 ```
 
@@ -126,8 +127,8 @@ for p in core basics aws agent create; do (cd packages/$p && pnpm pack --pack-de
 SLIDESEND_CREATE_TARBALLS=/tmp/packs npx --yes --package /tmp/packs/slidesend-create-*.tgz create-slidesend my-talk
 ```
 
-`pnpm check` is exactly what CI runs on every pull request. Code samples in the docs are copied
-from the example talk between `// snippet: <name>` and `// end snippet`; after changing one, run
+CI runs `pnpm check` on every pull request, plus the PDFs of the example talk and the changeset
+check. Code samples in the docs are copied from the example talk or the starter talk between `// snippet: <name>` and `// end snippet`; after changing one, run
 `UPDATE_DOCS=1 pnpm test` to copy it again. [docs/docs-tests.md](docs/docs-tests.md) explains
 every docs check and how to fix it.
 

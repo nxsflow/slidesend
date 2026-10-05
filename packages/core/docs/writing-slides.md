@@ -173,7 +173,7 @@ a line break.
 | `qr` | block | The join code of the running session. Live only: say what paper shows. |
 | `pollMatrix` | block | Two poll questions counted against each other. Inline (`id`, `questions`) or `of` a poll. |
 | `pollList` | block | A poll's answers as bars, one group per question. Inline or `of` a poll. |
-| `textList` | block | Answers to a `text` activity, newest first: `of`, `limit` (default 8). |
+| `textList` | block | Answers to a `text` question, newest first. Inline (`id`, `prompt`, `multiple`) or `of` a `text` activity; `limit` (default 8). |
 | `poll` | activity | One to four questions with two to eight `options` each. A question's `short` labels a matrix axis. |
 | `text` | activity | A free-text `prompt`; `multiple: true` lets one phone answer several times. |
 | `wait` | activity | A line of `text` for the phones while nothing is asked. |
