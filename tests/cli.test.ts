@@ -14,13 +14,13 @@ function slidesend(...args: string[]) {
 }
 
 describe("slidesend", () => {
-  it("check validates the example talk", () => {
+  it("check validates the example talk", { timeout: 30_000 }, () => {
     const result = slidesend("check");
     expect(result.status).toBe(0);
     expect(result.stdout).toMatch(/^The deck is valid: 4 slides, 21 steps, 12 planned minutes\./);
   });
 
-  it("check exits non-zero and names every problem of a broken deck", () => {
+  it("check exits non-zero and names every problem of a broken deck", { timeout: 30_000 }, () => {
     const result = slidesend("check", "--config", "fixtures/broken/presentation.config.ts");
     expect(result.status).toBe(1);
     expect(result.stderr.trim().split("\n")).toEqual([

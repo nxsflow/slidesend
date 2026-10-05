@@ -1,6 +1,7 @@
 import { activityRef, cssVariable, defineBlock, useResponses, useText } from "@slidesend/core";
 import { z } from "zod";
 import { text as textActivity, textResponses } from "../activities/simple";
+import { qrField, WithJoinQr } from "./join-qr";
 
 const color = (name: Parameters<typeof cssVariable>[1]) => `var(${cssVariable("color", name)})`;
 
@@ -22,6 +23,7 @@ export const textList = defineBlock({
       message: z.string().optional(),
       /** How many answers fit on the slide. */
       limit: z.number().int().min(1).max(40).default(8),
+      ...qrField,
     })
     .superRefine((data, context) => {
       if (Boolean(data.id && data.prompt) === Boolean(data.of)) {
@@ -54,33 +56,39 @@ export const textList = defineBlock({
     const shown = answers.slice(0, data.limit);
     const rest = answers.length - shown.length;
     return (
-      <div data-block="textList" data-answers={answers.length} style={{ display: "grid", gap: 16 }}>
-        {shown.map((answer) => (
-          <p
-            key={answer.key}
-            data-answer
-            style={{
-              margin: 0,
-              fontSize: 40,
-              padding: 20,
-              background: color("surface"),
-              borderRadius: `var(${cssVariable("radius", "large")})`,
-            }}
-          >
-            {String(answer.value)}
-          </p>
-        ))}
-        {rest > 0 && (
-          <p data-more style={{ margin: 0, fontSize: 28, color: color("textMuted") }}>
-            {strings("basics.text.more", { count: rest })}
-          </p>
-        )}
-        {answers.length === 0 && (
-          <p style={{ margin: 0, fontSize: 32, color: color("textMuted") }}>
-            {strings("basics.text.waiting")}
-          </p>
-        )}
-      </div>
+      <WithJoinQr show={data.qr}>
+        <div
+          data-block="textList"
+          data-answers={answers.length}
+          style={{ display: "grid", gap: 16 }}
+        >
+          {shown.map((answer) => (
+            <p
+              key={answer.key}
+              data-answer
+              style={{
+                margin: 0,
+                fontSize: 40,
+                padding: 20,
+                background: color("surface"),
+                borderRadius: `var(${cssVariable("radius", "large")})`,
+              }}
+            >
+              {String(answer.value)}
+            </p>
+          ))}
+          {rest > 0 && (
+            <p data-more style={{ margin: 0, fontSize: 28, color: color("textMuted") }}>
+              {strings("basics.text.more", { count: rest })}
+            </p>
+          )}
+          {answers.length === 0 && (
+            <p style={{ margin: 0, fontSize: 32, color: color("textMuted") }}>
+              {strings("basics.text.waiting")}
+            </p>
+          )}
+        </div>
+      </WithJoinQr>
     );
   },
 });

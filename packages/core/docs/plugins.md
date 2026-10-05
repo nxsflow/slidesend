@@ -250,6 +250,25 @@ the two (`poll` on one step, `pollMatrix({ of })` later). A reference to another
 schema field: `activityRef()`, `slideRef()`, or `ref("<kind>")` for ids a plugin provides,
 resolved when the deck loads.
 
+## The running session in a block
+
+A stage block can ask which session it is shown in: `useSessionInfo()` returns the session's id,
+its kind, whether a platform is behind it, and its join path. `joinUrl(info, origin)` makes the
+full join address of it — `/` in a live session, `/r/<token>` in a rehearsal — and `undefined` in
+local mode and in print, where nobody can join:
+
+```ts fragment
+import { joinUrl, useSessionInfo } from "@slidesend/core";
+
+function JoinHint() {
+  const url = joinUrl(useSessionInfo(), window.location.origin);
+  return url ? <p>Join at {url}</p> : null;
+}
+```
+
+That is how the `qr` block draws its code, and how `qr: true` on `pollMatrix`, `pollList` and
+`textList` puts a small join code beside the results.
+
 ## The plugin
 
 ```ts fragment

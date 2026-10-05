@@ -11,6 +11,7 @@ import {
 } from "@slidesend/core";
 import { z } from "zod";
 import { countAnswers, countMatrix, poll, pollQuestions } from "../activities/poll";
+import { qrField, WithJoinQr } from "./join-qr";
 
 const color = (name: Parameters<typeof cssVariable>[1]) => `var(${cssVariable("color", name)})`;
 
@@ -93,7 +94,7 @@ const axesSchema = z
  */
 export const pollMatrix = defineBlock({
   type: "pollMatrix",
-  schema: schemaOf({ axes: axesSchema }),
+  schema: schemaOf({ axes: axesSchema, ...qrField }),
   describe: (data) => ({ label: "poll", steps: describeInline(data) }),
   Component: ({ data }) => {
     const text = useText();
@@ -116,89 +117,91 @@ export const pollMatrix = defineBlock({
     } as const;
     const label = { fontSize: 36, fontWeight: 600, padding: "0 20px" } as const;
     return (
-      <div
-        data-block="pollMatrix"
-        data-answered={answered}
-        style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
-      >
-        <table style={{ borderCollapse: "separate", borderSpacing: 12 }}>
-          <thead>
-            <tr>
-              <td colSpan={2} />
-              <th
-                data-axis="x"
-                scope="colgroup"
-                colSpan={columns.options.length}
-                style={{ ...caption, paddingBottom: 4 }}
-              >
-                {axes?.x ?? columns.short ?? columns.text}
-              </th>
-            </tr>
-            <tr>
-              <td colSpan={2} />
-              {columns.options.map((option) => (
-                <th key={option.id} scope="col" style={{ ...label, padding: "0 0 4px" }}>
-                  {option.label}
+      <WithJoinQr show={(data as { qr?: boolean }).qr ?? false}>
+        <div
+          data-block="pollMatrix"
+          data-answered={answered}
+          style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
+        >
+          <table style={{ borderCollapse: "separate", borderSpacing: 12 }}>
+            <thead>
+              <tr>
+                <td colSpan={2} />
+                <th
+                  data-axis="x"
+                  scope="colgroup"
+                  colSpan={columns.options.length}
+                  style={{ ...caption, paddingBottom: 4 }}
+                >
+                  {axes?.x ?? columns.short ?? columns.text}
                 </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.options.map((row, index) => (
-              <tr key={row.id}>
-                {index === 0 && (
-                  <th
-                    data-axis="y"
-                    scope="rowgroup"
-                    rowSpan={rows.options.length}
-                    style={{
-                      ...caption,
-                      writingMode: "vertical-rl",
-                      transform: "rotate(180deg)",
-                      padding: "0 4px",
-                    }}
-                  >
-                    {axes?.y ?? rows.short ?? rows.text}
+              </tr>
+              <tr>
+                <td colSpan={2} />
+                {columns.options.map((option) => (
+                  <th key={option.id} scope="col" style={{ ...label, padding: "0 0 4px" }}>
+                    {option.label}
                   </th>
-                )}
-                <th scope="row" style={{ ...label, textAlign: "right" }}>
-                  {row.label}
-                </th>
-                {columns.options.map((column) => {
-                  const count = cells[row.id]?.[column.id] ?? 0;
-                  return (
-                    <td
-                      key={column.id}
-                      data-cell={`${row.id}/${column.id}`}
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.options.map((row, index) => (
+                <tr key={row.id}>
+                  {index === 0 && (
+                    <th
+                      data-axis="y"
+                      scope="rowgroup"
+                      rowSpan={rows.options.length}
                       style={{
-                        width: cell,
-                        height: cell,
-                        textAlign: "center",
-                        fontSize: 56,
-                        fontWeight: 700,
-                        fontVariantNumeric: "tabular-nums",
-                        borderRadius: `var(${cssVariable("radius", "large")})`,
-                        border: `2px solid ${color("border")}`,
-                        color: count > 0 ? color("text") : color("textMuted"),
-                        background:
-                          count > 0
-                            ? `color-mix(in oklab, var(--slidesend-accent) ${Math.round(25 + (count / most) * 55)}%, transparent)`
-                            : "transparent",
-                        transition: "background 400ms ease-out",
+                        ...caption,
+                        writingMode: "vertical-rl",
+                        transform: "rotate(180deg)",
+                        padding: "0 4px",
                       }}
                     >
-                      {count}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p style={{ fontSize: 28, color: color("textMuted"), margin: "12px 0 0" }}>
-          {text("basics.poll.answered", { count: answered })}
-        </p>
-      </div>
+                      {axes?.y ?? rows.short ?? rows.text}
+                    </th>
+                  )}
+                  <th scope="row" style={{ ...label, textAlign: "right" }}>
+                    {row.label}
+                  </th>
+                  {columns.options.map((column) => {
+                    const count = cells[row.id]?.[column.id] ?? 0;
+                    return (
+                      <td
+                        key={column.id}
+                        data-cell={`${row.id}/${column.id}`}
+                        style={{
+                          width: cell,
+                          height: cell,
+                          textAlign: "center",
+                          fontSize: 56,
+                          fontWeight: 700,
+                          fontVariantNumeric: "tabular-nums",
+                          borderRadius: `var(${cssVariable("radius", "large")})`,
+                          border: `2px solid ${color("border")}`,
+                          color: count > 0 ? color("text") : color("textMuted"),
+                          background:
+                            count > 0
+                              ? `color-mix(in oklab, var(--slidesend-accent) ${Math.round(25 + (count / most) * 55)}%, transparent)`
+                              : "transparent",
+                          transition: "background 400ms ease-out",
+                        }}
+                      >
+                        {count}
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p style={{ fontSize: 28, color: color("textMuted"), margin: "12px 0 0" }}>
+            {text("basics.poll.answered", { count: answered })}
+          </p>
+        </div>
+      </WithJoinQr>
     );
   },
 });
@@ -206,53 +209,55 @@ export const pollMatrix = defineBlock({
 /** The answers of a poll as a list of bars, one block per question. */
 export const pollList = defineBlock({
   type: "pollList",
-  schema: schemaOf({}),
+  schema: schemaOf({ ...qrField }),
   describe: (data) => ({ label: "poll", steps: describeInline(data) }),
   Component: ({ data }) => {
     const text = useText();
     const { id, questions } = usePollNode(data);
     const responses = useResponses(id);
     return (
-      <div data-block="pollList" style={{ display: "grid", gap: 40, fontSize: 36 }}>
-        {questions.map((question) => {
-          const counts = countAnswers(responses, question.id);
-          const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
-          return (
-            <section key={question.id} data-question={question.id}>
-              <h3 style={{ fontSize: 40, margin: "0 0 16px" }}>
-                {question.short ?? question.text}
-              </h3>
-              <div style={{ display: "grid", gap: 12 }}>
-                {question.options.map((option) => {
-                  const count = counts[option.id] ?? 0;
-                  return (
-                    <div key={option.id} data-option={option.id} data-count={count}>
-                      <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <span>{option.label}</span>
-                        <span style={{ color: color("textMuted") }}>{count}</span>
+      <WithJoinQr show={(data as { qr?: boolean }).qr ?? false}>
+        <div data-block="pollList" style={{ display: "grid", gap: 40, fontSize: 36 }}>
+          {questions.map((question) => {
+            const counts = countAnswers(responses, question.id);
+            const total = Object.values(counts).reduce((sum, count) => sum + count, 0);
+            return (
+              <section key={question.id} data-question={question.id}>
+                <h3 style={{ fontSize: 40, margin: "0 0 16px" }}>
+                  {question.short ?? question.text}
+                </h3>
+                <div style={{ display: "grid", gap: 12 }}>
+                  {question.options.map((option) => {
+                    const count = counts[option.id] ?? 0;
+                    return (
+                      <div key={option.id} data-option={option.id} data-count={count}>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <span>{option.label}</span>
+                          <span style={{ color: color("textMuted") }}>{count}</span>
+                        </div>
+                        <div style={{ background: color("border"), height: 16, borderRadius: 8 }}>
+                          <div
+                            style={{
+                              width: `${total ? (count / total) * 100 : 0}%`,
+                              height: "100%",
+                              borderRadius: 8,
+                              background: "var(--slidesend-accent)",
+                              transition: "width 400ms ease-out",
+                            }}
+                          />
+                        </div>
                       </div>
-                      <div style={{ background: color("border"), height: 16, borderRadius: 8 }}>
-                        <div
-                          style={{
-                            width: `${total ? (count / total) * 100 : 0}%`,
-                            height: "100%",
-                            borderRadius: 8,
-                            background: "var(--slidesend-accent)",
-                            transition: "width 400ms ease-out",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })}
-        <p style={{ fontSize: 28, color: color("textMuted"), margin: 0 }}>
-          {text("basics.poll.answered", { count: responses.length })}
-        </p>
-      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
+          <p style={{ fontSize: 28, color: color("textMuted"), margin: 0 }}>
+            {text("basics.poll.answered", { count: responses.length })}
+          </p>
+        </div>
+      </WithJoinQr>
     );
   },
 });

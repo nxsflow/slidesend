@@ -40,6 +40,11 @@ test("two phones answer a poll and the matrix on the stage counts them", async (
   // Each axis says what it counts: the first question beside the rows, the second above.
   await expect(matrix.locator('[data-axis="y"]')).toHaveText("Heavy things fall faster");
   await expect(matrix.locator('[data-axis="x"]')).toHaveText("The air changes it");
+  // Beside the results, the rehearsal's own join code for latecomers.
+  await expect(stage.locator("[data-join-qr]")).toHaveAttribute(
+    "data-join-qr",
+    `${base}/r/${session.joinToken}`,
+  );
 
   const answer = async (phone: Page, weight: string, air: string) => {
     await expect(phone.locator('[data-activity="mood"]')).toBeVisible();

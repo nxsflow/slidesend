@@ -117,6 +117,8 @@ export const deck = defineDeck({
             message: "Two quick questions about falling.",
             // The rows are the first question, the columns the second.
             axes: { y: "Heavy things fall faster", x: "The air changes it" },
+            // Latecomers can still join while the answers come in.
+            qr: true,
             questions: [
               {
                 id: "weight",
