@@ -60,6 +60,7 @@ deploy the talk ([deploy-aws](../../aws/docs/deploy-aws.md)).
 | `public/` | logos and pictures |
 | `AGENTS.md` | tells coding agents where these docs are |
 | `README.md`, `tsconfig.json`, `.gitignore`, `.nvmrc`, `package.json` | the usual project files; the scripts are in `package.json` |
+| `pnpm-workspace.yaml` | only with pnpm: lets esbuild run its install script, which pnpm blocks otherwise |
 
 The config lists every plugin the deck uses, and exactly one design:
 

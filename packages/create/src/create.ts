@@ -178,6 +178,14 @@ export function writeProject(plan: Plan): void {
     const template = JSON.parse(readFileSync(join(target, "package.json"), "utf8")) as Manifest;
     const manifest = manifestOf(template, overlay, plan.name, plan.source, plan.packageManager);
     writeFileSync(join(target, "package.json"), `${JSON.stringify(manifest, null, 2)}\n`);
+    if (plan.packageManager === "pnpm") {
+      // pnpm 10 and later run no dependency's install script unless it is allowed, and pnpm 12
+      // fails the install over one it ignored. esbuild (through Vite and AWS Blocks) has one.
+      writeFileSync(
+        join(target, "pnpm-workspace.yaml"),
+        "# Dependencies whose install scripts pnpm may run.\nallowBuilds:\n  esbuild: true\n",
+      );
+    }
     // npm drops a file called .gitignore from every package it publishes, so it ships renamed.
     renameSync(join(target, "_gitignore"), join(target, ".gitignore"));
   } catch (error) {
