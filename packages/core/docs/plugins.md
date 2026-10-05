@@ -118,7 +118,7 @@ The deck gives each click its caption and minutes:
 <!-- snippet: examples/gravity/src/deck.ts#own-block -->
 ```ts
 {
-  // The talk's own block, built in three clicks: what a plugin is for (spec §6.2).
+  // The talk's own block, built in three clicks: what a plugin is for.
   content: orbit({
     captions: [
       { text: "The Earth pulls." },
@@ -230,8 +230,9 @@ export const rating = defineActivity({
 - `useResponses(id)` follows every response of an activity, for a stage block or the desk tile.
 - `Monitor` is the optional live tile in the desk's speaker view.
 
-The server enforces the session: outside an open session every write is refused, and a response
-is at most 500 characters.
+The server enforces the session: outside an open session every write is refused, a text response
+is at most 500 characters and any other value at most 1000 as JSON, and one device sends at most
+50 responses to an activity.
 
 An activity that needs its own backend, such as the agent chat, ships a server factory in its
 package's `./server` entry. The talk calls it in its `aws-blocks/index.ts` with the backend's

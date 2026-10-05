@@ -141,7 +141,7 @@ export const deck = defineDeck({
         },
         // snippet: own-block
         {
-          // The talk's own block, built in three clicks: what a plugin is for (spec §6.2).
+          // The talk's own block, built in three clicks: what a plugin is for.
           content: orbit({
             captions: [
               { text: "The Earth pulls." },

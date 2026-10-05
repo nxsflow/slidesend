@@ -22,7 +22,8 @@ machine. [continuous-deployment](continuous-deployment.md) then deploys it from 
 
   With access keys, `aws configure --profile my-talk` instead. The role needs to create
   CloudFormation stacks with IAM roles, so in practice an administrator role in that account.
-  Every `slidesend` command takes `--profile my-talk`; `export AWS_PROFILE=my-talk` saves typing.
+  `bootstrap`, `deploy`, `open` and `destroy` take `--profile my-talk`; `export AWS_PROFILE=my-talk`
+  saves typing.
 - **A region**, set in the talk's config: `platform: aws({ region: "eu-central-1" })`. Any
   region with Amazon Bedrock works if the talk has an agent. `--region` on a command overrides
   it once.
@@ -31,6 +32,9 @@ machine. [continuous-deployment](continuous-deployment.md) then deploys it from 
   ```sh
   npx cdk bootstrap aws://<account-id>/eu-central-1 --profile my-talk
   ```
+
+  With a [custom domain](#a-custom-domain), bootstrap `us-east-1` as well, where CloudFront's
+  certificate lives.
 
 ## What it costs
 
@@ -48,6 +52,10 @@ Estimated from the resources the stack creates (prices of eu-central-1; check yo
 Nothing that costs money runs outside an open session, and a forgotten session closes on its own.
 
 ## Prepare the talk project
+
+A talk created with `npm create @slidesend@latest my-talk -- --aws` already has everything in
+this section: skip to [the first deployment](#the-first-deployment). The rest of this section
+adds AWS to a talk that was created without it.
 
 ### Packages
 
@@ -97,7 +105,7 @@ const backend = createAwsBackend(scope, config);
 export const slidesend = backend.api;
 
 // The agent chat's own namespace: one Agent block per defined agent, wired by explicit
-// composition rather than discovered (spec §4.1, D4).
+// composition rather than discovered.
 export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,
@@ -128,6 +136,7 @@ client that AWS Blocks generates (`client.js`), Node gets the backend:
     ".": {
       "types": "./index.ts",
       "browser": "./client.js",
+      "react-server": "./client.js",
       "import": "./client.js",
       "default": "./index.ts"
     }
@@ -233,6 +242,8 @@ prints a desk link with a local control secret. Everything from
 `aws({ region, domain: "talk.example.com" })` serves the talk under your domain. The hosted
 zone comes from the bootstrap stack (`slidesend bootstrap --deploy`, see
 [continuous-deployment](continuous-deployment.md#3-bootstrap)), which prints its name servers.
+`--deploy` runs only when every check passes, the GitHub ones included, so set up continuous
+deployment first, and bootstrap `us-east-1` for the CDK as well.
 Delegate the domain to them before the first `slidesend deploy`: the certificate is validated
 over DNS.
 
@@ -263,7 +274,7 @@ domain, a new address.
 
 | Symptom | Cause and fix |
 |---|---|
-| `No AWS identity for profile …` | The SSO session expired: `aws sso login --profile …`. |
+| `No AWS identity for profile …` or `The AWS profile "…" is not signed in` | The SSO session expired: `aws sso login --profile …`. |
 | `Has the environment been bootstrapped?` | Run the `cdk bootstrap` command above for this account and region. |
 | `The talk cannot be deployed yet. Missing: …` | Install what it names; see [Packages](#packages). |
 | The deploy fails on a bucket name | Shorten `stackId` in `.blocks/config.json`. |

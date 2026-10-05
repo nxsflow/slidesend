@@ -1,7 +1,7 @@
 # The docs tests
 
 The product docs (`README.md` and `packages/*/docs`) are tested in `pnpm check`, so that they
-cannot drift from the code (spec §15). This page says what each check guards and how to fix a
+cannot drift from the code. This page says what each check guards and how to fix a
 failure. All of them live in `tests/`; `tests/docs-checks.test.ts` proves on the fixtures in
 `tests/fixtures/docs` that each one fails when it should.
 
@@ -27,7 +27,8 @@ Everything between those two lines is generated.
 
 **Failure: "are current in …"**: the source changed, or someone edited the copy. Run
 `UPDATE_DOCS=1 pnpm test` and commit the result. Never edit an embedded copy; change the source
-in `examples/gravity` (where it is type-checked and tested) instead. "has no snippet" means the
+in `examples/gravity` or `packages/create/template` (where it is type-checked and tested)
+instead. "has no snippet" means the
 marker was renamed or removed in the source.
 
 ## 2. Free-standing samples (`doc-samples.test.ts`)
@@ -58,6 +59,7 @@ These files are generated from the code and must not be edited by hand:
 | `packages/core/docs/messages.md` | the UI strings of every package |
 | `packages/basics/docs/nodes.md`, `packages/agent/docs/nodes.md` | each node's Zod schema (`nodeReferenceTable`) |
 | `packages/aws/docs/commands.md` | the commands of `aws()` |
+| `packages/create/template/AGENTS.md` | the block in `packages/core/docs/agents-md.md` |
 
 **Failure: "keeps … in step"**: the code changed. Run `UPDATE_DOCS=1 pnpm test`, read the diff
 (it is the change users will see), and commit it. If a slot or reference shows up as `unknown`,
@@ -86,4 +88,3 @@ it wrote is still there: `cd` into it and rerun the failing command. A type erro
 overflowing step is fixed in `packages/create/template` (a workspace package, so
 `pnpm --filter slidesend-starter …` runs its scripts in place); a missing file in the new talk
 usually means `files` in `packages/create/package.json` leaves it out.
-

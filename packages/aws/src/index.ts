@@ -39,12 +39,12 @@ export function aws(options: AwsOptions): AwsPlatform {
     commands: {
       dev: {
         description:
-          "Runs the talk on the AWS Blocks dev server with local mocks and prints the desk link.",
+          "Runs the talk on the AWS Blocks dev server with local mocks and prints the desk link. Option: --port (default 3000; Vite runs on that port + 100).",
         run: async (context) => (await commands()).dev(context),
       },
       bootstrap: {
         description:
-          "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider and the deploy role. Options: --profile, --region, --environment, --branch, --role, --domain.",
+          "Checks every precondition of a first deployment and, with --deploy, creates the OIDC provider, the deploy role and, for a domain, the hosted zone. Options: --profile, --region, --environment, --branch, --role, --domain.",
         run: async (context) => (await commands()).bootstrap(context, defaults),
       },
       deploy: {
@@ -59,12 +59,12 @@ export function aws(options: AwsOptions): AwsPlatform {
       },
       destroy: {
         description:
-          "Removes the talk's stack, its data included, and says what stays: the bootstrap stack, the CDK bootstrap, a hosted zone. Options: --profile, --region.",
+          "Removes the talk's stack, its data included, and says what stays: the bootstrap stack, the CDK bootstrap, a hosted zone, the Lambda log groups. Options: --profile, --region.",
         run: async (context) => (await commands()).destroy(context, defaults),
       },
       workflow: {
         description:
-          "Writes the GitHub Actions workflow that checks the talk and deploys it via OIDC to .github/workflows/deploy.yml. Option: --force to overwrite.",
+          "Writes the GitHub Actions workflow that checks the talk and deploys it via OIDC to .github/workflows/deploy.yml. Options: --environment, --branch (as given to bootstrap), --force to overwrite.",
         run: async (context) => (await commands()).workflow(context),
       },
     },

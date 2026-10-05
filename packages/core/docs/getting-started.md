@@ -45,7 +45,8 @@ a link may steer the talk. Then:
 
 Everything lives in memory and is gone when the dev server stops. With `--aws`, `npm run dev`
 starts the AWS Blocks dev server instead, with local mocks of the backend; it needs no AWS
-account either.
+account either. It prints one desk link, on `localhost`, so phones cannot join there: for phones,
+deploy the talk ([deploy-aws](../../aws/docs/deploy-aws.md)).
 
 ## 3. What you got
 
@@ -58,7 +59,7 @@ account either.
 | `src/main.ts`, `index.html`, `vite.config.ts` | mount the talk in the browser, with the dev bridge |
 | `public/` | logos and pictures |
 | `AGENTS.md` | tells coding agents where these docs are |
-| `README.md`, `tsconfig.json`, `.gitignore`, `package.json` | the usual project files; the scripts are in `package.json` |
+| `README.md`, `tsconfig.json`, `.gitignore`, `.nvmrc`, `package.json` | the usual project files; the scripts are in `package.json` |
 
 The config lists every plugin the deck uses, and exactly one design:
 
@@ -79,7 +80,7 @@ running in memory, so phones can join:
 <!-- snippet: packages/create/template/vite.config.ts#vite -->
 ```ts
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), ...(mode === "bridge" ? [slidesendDev({ defaultPlannedMinutes: 18 })] : [])],
+  plugins: [react(), ...(mode === "bridge" ? [slidesendDev({ defaultPlannedMinutes: 20 })] : [])],
 }));
 ```
 <!-- end snippet -->
@@ -255,8 +256,8 @@ npx slidesend dev
 ```
 
 prints three links (the port is Vite's, 5173 unless taken; `--port` picks another). Open the
-**desk** (`/desk`): it shows the deck and opens the stage in a new
-window. On the stage, the arrow keys, space and the presenter remote step through the talk.
+**desk** (`/desk`): in local mode it only offers **Open the stage**, which opens the stage in a
+new window; no audience can join. On the stage, the arrow keys, space and the presenter remote step through the talk.
 The first step of the hero section is its title alone; the panels follow one click each.
 
 ### Phones, still without a cloud account
@@ -293,10 +294,9 @@ Start it with Vite directly, because phones need it to listen on the network (`-
 VITE_SLIDESEND_PLATFORM=dev npx vite --host
 ```
 
-Vite prints a desk link with the control secret after `#key=`, and the network address of your
-machine (`Network: http://192.168.…`). Open the desk link with `localhost` replaced by that
-network address: the **Join** card shows phones the address the desk was opened with. Create and
-open a session with **Rehearse**, then scan the code on the stage with a phone. Everything lives in
+Vite prints two desk links with the control secret after `#key=`. Open the one **for phones on
+this network**: the join code, and the address under **Phones join at** in the desk, use the
+address the desk was opened with. Open a session with **Rehearse**, then scan the code on the stage with a phone. Everything lives in
 memory and is gone when Vite stops. Plain `slidesend dev` still runs local mode.
 
 To give the phones something to do, add a poll; its answers fill a matrix on the stage while

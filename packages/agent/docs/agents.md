@@ -32,8 +32,8 @@ export const agents = defineAgents({
 |---|---|
 | `systemPrompt` | What the agent is told before the first message. Required. The tool never adds to it. |
 | `model` | `"fast"` (default) or `"smart"`; the platform maps the tier to a model, see [Models and cost](#models-and-cost). |
-| `label` | The name on the phone and in the desk; defaults to the key. |
-| `showPrompt` | Lets the phone show the system prompt to the audience. Off by default: a prompt can carry names, instructions and a tone nobody meant to publish. |
+| `label` | A display name; defaults to the key. Phone and desk do not show it yet: the desk tile names the key. |
+| `showPrompt` | Whether the phone's "What is this agent told?" reveals the system prompt; when off, the button shows nothing. Off by default: a prompt can carry names, instructions and a tone nobody meant to publish. |
 
 An agent's name is lowercase letters, digits and dashes: it becomes part of a block id.
 
@@ -71,7 +71,7 @@ const backend = createAwsBackend(scope, config);
 export const slidesend = backend.api;
 
 // The agent chat's own namespace: one Agent block per defined agent, wired by explicit
-// composition rather than discovered (spec §4.1, D4).
+// composition rather than discovered.
 export const agentChat = createAgentChat(scope, {
   agents,
   platform: backend.platform,

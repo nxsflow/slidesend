@@ -1,8 +1,8 @@
 # The section for a talk project's AGENTS.md
 
 Copy the block below into the `AGENTS.md` (or `CLAUDE.md`) of a talk project, so a coding agent
-working on the talk reads the docs of the installed version instead of guessing. Leave out the
-lines of packages the talk does not install.
+working on the talk reads the docs of the installed version instead of guessing. `npm create
+@slidesend` writes it into every new talk.
 
 ```markdown
 ## Slidesend
@@ -18,8 +18,10 @@ prefer it over anything you remember about Slidesend.
 - Every node of the basics: `node_modules/@slidesend/basics/docs/nodes.md`
 - Own templates (blocks, slides, activities): `node_modules/@slidesend/core/docs/plugins.md`
 - Design: `node_modules/@slidesend/core/docs/design.md`
-- Agents: `node_modules/@slidesend/agent/docs/agents.md`
-- Deploying to AWS: `node_modules/@slidesend/aws/docs/deploy-aws.md` and `continuous-deployment.md`
+- With `@slidesend/agent` installed, an AI agent for the audience:
+  `node_modules/@slidesend/agent/docs/agents.md`
+- With `@slidesend/aws` installed, deploying to AWS:
+  `node_modules/@slidesend/aws/docs/deploy-aws.md` and `continuous-deployment.md`
 
 Rules:
 

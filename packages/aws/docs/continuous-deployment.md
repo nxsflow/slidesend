@@ -18,8 +18,11 @@ push to main
                  └─ CDK deploy roles        create and update <stackId>-prod
 ```
 
-The bootstrap stack `<stackId>-bootstrap` holds the OIDC provider (or reuses the account's
-existing one), the deploy role and, for a custom domain, the hosted zone. It is separate from
+Repositories with immutable subjects turned off get `repo:<owner>/<repo>:environment:production`
+instead; `slidesend bootstrap` reads which one applies.
+
+The bootstrap stack `<stackId>-bootstrap` holds the account's GitHub OIDC provider, the deploy
+role and, for a custom domain, the hosted zone. It is separate from
 the talk's stack and survives `slidesend destroy`. The deploy role may only assume the CDK
 bootstrap roles and read the CDK bootstrap version; everything else happens through CDK.
 
@@ -65,13 +68,14 @@ checks every precondition and changes nothing:
   ok    region is known: eu-central-1
   ok    the account is CDK-bootstrapped: …
   ok    GitHub repository and its immutable ids: …
-  ok    the GitHub environment restricts the branch: "production" with a branch rule
+  ok    the GitHub environment restricts the branch: "production" admits main
   ok    the deploy secrets are set: AWS_DEPLOY_ROLE and AWS_REGION in "production"
   ok    esbuild is a dependency of the workspace root: …
   ok    .blocks/config.json names the stack: …
   ok    bucket names stay within 63 characters: …
 
   Everything is in place.
+Run `slidesend bootstrap --deploy` to create the OIDC provider and the role.
 ```
 
 Anything marked `TODO` comes with the command that fixes it. When everything is in place:
@@ -83,7 +87,7 @@ pnpm exec slidesend bootstrap --deploy --profile my-talk
 deploys `<stackId>-bootstrap` and prints the role's ARN, which must match the secret from step 2,
 and, for a custom domain, the name servers to delegate the domain to. `--environment <name>`,
 `--branch <name>` and `--role <name>` change the defaults `production`, `main` and
-`<stackId>-deploy`; pass the same `--branch` to `slidesend workflow`.
+`<stackId>-deploy`; pass the same `--environment` and `--branch` to `slidesend workflow`.
 
 The trust policy is built from the repository's **immutable ids**, which `slidesend bootstrap`
 reads from GitHub. Renaming the repository keeps them; transferring it to another owner changes
@@ -95,9 +99,10 @@ the owner id, and then `slidesend bootstrap --deploy` must run again.
 pnpm exec slidesend workflow
 ```
 
-writes `.github/workflows/deploy.yml`, fitted to the repository: where the talk sits, npm or
-pnpm, the Node version file, and whether the repository has its own `check` script (which then
-gates the deploy; otherwise `slidesend check` does). `--force` overwrites an existing file. The
+writes `.github/workflows/deploy.yml`, fitted to the repository: where the talk sits; pnpm
+(by `pnpm-lock.yaml`) or otherwise npm; `.nvmrc` at the root (otherwise Node 24); and, for a talk
+in a subfolder, whether the root has its own `check` script, which then gates the deploy (with
+Playwright installed first if the talk uses it). Otherwise `slidesend check` does. `--force` overwrites an existing file. The
 workflow of the Slidesend repository itself, for its example talk:
 
 ```yaml

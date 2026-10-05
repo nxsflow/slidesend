@@ -40,8 +40,12 @@
     "presentation",
     "slides",
     "audience",
-    "talk"
+    "talk",
+    "create",
+    "starter",
+    "ai-agents"
   ],
+  "author": "Carsten Koch",
   "publishConfig": {
     "access": "public"
   }

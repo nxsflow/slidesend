@@ -3,7 +3,8 @@
 A **session** is one run of the talk: a rehearsal on Tuesday, the live talk on Thursday, the
 same talk again next month. The **desk** at `/desk` is where you start, hold and review it.
 Both need a platform (AWS, or the dev bridge from [getting-started](getting-started.md#2-run-it));
-in local mode the desk drives the stage in the same browser, and no audience can join.
+in local mode the desk only opens the stage in the same browser, where you step through it with
+the keyboard, and no audience can join.
 
 ## Sessions
 
@@ -15,7 +16,7 @@ kept per session. Clock times belong here, never in the deck.
 | `kind` | `rehearsal` or `live`. |
 | `name` | Shown in the desk and on the phones' closed page. |
 | `plannedStart` | Optional date and time with zone; an armed session opens before it. |
-| `plannedMinutes` | The session's length; defaults to the deck's planned minutes. |
+| `plannedMinutes` | The session's length. On AWS, the deck's planned minutes; with the dev bridge, `defaultPlannedMinutes` from `vite.config.ts`. |
 | `leadMinutes` | How long before `plannedStart` an armed session opens; default 10. |
 | `graceMinutes` | How long after its planned end an open session closes on its own; default 15. |
 | `closedPageMinutes` | How long phones show the closed page afterwards; default 15. |
@@ -41,15 +42,16 @@ A session moves through `draft` → `armed` → `open` → `closed`.
 | Stage | `/stage/<sessionId>`, opened from the desk |
 | Desk | `/desk` |
 | Print | `/print` |
+| Storyboard | `/storyboard`: the whole talk on one page |
 
 Phones always come back to the right slide on their own: after a reconnect, after the phone was
 locked, when the network returns.
 
 ## Control
 
-One **control secret** per deployment decides who steers. `slidesend dev` and `slidesend deploy`
-print a desk link with the secret in the address fragment, `/desk#key=...`; `slidesend open`
-prints it again. A fragment is never sent to a server and appears in no log. The desk stores the
+One **control secret** per deployment decides who steers. The dev server (`npm run dev`) and
+`slidesend deploy` print a desk link with the secret in the address fragment, `/desk#key=...`;
+`slidesend open` prints it again. Local mode (`slidesend dev` without a platform) needs no key. A fragment is never sent to a server and appears in no log. The desk stores the
 secret and removes it from the address bar at once. Without it, the desk is view-only.
 
 Hand the link only to whoever runs the talk. A browser without the key sees the desk as **view
@@ -70,7 +72,8 @@ large choices:
 - **Go live** — the real talk. The audience joins at `/` with the code on the stage.
 
 One click creates the session, opens it and switches to Present; the name comes from the kind and
-the date. While a session is open, the start page offers **Continue presenting** instead.
+the date. While a session is open, the start page puts it first, with **Continue presenting**; Rehearse and
+Go live stay below it, under "Or start another session".
 
 Folded away below:
 
@@ -87,18 +90,19 @@ warnings on other desks can say who is in control.
 
 Dark, for a dark room, and laid out for reading aloud:
 
-- **Header**: the chapter in its accent colour and the slide, the step counter, the clock
+- **Header**: **← Start page** (the session keeps running), the chapter in its accent colour and the slide, the step counter, the clock
   (elapsed time and how far ahead or behind the plan, in colour), the session's kind, the
   connected stages and phones, when it closes, and **+10 min**.
-- **Left**: what is on stage now, what comes next, the phones' activity with its live tile, and
+- **Left**: what is on stage now (with **Fullscreen**), what comes next, the phones' activity with its live tile, and
   the join address with its QR code.
 - **Right**: the cue, highlighted, and the speaker notes in large type.
 - **Bottom bar**: Back, **Jump** (also **G**: every slide, grouped by chapter), **?** (the
   shortcuts), **End session**, Next.
 
 If no stage is connected, a slim banner says so with **Open the stage**: the stage opens in a new
-window, already authorized and bound to the session. Keys: → or space next, ← back, **G** jump,
-**?** shortcuts, Esc closes an overlay. The stage window steers with the same keys and a
+window, already authorized and bound to the session. Keys: →, ↓, PageDown or space next; ←, ↑ or
+PageUp back; Home and End the first and last step; **G** jump; **?** shortcuts; Esc closes an
+overlay. The stage window steers with the same keys and a
 presenter remote once it holds the key.
 
 **End session** asks first: for a rehearsal, whether it was a timed run ("no" discards its
@@ -112,12 +116,14 @@ Per session, after it ended or from **Earlier sessions**:
 - **Timings**: planned against measured per step. Steps with an activity are preselected for an
   estimate of audience time; unusually long dwell times are flagged.
 - **Adopt as plan** stores the measurement as the plan. An adopted plan wins over the deck's
-  `minutes` until the deck's timing changes; then it lapses with a notice.
+  `minutes` until the deck's timing changes; then it lapses with a notice. **Discard the plan**
+  removes it.
 - **Copy the analysis prompt** puts a short table (slide, planned, measured, audience time, the
   target) and two instructions into the clipboard for a coding agent: write the values into the
   deck as `minutes`, and propose cuts only if the total exceeds the target.
-- **Export responses** downloads every answer of the session.
-- **Delete session data** is the only destructive function, and it lives only here.
+- **Export responses** downloads the session as JSON: its record, every answer and the timings.
+- **Delete session data** is the only destructive function, and it lives only here. It works
+  only after the session has ended, and keeps the session in the list.
 
 Nothing is adopted automatically.
 

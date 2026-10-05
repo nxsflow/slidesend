@@ -7,6 +7,6 @@ import { defineConfig } from "vite";
 // desk in one browser, no audience — that is what `slidesend check --render` uses.
 // snippet: vite
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), ...(mode === "bridge" ? [slidesendDev({ defaultPlannedMinutes: 18 })] : [])],
+  plugins: [react(), ...(mode === "bridge" ? [slidesendDev({ defaultPlannedMinutes: 20 })] : [])],
 }));
 // end snippet

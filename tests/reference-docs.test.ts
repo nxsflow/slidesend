@@ -39,7 +39,7 @@ it("keeps packages/aws/docs/commands.md in step with the commands", () => {
   const expected = generatedDocument(
     "The commands of @slidesend/aws",
     platformCommandTable(aws({ region: "eu-central-1" })),
-    "What `aws()` adds to `slidesend`. Every command takes `--profile <name>`; see [deploy-aws](deploy-aws.md).",
+    "What `aws()` adds to `slidesend`. `bootstrap`, `deploy`, `open` and `destroy` take `--profile <name>`; see [deploy-aws](deploy-aws.md).",
   );
   expect(committed(join(packages, "aws", "docs", "commands.md"), expected)).toBe(expected);
 });
