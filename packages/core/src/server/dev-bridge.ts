@@ -14,6 +14,28 @@ export interface DevBridgeOptions {
 
 type Next = () => void;
 
+/** Reads the `subscribe` parameter of an event stream: a JSON list of `[channel, topic]`. */
+export function parseSubscriptions(value: string | null): [string, string][] | undefined {
+  try {
+    const parsed: unknown = JSON.parse(value ?? "");
+    if (
+      Array.isArray(parsed) &&
+      parsed.every(
+        (pair) =>
+          Array.isArray(pair) &&
+          pair.length === 2 &&
+          typeof pair[0] === "string" &&
+          typeof pair[1] === "string",
+      )
+    ) {
+      return parsed as [string, string][];
+    }
+  } catch {
+    // Falls through to undefined.
+  }
+  return undefined;
+}
+
 /** The parts of Node's request the bridge reads; typed here so core needs no Node types. */
 interface IncomingMessage extends AsyncIterable<Uint8Array | string> {
   url?: string;
@@ -32,8 +54,9 @@ interface ServerResponse {
 
 /**
  * Serves core's server on the in-memory platform over HTTP, for development: POST
- * `<base>/call` with `{ method, args }`, and `GET <base>/events?channel=&topic=` as Server-Sent
- * Events. `POST <base>/drop` closes every event stream, so tests can cut connections the way a
+ * `<base>/call` with `{ method, args }`, and `GET <base>/events?subscribe=[[channel, topic], …]`
+ * as Server-Sent Events, one stream for every subscription of a page, each message as
+ * `{ channel, topic, message }`. `POST <base>/drop` closes every event stream, so tests can cut connections the way a
  * lost network does. Returns a connect-style middleware, the platform and the control secret.
  */
 export function createDevBridge(options: DevBridgeOptions) {
@@ -93,8 +116,12 @@ export function createDevBridge(options: DevBridgeOptions) {
       return;
     }
     if (url.pathname === `${base}/events` && request.method === "GET") {
-      const channel = url.searchParams.get("channel") ?? "";
-      const topic = url.searchParams.get("topic") ?? "";
+      const subscriptions = parseSubscriptions(url.searchParams.get("subscribe"));
+      if (!subscriptions) {
+        response.statusCode = 400;
+        response.end("subscribe must be a JSON list of [channel, topic] pairs");
+        return;
+      }
       response.writeHead(200, {
         "content-type": "text/event-stream",
         "cache-control": "no-cache",
@@ -103,12 +130,14 @@ export function createDevBridge(options: DevBridgeOptions) {
       // Ask the browser to reconnect after one second instead of its default of about three.
       response.write("retry: 1000\n: connected\n\n");
       const connection = memory.connect(server.api);
-      const stop = connection.client.subscribe(channel, topic, (message) => {
-        response.write(`data: ${JSON.stringify(message)}\n\n`);
-      });
+      const stops = subscriptions.map(([channel, topic]) =>
+        connection.client.subscribe(channel, topic, (message) => {
+          response.write(`data: ${JSON.stringify({ channel, topic, message })}\n\n`);
+        }),
+      );
       streams.add(response);
       request.on("close", () => {
-        stop();
+        for (const stop of stops) stop();
         streams.delete(response);
       });
       return;
