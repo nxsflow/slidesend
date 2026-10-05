@@ -201,6 +201,8 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
   let sendTimer: unknown;
   let settleTimers: unknown[] = [];
   let queued: CursorTarget | undefined;
+  /** Moves of this window sent but not yet answered. */
+  let inFlight = 0;
 
   const setStatus = (next: boolean) => {
     if (next === connected) return;
@@ -217,6 +219,9 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
       if (closed) return;
       attempt = 0;
       setStatus(true);
+      // While this window's own move waits or travels, a read returns the cursor before it;
+      // applying that would pull this window back a step. The move's answer brings the cursor.
+      if (queued || inFlight > 0) return;
       cursor.apply(current ?? undefined);
     } catch {
       if (closed) return;
@@ -261,10 +266,16 @@ export function hostedTransport(options: HostedTransportOptions): CursorTranspor
         const next = queued;
         queued = undefined;
         if (!next || closed) return;
-        api.cursorGoto(secret, sessionId, next, id).then(
-          (saved) => cursor.apply(saved),
-          () => setStatus(false),
-        );
+        inFlight++;
+        api
+          .cursorGoto(secret, sessionId, next, id)
+          .then(
+            (saved) => cursor.apply(saved),
+            () => setStatus(false),
+          )
+          .finally(() => {
+            inFlight--;
+          });
       }, sendDebounceMs);
     },
     onCursor(handler) {
