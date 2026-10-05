@@ -37,6 +37,9 @@ test("two phones answer a poll and the matrix on the stage counts them", async (
   await stage.goto(`${base}/stage/${session.id}?slide=falling-1&step=2#key=${key}`);
   const matrix = stage.locator('[data-block="pollMatrix"]');
   await expect(matrix).toHaveAttribute("data-answered", "0");
+  // Each axis says what it counts: the first question beside the rows, the second above.
+  await expect(matrix.locator('[data-axis="y"]')).toHaveText("Heavy things fall faster");
+  await expect(matrix.locator('[data-axis="x"]')).toHaveText("The air changes it");
 
   const answer = async (phone: Page, weight: string, air: string) => {
     await expect(phone.locator('[data-activity="mood"]')).toBeVisible();
