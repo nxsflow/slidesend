@@ -12,6 +12,7 @@ A slide template.
 |---|---|---|---|
 | `chapter` | chapter id | yes |  |
 | `id` | string |  |  |
+| `eyebrow` | string |  |  |
 | `title` | string | yes |  |
 | `subtitle` | string |  |  |
 | `hero` | boolean |  | `false` |

@@ -169,3 +169,14 @@ describe("default design", () => {
     }
   });
 });
+
+describe("section eyebrow", () => {
+  it("is optional and never empty", () => {
+    const schema = registry.definition("section")?.schema;
+    expect(schema?.safeParse({ chapter: "c", title: "T" }).success).toBe(true);
+    expect(schema?.safeParse({ chapter: "c", title: "T", eyebrow: "ECR iN MOTiON" }).success).toBe(
+      true,
+    );
+    expect(schema?.safeParse({ chapter: "c", title: "T", eyebrow: "" }).success).toBe(false);
+  });
+});
