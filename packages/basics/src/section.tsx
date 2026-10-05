@@ -1,4 +1,5 @@
 import {
+  accentVariable,
   Block,
   blockSlot,
   cssVariable,
@@ -23,6 +24,8 @@ const panelSchema = z.object({
 });
 
 const sectionSchema = z.object({
+  /** A short line above the title, e.g. the event or the series; in the chapter's accent. */
+  eyebrow: z.string().min(1).optional(),
   title: z.string().min(1),
   subtitle: z.string().optional(),
   /**
@@ -173,6 +176,22 @@ function SectionSlide({ data, step, direction, presence }: SlideProps<SectionDat
             : {}),
         }}
       >
+        {data.eyebrow && (
+          <p
+            data-eyebrow
+            style={{
+              margin: "0 0 18px",
+              fontFamily: `var(${cssVariable("font", "mono")})`,
+              fontSize: data.hero ? 30 : 24,
+              lineHeight: 1.3,
+              fontWeight: 600,
+              letterSpacing: "0.16em",
+              color: `var(${accentVariable})`,
+            }}
+          >
+            {data.eyebrow}
+          </p>
+        )}
         <h1
           style={{
             margin: 0,
@@ -257,6 +276,7 @@ function SectionPrint({ data }: { data: SectionData }) {
   const { registry } = usePresentation();
   return (
     <div data-section-print>
+      {data.eyebrow && <p data-eyebrow>{data.eyebrow}</p>}
       <h1 style={{ fontFamily: `var(${cssVariable("font", "display")})`, margin: 0 }}>
         {data.title}
       </h1>
@@ -275,7 +295,7 @@ function SectionPrint({ data }: { data: SectionData }) {
 }
 
 /**
- * The section: a title, an optional subtitle, and panels that move horizontally like a carousel
+ * The section: an optional eyebrow line, a title, an optional subtitle, and panels that move horizontally like a carousel
  * (spec §6.1). Each panel holds one block and its step fields; a block that builds up takes as
  * many steps as it needs and stays in place while it builds. With `hero`, the section opens with
  * its title large and centered, which then travels up to become the heading.

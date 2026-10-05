@@ -31,6 +31,7 @@ export const deck = defineDeck({
     section({
       id: "why",
       chapter: "intro",
+      eyebrow: "PHYSICS · YEAR 7",
       title: "How does gravity work?",
       subtitle: "A talk in which you answer too",
       hero: true,

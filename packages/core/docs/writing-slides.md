@@ -42,6 +42,7 @@ asks the phones a question.
 section({
   id: "why",
   chapter: "intro",
+  eyebrow: "PHYSICS · YEAR 7",
   title: "How does gravity work?",
   subtitle: "A talk in which you answer too",
   hero: true,
@@ -162,7 +163,7 @@ a line break.
 
 | Node | Group | What it is |
 |---|---|---|
-| `section` | slide | Title, optional subtitle, and panels that move like a carousel. `hero: true` opens with the title large and centered. A panel has `content` (one block), `centered`, and the step fields. |
+| `section` | slide | Title, optional `eyebrow` line above it and subtitle below it, and panels that move like a carousel. `hero: true` opens with the title large and centered. A panel has `content` (one block), `centered`, and the step fields. |
 | `statement` | block | One sentence, `size: "large"` or `"medium"`. |
 | `quote` | block | A quotation with an optional `source`. |
 | `list` | block | Bullet or numbered `items`; long lists stand in two columns. |

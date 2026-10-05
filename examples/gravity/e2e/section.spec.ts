@@ -21,6 +21,14 @@ test("the hero title starts centered, travels up, and the panels move like a car
   const hero = await box(page, "[data-section-title]");
   expect(Math.abs(centerY(hero) - centerY(stage))).toBeLessThan(stage.height * 0.1);
   await expect(page.locator("[data-carousel]")).toHaveCount(0);
+  // The eyebrow sits right above the title, in the title's block, so it travels with it.
+  const eyebrowAbove = async () => {
+    const eyebrow = await box(page, "[data-section-title] [data-eyebrow]");
+    const title = await box(page, "[data-section-title] h1");
+    expect(eyebrow.y + eyebrow.height).toBeLessThanOrEqual(title.y + 1);
+    expect(title.y - (eyebrow.y + eyebrow.height)).toBeLessThan(40);
+  };
+  await eyebrowAbove();
 
   // Travel: the title moves up and the first panel shows.
   await page.keyboard.press("ArrowRight");
@@ -28,6 +36,7 @@ test("the hero title starts centered, travels up, and the panels move like a car
   const heading = await box(page, "[data-section-title]");
   expect(heading.y - stage.y).toBeLessThan(stage.height * 0.2);
   await expect(page.locator("[data-panel='0']")).toHaveAttribute("data-active", "true");
+  await eyebrowAbove();
 
   // Carousel forward: the second panel slides in from the right, the first leaves to the left.
   const first = await box(page, "[data-panel='0']");
