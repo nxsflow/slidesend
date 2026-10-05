@@ -1,5 +1,11 @@
 # @slidesend/core
 
+## 0.2.2
+
+### Patch Changes
+
+- a63cbc4: Getting started says how to look at the slides without a backend (`npm run local`, `/stage/local?slide=…`), why `vite --mode local` fails, and that browser scripts import from `@playwright/test`.
+
 ## 0.2.1
 
 ### Patch Changes
