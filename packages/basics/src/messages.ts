@@ -13,6 +13,7 @@ export const basicsMessages = defineMessages({
     "basics.poll.needsTwo": "A matrix needs two questions.",
     "basics.text.more": "+{count} more",
     "basics.text.waiting": "Waiting for the first answer.",
+    "basics.qr.join": "Join on your phone",
   },
   de: {
     "basics.phone.waiting": "Der Vortrag läuft. Fragen erscheinen hier.",
@@ -25,5 +26,6 @@ export const basicsMessages = defineMessages({
     "basics.poll.needsTwo": "Eine Matrix braucht zwei Fragen.",
     "basics.text.more": "+{count} weitere",
     "basics.text.waiting": "Warten auf die erste Antwort.",
+    "basics.qr.join": "Mach mit auf deinem Handy",
   },
 });

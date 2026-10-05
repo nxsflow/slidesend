@@ -138,6 +138,7 @@ A block.
 | `axes` | object |  |  |
 | `axes.x` | string |  |  |
 | `axes.y` | string |  |  |
+| `qr` | boolean |  | `false` |
 
 ## `pollList`
 
@@ -155,6 +156,7 @@ A block.
 | `questions[].options[].id` | string | yes |  |
 | `questions[].options[].label` | string | yes |  |
 | `message` | string |  |  |
+| `qr` | boolean |  | `false` |
 
 ## `textList`
 
@@ -168,6 +170,7 @@ A block.
 | `multiple` | boolean |  | `false` |
 | `message` | string |  |  |
 | `limit` | number |  | `8` |
+| `qr` | boolean |  | `false` |
 
 ## `poll`
 

@@ -1,6 +1,6 @@
-import { cssVariable, defineBlock, joinUrl, useSessionInfo } from "@slidesend/core";
-import { useEffect, useState } from "react";
+import { cssVariable, defineBlock, useSessionInfo } from "@slidesend/core";
 import { z } from "zod";
+import { useJoinUrl, useQrImage } from "./join-qr";
 
 const color = (name: Parameters<typeof cssVariable>[1]) => `var(${cssVariable("color", name)})`;
 
@@ -17,24 +17,8 @@ export const qr = defineBlock({
   }),
   Component: ({ data }) => {
     const session = useSessionInfo();
-    const url = joinUrl(session, typeof window === "undefined" ? "" : window.location.origin);
-    const [image, setImage] = useState<string>();
-
-    useEffect(() => {
-      if (!url) return setImage(undefined);
-      let current = true;
-      import("qrcode").then(
-        ({ default: qrcode }) =>
-          qrcode
-            .toDataURL(url, { margin: 1, width: data.size, errorCorrectionLevel: "M" })
-            .then((source) => current && setImage(source))
-            .catch(() => current && setImage(undefined)),
-        () => {},
-      );
-      return () => {
-        current = false;
-      };
-    }, [url, data.size]);
+    const url = useJoinUrl();
+    const image = useQrImage(url, data.size);
 
     return (
       <div data-block="qr" data-join={url} style={{ textAlign: "center" }}>
