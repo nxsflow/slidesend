@@ -5,9 +5,6 @@ deck is written in TypeScript; the design, the hosting platform and every slide 
 plugins, so a talk project brings its own content, colors, fonts and logo without forking the
 tool.
 
-> Work in progress. Nothing is published on npm yet; [getting started](#getting-started) shows
-> how to install the packages from this repository until then.
-
 The sections below follow the same outline as the documentation that ships inside the packages,
 which is written for the coding agents that help you build a talk. Each section links to its
 full version.
@@ -22,8 +19,18 @@ npm run dev
 
 creates a talk, installs it and starts it, with phones from your network and no cloud account.
 The talk explains how it is made: its own design, its own plugin, the blocks of the basics and
-questions for the phones. With `--aws` it is ready to deploy. Until the first release, the
-command runs from a packed tarball. → [getting-started](packages/core/docs/getting-started.md)
+questions for the phones. With `--aws` it is ready to deploy. → [getting-started](packages/core/docs/getting-started.md)
+
+## Building a talk with an agent
+
+Slidesend is made to be written with an AI coding agent. Every talk has an `AGENTS.md` that
+points the agent at the docs of the installed version, and the agent works through them in
+order: it asks the speaker for the decisions only they can make (message, audience, length,
+language, storyline, participation, design, hosting), turns the starter into the talk, writes
+one idea per slide with the spoken words as notes, applies the design through tokens, and adds a
+template of the talk's own only where the basics cannot show the content. `slidesend check`
+names every mistake by slide and field, so the agent can fix it.
+→ [building-a-talk](packages/core/docs/building-a-talk.md)
 
 ## Writing slides
 
@@ -110,6 +117,15 @@ pnpm check                                               # build, types, lint, u
 pnpm --filter gravity dev                                # run the example talk
 ```
 
+To try the starter with packages that are not released yet, pack them and point
+`create-slidesend` at the packs; the new talk then installs them by absolute path:
+
+```sh
+pnpm build
+for p in core basics aws agent create; do (cd packages/$p && pnpm pack --pack-destination /tmp/packs); done
+SLIDESEND_CREATE_TARBALLS=/tmp/packs npx --yes --package /tmp/packs/slidesend-create-*.tgz create-slidesend my-talk
+```
+
 `pnpm check` is exactly what CI runs on every pull request. Code samples in the docs are copied
 from the example talk between `// snippet: <name>` and `// end snippet`; after changing one, run
 `UPDATE_DOCS=1 pnpm test` to copy it again. [docs/docs-tests.md](docs/docs-tests.md) explains
@@ -117,7 +133,7 @@ every docs check and how to fix it.
 
 Every change to a package needs a changeset (`pnpm changeset`, or `pnpm changeset --empty` when
 users will not notice it). Merging one with a version bump into `main` releases all packages to
-npm; in pre mode as alpha or beta. [docs/releasing.md](docs/releasing.md) explains the release workflow.
+npm, as a stable version, or as alpha or beta in pre mode. [docs/releasing.md](docs/releasing.md) explains the release workflow.
 
 ## License
 

@@ -3,6 +3,10 @@
 A talk that explains how it is made, ready to deploy to AWS. Start it, then read `src/deck.ts`
 next to it.
 
+Slidesend is made to be written with an AI coding agent: open this folder in yours and tell it
+what your talk is about. `AGENTS.md` points it to the documentation in `node_modules`, starting
+with `building-a-talk.md`.
+
 ```sh
 npm run dev        # the AWS Blocks dev server with local mocks; prints the desk link
 npm run check      # validates the deck
