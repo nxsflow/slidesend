@@ -2,7 +2,7 @@
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
  * colours are literal here: slidesend-allow-literal-styles.
  */
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { typedClient } from "../../client/client";
 import type { Presentation } from "../../deck/presentation";
 import { accentVariable, accentVariableAt } from "../../design/tokens";
@@ -219,6 +219,24 @@ function Join({ path }: { path: string }) {
   );
 }
 
+const mono = {
+  fontFamily: "ui-monospace, Menlo, monospace",
+  fontVariantNumeric: "tabular-nums",
+} as const;
+
+/** One labelled group of the header, set off from the one before it by a line. */
+function HeaderGroup({ label: name, children }: { label: string; children: ReactNode }) {
+  return (
+    <div
+      data-header-group
+      style={{ display: "grid", gap: 4, paddingLeft: 20, borderLeft: `1px solid ${dark.line}` }}
+    >
+      <span style={{ ...label, fontSize: 11 }}>{name}</span>
+      {children}
+    </div>
+  );
+}
+
 /**
  * The speaker's view while presenting (spec §12, amended 2026-10-03), modelled on the operator
  * view the tool was extracted from: the notes take the wide right column in large type, the
@@ -374,67 +392,85 @@ export function PresentTab({
             </span>
           )}
         </div>
-        <span
-          data-position
-          style={{
-            fontFamily: "ui-monospace, Menlo, monospace",
-            fontSize: 22,
-            fontVariantNumeric: "tabular-nums",
-          }}
-        >
-          {text("core.desk.present.position", {
-            step: navigation.index + 1,
-            total: presentation.steps.length,
-          })}
-        </span>
-        <span
-          data-clock
-          data-tone={clock.tone}
-          style={{ display: "grid", justifyItems: "end", fontVariantNumeric: "tabular-nums" }}
-        >
-          <span style={{ fontFamily: "ui-monospace, Menlo, monospace", fontSize: 22 }}>
-            {formatDuration(clock.elapsedMs)}{" "}
-            <span style={{ color: toneColor[clock.tone], fontSize: 16 }}>
-              {formatDuration(clock.deltaMs, true)}
+        <HeaderGroup label={text("core.desk.present.groupNow")}>
+          <span style={{ display: "flex", gap: 18, alignItems: "baseline" }}>
+            <span>
+              <span data-position style={{ ...mono, fontSize: 22 }}>
+                {text("core.desk.present.position", {
+                  step: navigation.index + 1,
+                  total: presentation.steps.length,
+                })}
+              </span>{" "}
+              <span style={{ color: dark.muted, fontSize: 12 }}>
+                {text("core.desk.present.stepUnit")}
+              </span>
+            </span>
+            <span>
+              <span data-elapsed style={{ ...mono, fontSize: 22 }}>
+                {formatDuration(clock.elapsedMs)}
+              </span>{" "}
+              <span style={{ color: dark.muted, fontSize: 12 }}>
+                {text("core.desk.present.elapsed")}
+              </span>
             </span>
           </span>
-          <span style={{ color: dark.muted, fontSize: 12 }}>
-            {clock.started
-              ? text("core.desk.present.planned", { time: formatDuration(clock.plannedMs) })
-              : text("core.desk.present.notStarted")}
+        </HeaderGroup>
+        <HeaderGroup label={text("core.desk.present.groupPlan")}>
+          <span data-clock data-tone={clock.tone} style={{ display: "grid", gap: 2 }}>
+            {clock.started ? (
+              <>
+                <span style={{ ...mono, fontSize: 18, color: toneColor[clock.tone] }}>
+                  {formatDuration(clock.deltaMs, true)}{" "}
+                  <span style={{ fontFamily: "inherit", fontSize: 14 }}>
+                    {text(`core.desk.present.tone.${clock.tone}`)}
+                  </span>
+                </span>
+                <span style={{ color: dark.muted, fontSize: 12 }}>
+                  {text("core.desk.present.planned", { time: formatDuration(clock.plannedMs) })}
+                </span>
+              </>
+            ) : (
+              <span style={{ color: dark.muted, fontSize: 13, maxWidth: 220 }}>
+                {text("core.desk.present.notStarted")}
+              </span>
+            )}
           </span>
-        </span>
-        <span data-status style={{ display: "grid", justifyItems: "end", gap: 2, fontSize: 13 }}>
-          <span
-            style={{
-              ...label,
-              color: session.kind === "live" ? dark.danger : dark.cue,
-              fontSize: 12,
-            }}
-          >
-            {session.kind === "live" ? "● " : ""}
-            {text(`core.desk.sessions.${session.kind}`)}
+        </HeaderGroup>
+        <HeaderGroup label={text("core.desk.present.groupSession")}>
+          <span style={{ display: "flex", gap: 14, alignItems: "center" }}>
+            <span data-status style={{ display: "grid", gap: 2, fontSize: 13 }}>
+              <span
+                style={{
+                  ...label,
+                  color: session.kind === "live" ? dark.danger : dark.cue,
+                  fontSize: 12,
+                }}
+              >
+                {session.kind === "live" ? "● " : ""}
+                {text(`core.desk.sessions.${session.kind}`)}
+              </span>
+              <span style={{ color: dark.soft }}>
+                {text("core.desk.presence.stages", { count: stages })} ·{" "}
+                {text("core.desk.presence.phones", { count: phones })}
+                {session.closesAt
+                  ? ` · ${text("core.desk.sessions.closesAt", {
+                      time: new Date(session.closesAt).toLocaleTimeString(undefined, {
+                        timeStyle: "short",
+                      }),
+                    })}`
+                  : ""}
+              </span>
+            </span>
+            <button
+              type="button"
+              data-extend
+              onClick={() => onExtend(10)}
+              style={{ ...button, padding: "6px 10px", fontSize: 13 }}
+            >
+              {text("core.desk.present.extend")}
+            </button>
           </span>
-          <span style={{ color: dark.soft }}>
-            {text("core.desk.presence.stages", { count: stages })} ·{" "}
-            {text("core.desk.presence.phones", { count: phones })}
-            {session.closesAt
-              ? ` · ${text("core.desk.sessions.closesAt", {
-                  time: new Date(session.closesAt).toLocaleTimeString(undefined, {
-                    timeStyle: "short",
-                  }),
-                })}`
-              : ""}
-          </span>
-        </span>
-        <button
-          type="button"
-          data-extend
-          onClick={() => onExtend(10)}
-          style={{ ...button, padding: "6px 10px", fontSize: 13 }}
-        >
-          {text("core.desk.present.extend")}
-        </button>
+        </HeaderGroup>
       </header>
 
       {stages === 0 ? (
