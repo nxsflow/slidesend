@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deskLinks, slidesendDev } from "./dev-bridge";
+import { deskLinks, parseSubscriptions, slidesendDev } from "./dev-bridge";
 
 describe("the dev bridge's desk links", () => {
   it("prints one for this machine and one for each network address", () => {
@@ -29,5 +29,20 @@ describe("the dev bridge's desk links", () => {
       "  Slidesend desk: http://localhost:5174/desk#key=k",
       "  Slidesend desk for phones on this network: http://10.0.0.5:5174/desk#key=k",
     ]);
+  });
+});
+
+describe("the dev bridge's event stream", () => {
+  it("takes every subscription of a page as one list of channel and topic", () => {
+    expect(parseSubscriptions('[["cursor","s-1"],["responses","s-1/mood"]]')).toEqual([
+      ["cursor", "s-1"],
+      ["responses", "s-1/mood"],
+    ]);
+  });
+
+  it("refuses anything else", () => {
+    for (const value of [null, "", "cursor", '{"cursor":"s-1"}', '[["cursor"]]', "[[1,2]]"]) {
+      expect(parseSubscriptions(value)).toBeUndefined();
+    }
   });
 });
