@@ -115,6 +115,21 @@ describe("hosted transport", () => {
     expect(seen.map((cursor) => cursor.index)).toEqual([1, 3]);
   });
 
+  it("does not pull a steering window back while its own move is on its way", async () => {
+    const { steering, fake, tick } = await setup();
+    const seen = follow(steering);
+    steering.send(at(1));
+    await until(() => seen.at(-1)?.index === 1);
+
+    tick();
+    // A read that lands while the next move waits out its debounce returns the cursor before
+    // it; applied, it would move the desk back a step (GH #50 follow-up).
+    steering.send(at(2));
+    fake.wake();
+    await until(() => seen.at(-1)?.index === 2);
+    expect(seen.map((cursor) => cursor.index)).toEqual([1, 2]);
+  });
+
   it("fetches the cursor when the page wakes up and on the pulse while visible", async () => {
     const { phone, sessionId, steering, fake, tick } = await setup();
     // A subscription that never delivers: only the fetches can catch up.
