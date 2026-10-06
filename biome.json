@@ -14,7 +14,9 @@
       "!.nxf",
       "!.nxs-personas",
       "!**/aws-blocks/client.js",
-      "!**/.bb-data"
+      "!**/.bb-data",
+      "!site/public/brand",
+      "!site/src/brand"
     ]
   },
   "formatter": {

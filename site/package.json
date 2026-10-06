@@ -1,0 +1,29 @@
+{
+  "name": "site",
+  "private": true,
+  "description": "The slidesend product page at nxsflow.com/slidesend: a static, prerendered site.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && node scripts/prerender.mjs",
+    "preview": "vite preview",
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/merriweather": "^5.2.11",
+    "@fontsource/merriweather-sans": "^5.2.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "vite": "^8.3.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

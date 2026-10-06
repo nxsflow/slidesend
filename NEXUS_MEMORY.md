@@ -5,10 +5,11 @@
 
 > **You have already been given the index below** — all of it, or as much of it as a session start could carry. It is the same index `nxm prime` replays, which stops at the byte budget the host delivers and says so when it does (`nxm index` prints the whole of it), so there is nothing to gain by reading it again here. Underneath it stands the FULL TEXT of each memory — that is what `nxm recall <key>` serves, and it is meant to be read one memory at a time, when the index tells you a particular one matters. Reading this file end to end is the expensive way to obtain what you already have.
 
-## Index (5)
+## Index (6)
 
 - **english-only**: Write everything in this repo in English: code, identifiers, schema fields, comments, docs, commits AND nxf tickets and notes, even when the conversation with Carsten is in German.
 - **pr-workflow**: Merge your own PRs when CI is green, close the item and continue with nxf next; still ask before spec changes, AWS deploys or destructive steps.
+- **brand-name**: Write 'slidesend' lowercase and never split it: no highlighted or capitalised second part, no 'ss' abbreviation or prefix anywhere.
 - **typescript-6-pin**: Keep TypeScript on 6.0.x: TS 7 has no compiler API for tsup's DTS build; tsup configs need ignoreDeprecations 6.0.
 - **pnpm-peer-suffix**: If a newly added dependency is a dangling symlink, run 'pnpm --filter <pkg> update <dep>'; pnpm 12 sometimes drops the peer suffix.
 - **npm-scope**: Publish as @slidesend/<name> (Carsten owns the npm org), never @nxsflow/slidesend-*; folders are packages/<name>.
@@ -24,6 +25,12 @@ Everything in this repository is written in English, without exception: function
 ### `pr-workflow`
 
 Workflow agreed with Carsten (2026-09-19): every ticket is one branch and one pull request against main. When CI on the PR is green, the agent merges it itself (rebase merge, delete the branch), closes the board item and continues with the next item from 'nxf next' without asking. Anything that needs a decision by Carsten (spec changes, AWS deployments to a real account, anything destructive or outward-facing beyond the repo) still waits for him.
+
+---
+
+### `brand-name`
+
+The name is 'slidesend': always lowercase, also at the start of a sentence, and never split. It stays open to both readings (slide-send and slides-end), so never highlight, capitalise or hyphenate a second part, and never use 'ss' as an abbreviation or prefix, including CSS classes, ids and file names. Brand rule from Carsten via the brand repo (nxsflow/brand), 2026-10-06.
 
 ---
 
