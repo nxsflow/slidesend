@@ -24,6 +24,7 @@ const answers: Record<string, string> = {
     '{"deployment_branch_policy":{"protected_branches":false,"custom_branch_policies":true}}',
   "deployment-branch-policies": '{"branch_policies":[{"name":"main","type":"branch"}]}',
   "secret list": '[{"name":"AWS_DEPLOY_ROLE"},{"name":"AWS_REGION"}]',
+  "list-open-id-connect-providers": '{"OpenIDConnectProviderList":[]}',
 };
 
 function io(overrides: { files?: Record<string, string>; answers?: Record<string, string> } = {}) {

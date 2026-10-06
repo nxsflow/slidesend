@@ -59,6 +59,20 @@ const environmentApi = {
 };
 const branchPoliciesApi = { stdout: '{"branch_policies":[{"name":"main","type":"branch"}]}' };
 const secretsApi = { stdout: '[{"name":"AWS_DEPLOY_ROLE"},{"name":"AWS_REGION"}]' };
+const githubProvider =
+  "arn:aws:iam::123456789012:oidc-provider/token.actions.githubusercontent.com";
+const providersApi = (...arns: string[]) => ({
+  stdout: JSON.stringify({ OpenIDConnectProviderList: arns.map((Arn) => ({ Arn })) }),
+});
+const stackResources = (...ids: string[]) => ({
+  stdout: JSON.stringify({
+    StackResources: ids.map((PhysicalResourceId) => ({ PhysicalResourceId })),
+  }),
+});
+const noStack = {
+  status: 254,
+  stderr: "An error occurred (ValidationError): Stack with id sd-gravity-bootstrap does not exist",
+};
 
 /** Everything in place: the happy world each test then takes one thing away from. */
 const working = {
@@ -72,6 +86,7 @@ const working = {
     "environments/production$": environmentApi,
     "environments/production/deployment-branch-policies": branchPoliciesApi,
     "secret list": secretsApi,
+    "list-open-id-connect-providers": providersApi(),
   } as Record<string, Partial<Run> | undefined>,
   files: {
     "/talk/package.json": '{"devDependencies":{"esbuild":"^0.28.2"}}',
@@ -387,6 +402,88 @@ describe("the bootstrap checks", () => {
     expect(await check("stackId").run(io, plan, {})).toMatchObject({
       ok: false,
       detail: expect.stringContaining("lowercase"),
+    });
+  });
+
+  it("lets the bootstrap stack create the provider when the account has none", async () => {
+    const facts: Facts = { stackId: "sd-gravity" };
+    const io = terminal({
+      ...working.script,
+      "list-open-id-connect-providers": providersApi(
+        "arn:aws:iam::123456789012:oidc-provider/gitlab.com",
+      ),
+    });
+    expect(await check("provider").run(io, plan, facts)).toMatchObject({ ok: true });
+    expect(facts.providerArn).toBeUndefined();
+  });
+
+  it("imports the provider another talk created, so the second talk can deploy", async () => {
+    const facts: Facts = { stackId: "sd-gravity", region: "eu-central-1" };
+    const io = terminal({
+      ...working.script,
+      "list-open-id-connect-providers": providersApi(githubProvider),
+      "describe-stack-resources --stack-name sd-gravity-bootstrap": noStack,
+    });
+    expect(await check("provider").run(io, plan, facts)).toMatchObject({
+      ok: true,
+      detail: expect.stringContaining("imports"),
+    });
+    expect(facts.providerArn).toBe(githubProvider);
+  });
+
+  it("keeps a provider this talk's own bootstrap stack created, so a re-run does not delete it", async () => {
+    const facts: Facts = { stackId: "sd-gravity" };
+    const io = terminal({
+      ...working.script,
+      "list-open-id-connect-providers": providersApi(githubProvider),
+      "describe-stack-resources --stack-name sd-gravity-bootstrap": stackResources(
+        "gravity-deploy",
+        githubProvider,
+      ),
+    });
+    expect(await check("provider").run(io, plan, facts)).toMatchObject({
+      ok: true,
+      detail: expect.stringContaining("keeps it"),
+    });
+    expect(facts.providerArn).toBeUndefined();
+  });
+
+  it("imports again when this talk's stack already imported the provider", async () => {
+    const facts: Facts = { stackId: "sd-gravity" };
+    const io = terminal({
+      ...working.script,
+      "list-open-id-connect-providers": providersApi(githubProvider),
+      "describe-stack-resources --stack-name sd-gravity-bootstrap":
+        stackResources("gravity-deploy"),
+    });
+    expect(await check("provider").run(io, plan, facts)).toMatchObject({ ok: true });
+    expect(facts.providerArn).toBe(githubProvider);
+  });
+
+  it("stops when it cannot tell who owns the provider", async () => {
+    const facts: Facts = { stackId: "sd-gravity" };
+    const io = terminal({
+      ...working.script,
+      "list-open-id-connect-providers": providersApi(githubProvider),
+      "describe-stack-resources": { status: 254, stderr: "AccessDenied" },
+    });
+    expect(await check("provider").run(io, plan, facts)).toMatchObject({
+      ok: false,
+      fix: expect.stringContaining("cloudformation:DescribeStackResources"),
+    });
+    expect(facts.providerArn).toBeUndefined();
+  });
+
+  it("names the permission when the providers cannot be listed", async () => {
+    expect(
+      await run(
+        "provider",
+        { script: ["list-open-id-connect-providers"] },
+        { stackId: "sd-gravity" },
+      ),
+    ).toMatchObject({
+      ok: false,
+      fix: expect.stringContaining("iam:ListOpenIDConnectProviders"),
     });
   });
 

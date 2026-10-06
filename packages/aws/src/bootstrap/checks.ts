@@ -446,6 +446,74 @@ const stackIdSet: Check = {
   },
 };
 
+/** The issuer every GitHub Actions token names; an account holds one provider for it. */
+const githubIssuer = "token.actions.githubusercontent.com";
+
+/**
+ * The account's GitHub OIDC provider, if it has one, and whether this talk may import it.
+ *
+ * An account can hold only one provider per issuer, so a second talk must import the first one's
+ * instead of creating its own. But a provider this talk's own bootstrap stack created must stay
+ * created by it: importing it would remove the resource from the stack, and CloudFormation would
+ * delete the provider that every deploy of the account trusts.
+ */
+const oidcProvider: Check = {
+  id: "provider",
+  title: "the GitHub OIDC provider is created or imported",
+  async run(io, plan, facts) {
+    const stackId = facts.stackId;
+    if (!stackId) return { ok: false, detail: "Unknown stackId.", fix: "Fix the check above." };
+    const listed = await io.run(
+      "aws",
+      aws(plan, ["iam", "list-open-id-connect-providers", "--output", "json"]),
+    );
+    const providers = json(listed) as
+      | { OpenIDConnectProviderList?: { Arn?: string }[] }
+      | undefined;
+    if (listed.status !== 0 || !providers) {
+      return {
+        ok: false,
+        detail: "Could not list the account's OIDC providers.",
+        fix: "Sign in with a role that may call iam:ListOpenIDConnectProviders.",
+      };
+    }
+    const arn = (providers.OpenIDConnectProviderList ?? [])
+      .map((entry) => entry.Arn ?? "")
+      .find((entry) => entry.endsWith(`:oidc-provider/${githubIssuer}`));
+    if (!arn) return { ok: true, detail: "none yet; the bootstrap stack creates it" };
+
+    const stackName = `${stackId}-bootstrap`;
+    const resources = await io.run(
+      "aws",
+      aws(plan, [
+        "cloudformation",
+        "describe-stack-resources",
+        "--stack-name",
+        stackName,
+        ...(facts.region ? ["--region", facts.region] : []),
+        "--output",
+        "json",
+      ]),
+    );
+    if (resources.status !== 0 && !resources.stderr.includes("does not exist")) {
+      // Unknown ownership is the one case with no safe guess: importing an owned provider deletes
+      // it, creating a second one fails. Better to stop here.
+      return {
+        ok: false,
+        detail: `Could not read ${stackName}, so it is unclear whether it owns ${arn}.`,
+        fix: "Sign in with a role that may call cloudformation:DescribeStackResources.",
+      };
+    }
+    const owned = (
+      (json(resources) as { StackResources?: { PhysicalResourceId?: string }[] })?.StackResources ??
+      []
+    ).some((resource) => resource.PhysicalResourceId === arn);
+    if (owned) return { ok: true, detail: `${stackName} owns ${arn} and keeps it` };
+    facts.providerArn = arn;
+    return { ok: true, detail: `imports ${arn}, which the account already has` };
+  },
+};
+
 /** The ids of the blocks Slidesend creates; short on purpose, see `bucketBudget`. */
 export const blockIds = ["sd-data", "sd-rt", "sd-control", "sd-web"];
 
@@ -498,6 +566,7 @@ export const bootstrapChecks: readonly Check[] = [
   secretsSet,
   esbuildInRoot,
   stackIdSet,
+  oidcProvider,
   bucketNames,
 ];
 
