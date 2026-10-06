@@ -1,0 +1,15 @@
+<svg width="260" height="260" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg">
+  <!-- slidesend — favicon: the simplified icon, following the browser's colour scheme -->
+  <style>
+    .ink { stroke: #1C1C1C; }
+    .accent { fill: #7C3AED; }
+    @media (prefers-color-scheme: dark) {
+      .ink { stroke: #FAF9F7; }
+      .accent { fill: #A78BFA; }
+    }
+  </style>
+  <g transform="translate(5 -10)">
+    <path class="ink" d="M216 74V66A18 18 0 0 0 198 48H42A18 18 0 0 0 24 66V158A18 18 0 0 0 42 176H116" fill="none" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect class="ink accent" x="146" y="102" width="82" height="136" rx="16" stroke-width="12" stroke-linejoin="round"/>
+  </g>
+</svg>

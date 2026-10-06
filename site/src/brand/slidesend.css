@@ -1,0 +1,96 @@
+/* slidesend Design Tokens — generated from BRAND.md (slidesend) */
+/* Same values as tokens/slidesend.json, which also lists the measured contrast ratios. */
+/* Usage: import this file and use var(--slidesend-*) custom properties. Light by default;  */
+/* dark follows the system, and data-theme="light" | "dark" on <html> overrides it.         */
+/* Fonts are self-hosted: @fontsource/merriweather (700, 900), @fontsource/merriweather-sans */
+/* (300, 400, 700), @fontsource/jetbrains-mono (400, 700), latin subset.                     */
+
+:root {
+  /* Colours — light */
+  --slidesend-bg: #ffffff;
+  --slidesend-surface: #faf9f7;
+  --slidesend-tint: #f5f3ff;
+  --slidesend-text: #1c1c1c;
+  --slidesend-text-muted: #6b6b6b;
+  --slidesend-border: #e5e5e0;
+  --slidesend-accent: #7c3aed;
+  --slidesend-accent-hover: #6d28d9;
+  --slidesend-accent-pressed: #5b21b6;
+  --slidesend-on-accent: #ffffff;
+  --slidesend-focus-ring: #7c3aed;
+
+  /* Focus ring: outline: var(--slidesend-focus-width) solid var(--slidesend-focus-ring) */
+  --slidesend-focus-width: 2px;
+  --slidesend-focus-offset: 2px;
+
+  /* Font families */
+  --slidesend-font-heading: "Merriweather", Georgia, serif;
+  --slidesend-font-body: "Merriweather Sans", system-ui, sans-serif;
+  --slidesend-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Body weight roles */
+  --slidesend-weight-body: 300;
+  --slidesend-weight-emphasis: 400;
+  --slidesend-weight-strong: 700;
+  /* Headings: 900 for h1–h2, 700 below */
+  --slidesend-weight-heading: 900;
+  --slidesend-weight-subheading: 700;
+
+  /* Type scale (1.25, the default scale, extended upward for the hero) */
+  --slidesend-text-xs: 12px;
+  --slidesend-text-sm: 14px;
+  --slidesend-text-base: 16px;
+  --slidesend-text-lg: 20px;
+  --slidesend-text-xl: 25px;
+  --slidesend-text-2xl: 31px;
+  --slidesend-text-3xl: 39px;
+  --slidesend-text-4xl: 49px;
+  --slidesend-text-5xl: 61px;
+
+  /* Radii */
+  --slidesend-radius-sm: 6px;
+  --slidesend-radius-md: 10px;
+  --slidesend-radius-lg: 16px;
+  --slidesend-radius-full: 9999px;
+
+  /* Spacing (4px base) */
+  --slidesend-space-1: 4px;
+  --slidesend-space-2: 8px;
+  --slidesend-space-3: 12px;
+  --slidesend-space-4: 16px;
+  --slidesend-space-6: 24px;
+  --slidesend-space-8: 32px;
+  --slidesend-space-12: 48px;
+  --slidesend-space-16: 64px;
+  --slidesend-space-24: 96px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --slidesend-bg: #141317;
+    --slidesend-surface: #1f1d24;
+    --slidesend-tint: #2a2140;
+    --slidesend-text: #faf9f7;
+    --slidesend-text-muted: #a1a1aa;
+    --slidesend-border: #34313b;
+    --slidesend-accent: #a78bfa;
+    --slidesend-accent-hover: #c4b5fd;
+    --slidesend-accent-pressed: #ddd6fe;
+    --slidesend-on-accent: #1c1c1c;
+    --slidesend-focus-ring: #c4b5fd;
+  }
+}
+
+:root[data-theme="dark"] {
+  --slidesend-bg: #141317;
+  --slidesend-surface: #1f1d24;
+  --slidesend-tint: #2a2140;
+  --slidesend-text: #faf9f7;
+  --slidesend-text-muted: #a1a1aa;
+  --slidesend-border: #34313b;
+  --slidesend-accent: #a78bfa;
+  --slidesend-accent-hover: #c4b5fd;
+  --slidesend-accent-pressed: #ddd6fe;
+  --slidesend-on-accent: #1c1c1c;
+  --slidesend-focus-ring: #c4b5fd;
+}
