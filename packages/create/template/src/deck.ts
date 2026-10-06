@@ -27,7 +27,7 @@ const yesOrNo = [
  */
 export const deck = defineDeck({
   meta: {
-    title: "Your first Slidesend talk",
+    title: "Your first slidesend talk",
     subtitle: "Written with your AI agent — and it explains how it is made",
     language: "en",
     plannedMinutes: 20,
@@ -46,7 +46,7 @@ export const deck = defineDeck({
     section({
       id: "welcome",
       chapter: "start",
-      title: "Your first Slidesend talk",
+      title: "Your first slidesend talk",
       subtitle: "Written with your AI agent — and it explains how it is made",
       hero: true,
       notes:
@@ -91,11 +91,11 @@ export const deck = defineDeck({
       chapter: "agents",
       title: "Built for your AI agent",
       notes:
-        "This is the point of Slidesend: you describe the talk, and a coding agent writes and fixes the slides with you.",
+        "This is the point of slidesend: you describe the talk, and a coding agent writes and fixes the slides with you.",
       panels: [
         {
           content: statement({
-            text: "Slidesend is made to be written **together with an AI coding agent**.",
+            text: "slidesend is made to be written **together with an AI coding agent**.",
           }),
           centered: true,
           notes:
@@ -218,7 +218,7 @@ export const deck = defineDeck({
             ],
           }),
           notes:
-            "A timeline is one of the blocks that come with Slidesend. You fill in data; the block does the layout.",
+            "A timeline is one of the blocks that come with slidesend. You fill in data; the block does the layout.",
           minutes: 0.5,
         },
         {
@@ -358,11 +358,11 @@ export const deck = defineDeck({
       panels: [
         {
           content: statement({
-            text: "The code blocks in this talk are **not part of Slidesend**: src/plugin.tsx defines them.",
+            text: "The code blocks in this talk are **not part of slidesend**: src/plugin.tsx defines them.",
             size: "medium",
           }),
           notes:
-            "When the blocks that come with Slidesend are not enough, you write your own — or your agent does.",
+            "When the blocks that come with slidesend are not enough, you write your own — or your agent does.",
           minutes: 0.5,
         },
         // snippet: use-code-block

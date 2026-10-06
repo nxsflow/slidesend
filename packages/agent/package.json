@@ -1,7 +1,7 @@
 {
   "name": "@slidesend/agent",
   "version": "0.3.3",
-  "description": "An AI agent chat for the audience of a Slidesend talk, on Amazon Bedrock.",
+  "description": "An AI agent chat for the audience of a slidesend talk, on Amazon Bedrock.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {

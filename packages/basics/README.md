@@ -1,8 +1,8 @@
 # @slidesend/basics
 
-The section template, generic blocks, polls and text questions, and the default design for Slidesend talks.
+The section template, generic blocks, polls and text questions, and the default design for slidesend talks.
 
-Part of Slidesend, a presentation tool for talks in which the audience takes part on their phones.
+Part of slidesend, a presentation tool for talks in which the audience takes part on their phones.
 Start a talk with `npm create @slidesend@latest my-talk`.
 
 The documentation ships with this package: [`docs/README.md`](docs/README.md), and in the repository at

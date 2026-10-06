@@ -1,7 +1,7 @@
 {
   "name": "@slidesend/basics",
   "version": "0.3.3",
-  "description": "The section template, generic blocks, polls and text questions, and the default design for Slidesend talks.",
+  "description": "The section template, generic blocks, polls and text questions, and the default design for slidesend talks.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {

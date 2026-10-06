@@ -1,6 +1,6 @@
 # Hosting adapters
 
-Slidesend's server logic (sessions, cursor, answers, presence, timings and the guards) is
+slidesend's server logic (sessions, cursor, answers, presence, timings and the guards) is
 written against a small platform contract. `@slidesend/aws` is the only implementation today.
 To host a talk elsewhere, write a platform package with the same three parts. This page is for
 whoever writes one; a talk only ever *installs* a platform.

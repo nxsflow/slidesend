@@ -233,7 +233,7 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
       : ["     For that, open the desk link for phones on this network, not the localhost one."]),
     "",
     "Then read src/deck.ts next to the talk: the talk explains how it is made.",
-    "Slidesend is made for AI coding agents: open this folder in yours and ask it to change the",
+    "slidesend is made for AI coding agents: open this folder in yours and ask it to change the",
     `talk. AGENTS.md tells it where the docs are, and \`${run("check")}\` tells it what is wrong.`,
     `For \`${run("check:render")}\` and \`${run("pdf")}\`, run \`${exec} playwright install chromium\` once.`,
     ...(plan.aws
@@ -251,7 +251,7 @@ export function nextSteps(plan: Plan, installed: boolean): string[] {
 export const usage = [
   "Usage: npm create @slidesend [name] [options]",
   "",
-  "Creates ./<name> with a Slidesend talk that explains how it is made, and installs it.",
+  "Creates ./<name> with a slidesend talk that explains how it is made, and installs it.",
   "",
   "Options:",
   "  --aws                      the variant that deploys to AWS (otherwise local only)",

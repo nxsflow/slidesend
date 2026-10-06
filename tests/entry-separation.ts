@@ -5,7 +5,7 @@ import { build } from "esbuild";
 /**
  * Walks the import graph of a package's browser entry (`src/index.ts`) and returns every way it
  * reaches server code: the package's own server entry (`src/server.ts` or anything under
- * `src/server/`), or the `./server` entry of any Slidesend package (`@slidesend/*`).
+ * `src/server/`), or the `./server` entry of any slidesend package (`@slidesend/*`).
  */
 export async function serverImportsOfBrowserEntry(packageDir: string): Promise<string[]> {
   const entry = join(packageDir, "src", "index.ts");

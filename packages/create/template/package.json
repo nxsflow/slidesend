@@ -2,7 +2,7 @@
   "name": "slidesend-starter",
   "version": "0.0.0",
   "private": true,
-  "description": "A Slidesend talk that explains how it is made.",
+  "description": "A slidesend talk that explains how it is made.",
   "type": "module",
   "scripts": {
     "dev": "vite --mode bridge --host",

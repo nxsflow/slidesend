@@ -81,7 +81,7 @@ export default definePresentation({
 ```
 <!-- end snippet -->
 
-`npm run dev` runs Vite in the mode `bridge`, which adds Slidesend's dev bridge, the server
+`npm run dev` runs Vite in the mode `bridge`, which adds slidesend's dev bridge, the server
 running in memory, so phones can join:
 
 <!-- snippet: packages/create/template/vite.config.ts#vite -->
@@ -274,7 +274,7 @@ The first step of the hero section is its title alone; the panels follow one cli
 
 ### Phones, still without a cloud account
 
-Local mode has no audience. The dev bridge runs Slidesend's server in memory inside the Vite
+Local mode has no audience. The dev bridge runs slidesend's server in memory inside the Vite
 dev server, so phones on the same network can join. `vite.config.ts`:
 
 ```ts file=vite.config.ts

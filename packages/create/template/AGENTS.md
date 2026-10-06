@@ -1,8 +1,8 @@
-## Slidesend
+## slidesend
 
-This is a talk built with Slidesend. The documentation of the installed version ships in
+This is a talk built with slidesend. The documentation of the installed version ships in
 `node_modules`; read it before changing the deck, the design, a plugin or the deployment, and
-prefer it over anything you remember about Slidesend.
+prefer it over anything you remember about slidesend.
 
 - Start here: `node_modules/@slidesend/core/docs/building-a-talk.md` — the decisions to ask
   the speaker for, setting up the talk, structuring the content, the design, own templates

@@ -1,7 +1,7 @@
 {
   "name": "@slidesend/aws",
   "version": "0.3.3",
-  "description": "Hosting for Slidesend talks on AWS: the backend on AWS Blocks, deploy, bootstrap with OIDC, and the GitHub Actions workflow.",
+  "description": "Hosting for slidesend talks on AWS: the backend on AWS Blocks, deploy, bootstrap with OIDC, and the GitHub Actions workflow.",
   "license": "Apache-2.0",
   "type": "module",
   "exports": {

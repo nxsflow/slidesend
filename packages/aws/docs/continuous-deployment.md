@@ -108,7 +108,7 @@ writes `.github/workflows/deploy.yml`, fitted to the repository: where the talk 
 (by `pnpm-lock.yaml`) or otherwise npm; `.nvmrc` at the root (otherwise Node 24); and, for a talk
 in a subfolder, whether the root has its own `check` script, which then gates the deploy (with
 Playwright installed first if the talk uses it). Otherwise `slidesend check` does. `--force` overwrites an existing file. The
-workflow of the Slidesend repository itself, for its example talk:
+workflow of the slidesend repository itself, for its example talk:
 
 ```yaml
 jobs:

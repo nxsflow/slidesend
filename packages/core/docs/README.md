@@ -1,6 +1,6 @@
-# Slidesend documentation
+# slidesend documentation
 
-Slidesend is a presentation tool for talks in which the audience takes part on their phones. A
+slidesend is a presentation tool for talks in which the audience takes part on their phones. A
 deck is TypeScript; the design, the hosting platform and every slide type come from plugins.
 These docs ship inside the packages, so a coding agent in a talk project finds them under
 `node_modules/@slidesend/*/docs`. An agent building a talk starts with

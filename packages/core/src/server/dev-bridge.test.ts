@@ -9,8 +9,8 @@ describe("the dev bridge's desk links", () => {
         "s3cret",
       ),
     ).toEqual([
-      "  Slidesend desk: http://localhost:5173/desk#key=s3cret",
-      "  Slidesend desk for phones on this network: http://192.168.1.20:5173/desk#key=s3cret",
+      "  slidesend desk: http://localhost:5173/desk#key=s3cret",
+      "  slidesend desk for phones on this network: http://192.168.1.20:5173/desk#key=s3cret",
     ]);
   });
 
@@ -26,8 +26,8 @@ describe("the dev bridge's desk links", () => {
     vite.printUrls();
     expect(lines).toEqual([
       "vite urls",
-      "  Slidesend desk: http://localhost:5174/desk#key=k",
-      "  Slidesend desk for phones on this network: http://10.0.0.5:5174/desk#key=k",
+      "  slidesend desk: http://localhost:5174/desk#key=k",
+      "  slidesend desk for phones on this network: http://10.0.0.5:5174/desk#key=k",
     ]);
   });
 });
