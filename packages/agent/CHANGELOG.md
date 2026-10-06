@@ -1,5 +1,12 @@
 # @slidesend/agent
 
+## 0.3.3
+
+### Patch Changes
+
+- eace6cd: The agent chat shows the agent's `label` above the chat on the phone and on the desk's tile, and offers "What is this agent told?" only when the agent has `showPrompt: true`.
+- @slidesend/core@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes

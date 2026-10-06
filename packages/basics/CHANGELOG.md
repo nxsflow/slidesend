@@ -1,5 +1,11 @@
 # @slidesend/basics
 
+## 0.3.3
+
+### Patch Changes
+
+- @slidesend/core@0.3.3
+
 ## 0.3.2
 
 ### Patch Changes
