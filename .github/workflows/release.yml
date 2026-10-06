@@ -6,8 +6,9 @@ name: release
 # decides with scripts/release-plan.mjs what to commit, tag and publish, and checks exactly that
 # state. `release` holds the write access and npm's trust and runs no code of this repository:
 # it pushes the release commit and its tag in one atomic push, and only then publishes to npm
-# and creates the GitHub release. If main moved in between, the push fails, nothing is
-# published, and the run of the newer push releases instead.
+# and creates the GitHub release. If main moved on while `prepare` checked, the run stands down
+# with a notice and the run of the newer push releases instead; if it moves in the seconds
+# before the push, the atomic push fails and nothing is published.
 #
 # A version that is on main but not on npm (a run that stopped after its push) is published by
 # the next run; start one by hand with "Run workflow".
@@ -36,6 +37,7 @@ jobs:
       commit: ${{ steps.plan.outputs.commit }}
       tag: ${{ steps.plan.outputs.tag }}
       publish: ${{ steps.plan.outputs.publish }}
+      current: ${{ steps.current.outputs.current }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -59,6 +61,13 @@ jobs:
       # What is published is what was just checked, versions included.
       - run: pnpm check
         if: steps.plan.outputs.publish == 'true'
+      # The check takes minutes; a merge in that time moves main on, and its own run releases
+      # this change too. Standing down here keeps this run green instead of failing its push.
+      - id: current
+        if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
+        env:
+          BASE: ${{ steps.base.outputs.sha }}
+        run: node scripts/release-plan.mjs --still-current "$BASE"
       - name: Hand over the release
         if: steps.plan.outputs.commit == 'true' || steps.plan.outputs.publish == 'true'
         run: |
@@ -76,7 +85,7 @@ jobs:
 
   release:
     needs: prepare
-    if: needs.prepare.outputs.commit == 'true' || needs.prepare.outputs.publish == 'true'
+    if: needs.prepare.outputs.current == 'true' && (needs.prepare.outputs.commit == 'true' || needs.prepare.outputs.publish == 'true')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     environment: npm
