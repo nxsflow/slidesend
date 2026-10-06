@@ -32,10 +32,10 @@ export interface AwsBlocks {
   secrets: Readonly<Record<string, Pick<AppSetting<string>, "get">>>;
 }
 
-/** The Realtime namespace every Slidesend channel is published in. */
+/** The Realtime namespace every slidesend channel is published in. */
 export const realtimeNamespace = "sd";
 
-/** The Realtime channel of a Slidesend channel and topic. */
+/** The Realtime channel of a slidesend channel and topic. */
 export const realtimeChannel = (channel: string, topic: string) => `${channel}/${topic}`;
 
 const conditionFailed = (error: unknown) =>

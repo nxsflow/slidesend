@@ -514,7 +514,7 @@ const oidcProvider: Check = {
   },
 };
 
-/** The ids of the blocks Slidesend creates; short on purpose, see `bucketBudget`. */
+/** The ids of the blocks slidesend creates; short on purpose, see `bucketBudget`. */
 export const blockIds = ["sd-data", "sd-rt", "sd-control", "sd-web"];
 
 /**

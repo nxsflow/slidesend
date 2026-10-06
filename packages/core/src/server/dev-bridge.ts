@@ -196,8 +196,8 @@ export function deskLinks(
 ): string[] {
   const link = (base: string) => `${base.replace(/\/$/, "")}/desk#key=${secret}`;
   return [
-    ...urls.local.slice(0, 1).map((base) => `  Slidesend desk: ${link(base)}`),
-    ...urls.network.map((base) => `  Slidesend desk for phones on this network: ${link(base)}`),
+    ...urls.local.slice(0, 1).map((base) => `  slidesend desk: ${link(base)}`),
+    ...urls.network.map((base) => `  slidesend desk for phones on this network: ${link(base)}`),
   ];
 }
 
@@ -242,7 +242,7 @@ export function slidesendDev(options: DevBridgeOptions) {
       vite.httpServer?.on("listening", () => {
         const address = vite.httpServer?.address() as { port?: number } | null;
         const link = `http://localhost:${address?.port ?? 5173}/desk#key=${bridge.secret}`;
-        log(`  Slidesend desk: ${link}`);
+        log(`  slidesend desk: ${link}`);
       });
     },
   };

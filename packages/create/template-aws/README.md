@@ -1,9 +1,9 @@
-# Your first Slidesend talk, on AWS
+# Your first slidesend talk, on AWS
 
 A talk that explains how it is made, ready to deploy to AWS. Start it, then read `src/deck.ts`
 next to it.
 
-Slidesend is made to be written with an AI coding agent: open this folder in yours and tell it
+slidesend is made to be written with an AI coding agent: open this folder in yours and tell it
 what your talk is about. `AGENTS.md` points it to the documentation in `node_modules`, starting
 with `building-a-talk.md`.
 

@@ -1,6 +1,6 @@
-# Slidesend
+# slidesend
 
-Slidesend is a presentation tool for talks in which the audience takes part on their phones. A
+slidesend is a presentation tool for talks in which the audience takes part on their phones. A
 deck is written in TypeScript; the design, the hosting platform and every slide type come from
 plugins, so a talk project brings its own content, colors, fonts and logo without forking the
 tool.
@@ -23,7 +23,7 @@ questions for the phones. With `npm create @slidesend@latest my-talk -- --aws` i
 
 ## Building a talk with an agent
 
-Slidesend is made to be written with an AI coding agent. Every talk has an `AGENTS.md` that
+slidesend is made to be written with an AI coding agent. Every talk has an `AGENTS.md` that
 points the agent at the docs of the installed version, and the agent works through them in
 order: it asks the speaker for the decisions only they can make (message, audience, length,
 language, storyline, participation, design, hosting), turns the starter into the talk, writes

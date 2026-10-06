@@ -18,7 +18,7 @@ const rowSchema = z.object({
   ttl: z.number().optional(),
 });
 
-/** The methods of Slidesend's API on AWS: core's API plus `subscribe`. */
+/** The methods of slidesend's API on AWS: core's API plus `subscribe`. */
 export type AwsApi = CoreApi & {
   subscribe(channel: string, topic: string): Promise<unknown>;
 };
@@ -40,7 +40,7 @@ export interface AwsBackend {
 }
 
 /**
- * Creates Slidesend's backend inside the talk project's scope (spec §4.1). AWS Blocks needs the
+ * Creates slidesend's backend inside the talk project's scope (spec §4.1). AWS Blocks needs the
  * talk project to own `aws-blocks/index.ts`, and it takes the name of an exported variable as
  * the API namespace, so the project exports exactly this:
  *

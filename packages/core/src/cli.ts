@@ -35,7 +35,7 @@ const exitCode = await runCommand(
         logLevel: "silent",
         server: { middlewareMode: true, hmr: false },
         appType: "custom",
-        // Load Slidesend's own packages with Node, as an installed package would be loaded, even
+        // Load slidesend's own packages with Node, as an installed package would be loaded, even
         // when a workspace links them: their commands import more modules after this server closed.
         ssr: {
           external: ["@slidesend/core", "@slidesend/basics", "@slidesend/aws", "@slidesend/agent"],

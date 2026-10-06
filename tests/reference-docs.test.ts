@@ -48,7 +48,7 @@ it("keeps packages/aws/docs/commands.md in step with the commands", () => {
 it("keeps the starter talk's AGENTS.md in step with packages/core/docs/agents-md.md", () => {
   const section = readFileSync(join(packages, "core", "docs", "agents-md.md"), "utf8");
   const expected = section.split("```markdown\n")[1]?.split("\n```")[0] ?? "";
-  expect(expected).toContain("## Slidesend");
+  expect(expected).toContain("## slidesend");
   const file = join(packages, "create", "template", "AGENTS.md");
   expect(committed(file, `${expected}\n`)).toBe(`${expected}\n`);
 });
