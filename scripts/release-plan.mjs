@@ -62,6 +62,22 @@ export function planOf({ before, after, dirty, missing }) {
   };
 }
 
+/**
+ * Whether this run still releases: only while `main` is where it checked out. When a newer merge
+ * moved it on, the run of that merge versions and releases this change as well, so this one
+ * stands down — green, with a notice — instead of failing its push.
+ */
+export function standDownOf({ base, tip }) {
+  if (!/^[0-9a-f]{40}$/.test(tip ?? "")) {
+    throw new Error(`Could not read the tip of main (got "${tip ?? ""}").`);
+  }
+  if (tip === base) return { current: true };
+  return {
+    current: false,
+    notice: `main moved on from ${base.slice(0, 7)} to ${tip.slice(0, 7)}; the run of the newer push releases this change.`,
+  };
+}
+
 const run = (command, args) => spawnSync(command, args, { encoding: "utf8" });
 
 function packages(root) {
@@ -113,9 +129,22 @@ function main() {
   }
 }
 
+/** `--still-current <sha>`: compares the checked-out commit with the tip of main on GitHub. */
+function stillCurrent(base) {
+  const tip = run("git", ["ls-remote", "origin", "refs/heads/main"]).stdout.split(/\s/)[0];
+  const decision = standDownOf({ base, tip });
+  if (decision.notice) console.log(`::notice title=Release stood down::${decision.notice}`);
+  else console.log(`main is still at ${base.slice(0, 7)}.`);
+  if (process.env.GITHUB_OUTPUT) {
+    appendFileSync(process.env.GITHUB_OUTPUT, `current=${decision.current}\n`);
+  }
+}
+
 if (process.argv[1] && import.meta.url === new URL(`file://${process.argv[1]}`).href) {
   try {
-    main();
+    const at = process.argv.indexOf("--still-current");
+    if (at >= 0) stillCurrent(process.argv[at + 1] ?? "");
+    else main();
   } catch (error) {
     console.error(error instanceof Error ? error.message : String(error));
     process.exit(1);

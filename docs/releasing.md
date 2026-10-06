@@ -30,14 +30,17 @@ triggered it, which may be older by the time a queued run starts). `scripts/rele
    the npm dist-tag, taken from the version (`0.2.0-alpha.1` → `alpha`, `1.0.0` → `latest`);
 3. writes the release notes from the changelog.
 
-If something is to be published, it runs `pnpm check` on exactly that state. It hands over the
-changes as a patch and the built packages as an artifact.
+If something is to be published, it runs `pnpm check` on exactly that state. Then it asks GitHub
+where `main` is now: if a newer merge moved it on in the meantime, the run **stands down**, green
+and with a notice, because the run of that merge versions and releases this change as well.
+Otherwise it hands over the changes as a patch and the built packages as an artifact.
 
 **`release`** runs in the environment `npm`, with write access and npm's trust, and runs no code
 of this repository:
 
 1. pushes `chore(release): vX.Y.Z` and the tag `vX.Y.Z` in one atomic push; if `main` moved in
-   the meantime, the push fails, nothing is published, and the run of the newer push releases;
+   the seconds since `prepare` looked, the push fails, nothing is published, and the run of the
+   newer push releases;
 2. publishes the five packages to npm with provenance (install and lifecycle scripts off);
 3. creates the GitHub release `vX.Y.Z` on the release commit, with the changelog.
 
@@ -87,8 +90,10 @@ workflow, **Publishing access → disallow tokens** on npmjs.com closes the toke
 
 - **In `prepare`** (the check failed): nothing was pushed. Fix it on `main`; the changesets are
   still there, and that merge releases.
-- **The push was rejected** (`main` moved): nothing was published; the run started by the newer
-  push releases.
+- **The run stood down** (a notice "Release stood down"): nothing was pushed or published; the
+  run started by the newer push releases. Nothing to do.
+- **The push was rejected** (`main` moved in the last seconds): nothing was published; the run
+  started by the newer push releases.
 - **After the push, before npm is complete** (publishing failed, or failed for some packages):
   the version is on `main` but not on npm. Fix the cause (e.g. a missing trusted publisher) and start the workflow
   by hand (**Actions → release → Run workflow**) — or let the next merge do it: every run

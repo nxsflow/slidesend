@@ -5,6 +5,7 @@ import {
   npmState,
   pendingChangesets,
   planOf,
+  standDownOf,
   // @ts-expect-error -- a plain ES module without types, run by CI as it is
 } from "../scripts/release-plan.mjs";
 
@@ -89,5 +90,21 @@ describe("the release plan", () => {
     expect(
       planOf({ before: "0.0.0", after: "0.0.0", dirty: false, missing: ["@slidesend/core"] }),
     ).toMatchObject({ publish: false });
+  });
+
+  it("releases while main is still where the run checked out", () => {
+    const sha = "a".repeat(40);
+    expect(standDownOf({ base: sha, tip: sha })).toEqual({ current: true });
+  });
+
+  it("stands down when a newer merge moved main on, and says which run releases", () => {
+    const decision = standDownOf({ base: "a".repeat(40), tip: "b".repeat(40) });
+    expect(decision.current).toBe(false);
+    expect(decision.notice).toContain("aaaaaaa to bbbbbbb");
+    expect(decision.notice).toContain("newer push releases");
+  });
+
+  it("refuses to decide when the tip of main could not be read", () => {
+    expect(() => standDownOf({ base: "a".repeat(40), tip: "" })).toThrow("tip of main");
   });
 });
