@@ -22,7 +22,11 @@ Repositories with immutable subjects turned off get `repo:<owner>/<repo>:environ
 instead; `slidesend bootstrap` reads which one applies.
 
 The bootstrap stack `<stackId>-bootstrap` holds the account's GitHub OIDC provider, the deploy
-role and, for a custom domain, the hosted zone. It is separate from
+role and, for a custom domain, the hosted zone. An account holds only one provider for GitHub, so
+the first talk's bootstrap stack creates it and every later talk in the same account imports it;
+`slidesend bootstrap` decides which. Delete the first talk's bootstrap stack and the provider goes
+with it, which locks the other talks out until one of them runs `slidesend bootstrap --deploy`
+again. It is separate from
 the talk's stack and survives `slidesend destroy`. The deploy role may only assume the CDK
 bootstrap roles and read the CDK bootstrap version; everything else happens through CDK.
 
@@ -72,6 +76,7 @@ checks every precondition and changes nothing:
   ok    the deploy secrets are set: AWS_DEPLOY_ROLE and AWS_REGION in "production"
   ok    esbuild is a dependency of the workspace root: …
   ok    .blocks/config.json names the stack: …
+  ok    the GitHub OIDC provider is created or imported: none yet; the bootstrap stack creates it
   ok    bucket names stay within 63 characters: …
 
   Everything is in place.
