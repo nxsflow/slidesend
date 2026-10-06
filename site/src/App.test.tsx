@@ -29,7 +29,7 @@ describe("the product page", () => {
     for (const href of [
       "https://github.com/nxsflow/slidesend",
       "https://www.npmjs.com/org/slidesend",
-      "https://github.com/nxsflow/slidesend/tree/main/packages/core/docs",
+      `${import.meta.env.BASE_URL}docs/`,
       "https://nxsflow.com/legal-notice",
       "https://nxsflow.com/privacy",
     ]) {
