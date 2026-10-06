@@ -13,10 +13,14 @@
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/merriweather": "^5.2.11",
     "@fontsource/merriweather-sans": "^5.2.7",
+    "github-slugger": "^2.0.0",
+    "markdown-it": "^15.0.2",
     "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react-dom": "^19.3.0",
+    "shiki": "^4.5.0"
   },
   "devDependencies": {
+    "@types/markdown-it": "^14.2.0",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

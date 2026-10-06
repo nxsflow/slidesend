@@ -66,6 +66,8 @@ a:hover {
 
 code {
   font-family: var(--slidesend-font-mono);
+  /* Code shows what is typed: "=>" stays two characters. */
+  font-variant-ligatures: none;
   font-size: 0.9em;
   padding: 1px 5px;
   border-radius: var(--slidesend-radius-sm);
@@ -326,10 +328,6 @@ h1 {
   border-radius: var(--slidesend-radius-lg);
 }
 
-.links a:hover h3 {
-  text-decoration: underline;
-}
-
 .fine {
   margin-top: var(--slidesend-space-6);
   font-size: var(--slidesend-text-sm);
@@ -462,4 +460,192 @@ h1 {
 .screen-phone .line,
 .screen-phone .line.wide {
   width: 100%;
+}
+
+/* The documentation: a sidebar beside the rendered Markdown. */
+
+.docs {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--slidesend-space-12);
+  padding-top: var(--slidesend-space-12);
+  padding-bottom: var(--slidesend-space-16);
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .docs {
+    grid-template-columns: 1fr;
+    gap: var(--slidesend-space-6);
+    padding-top: var(--slidesend-space-6);
+  }
+}
+
+.docs-nav {
+  min-width: 0;
+}
+
+.docs-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--slidesend-space-1);
+  font-size: var(--slidesend-text-sm);
+}
+
+@media (min-width: 861px) {
+  .docs-nav {
+    position: sticky;
+    top: var(--slidesend-space-6);
+  }
+}
+
+@media (max-width: 860px) {
+  /* One row to swipe through, so the page starts with its own content. */
+  .docs-nav ul {
+    display: flex;
+    gap: var(--slidesend-space-2);
+    overflow-x: auto;
+    padding-bottom: var(--slidesend-space-2);
+  }
+
+  .docs-nav a {
+    border: 1px solid var(--slidesend-border);
+    white-space: nowrap;
+  }
+}
+
+.docs-nav a {
+  display: block;
+  padding: var(--slidesend-space-1) var(--slidesend-space-3);
+  border-radius: var(--slidesend-radius-sm);
+  text-decoration: none;
+  color: var(--slidesend-text-muted);
+}
+
+.docs-nav a:hover {
+  color: var(--slidesend-text);
+  background: var(--slidesend-surface);
+}
+
+.docs-nav a[aria-current="page"] {
+  color: var(--slidesend-text);
+  font-weight: var(--slidesend-weight-strong);
+  background: var(--slidesend-tint);
+}
+
+.doc {
+  min-width: 0;
+}
+
+.doc article {
+  max-width: 46em;
+}
+
+.doc article > * + * {
+  margin-top: var(--slidesend-space-4);
+}
+
+.doc h1 {
+  font-size: clamp(var(--slidesend-text-2xl), 4vw, var(--slidesend-text-3xl));
+  margin-bottom: var(--slidesend-space-6);
+}
+
+.doc h2 {
+  font-size: var(--slidesend-text-xl);
+  font-weight: var(--slidesend-weight-subheading);
+  margin-top: var(--slidesend-space-12);
+}
+
+.doc h3 {
+  margin-top: var(--slidesend-space-8);
+}
+
+.doc h2,
+.doc h3 {
+  scroll-margin-top: var(--slidesend-space-6);
+}
+
+.doc ul,
+.doc ol {
+  padding-left: var(--slidesend-space-6);
+}
+
+.doc li + li {
+  margin-top: var(--slidesend-space-1);
+}
+
+.doc a {
+  color: var(--slidesend-text);
+  text-decoration-color: var(--slidesend-accent);
+}
+
+.doc table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: var(--slidesend-text-sm);
+}
+
+.doc th,
+.doc td {
+  text-align: left;
+  vertical-align: top;
+  padding: var(--slidesend-space-2) var(--slidesend-space-3);
+  border-bottom: 1px solid var(--slidesend-border);
+}
+
+.doc th {
+  font-weight: var(--slidesend-weight-strong);
+}
+
+.doc blockquote {
+  margin-left: 0;
+  padding-left: var(--slidesend-space-4);
+  border-left: 3px solid var(--slidesend-border);
+  color: var(--slidesend-text-muted);
+}
+
+.doc pre.shiki {
+  margin: var(--slidesend-space-4) 0 0;
+  padding: var(--slidesend-space-4);
+  border: 1px solid var(--slidesend-border);
+  border-radius: var(--slidesend-radius-md);
+  overflow-x: auto;
+  font-size: var(--slidesend-text-sm);
+  line-height: 1.6;
+}
+
+.doc pre.shiki code {
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.doc-source {
+  margin-top: var(--slidesend-space-12);
+  font-size: var(--slidesend-text-sm);
+  color: var(--slidesend-text-muted);
+}
+
+/* Shiki writes both themes as variables; the colour scheme picks one. */
+.shiki,
+.shiki span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .shiki,
+  :root:not([data-theme="light"]) .shiki span {
+    color: var(--shiki-dark);
+    background-color: var(--shiki-dark-bg);
+  }
+}
+
+/* Last, because it is the most specific rule for an h3. */
+.links a:hover h3 {
+  text-decoration: underline;
 }
