@@ -1,5 +1,11 @@
 # @slidesend/create
 
+## 0.3.4
+
+### Patch Changes
+
+- 6b4147f: The name is written lowercase everywhere: "slidesend" in the READMEs, the docs, the package descriptions, the starter talk, its AGENTS.md section and the desk link the dev server prints.
+
 ## 0.3.3
 
 No changes in this release.

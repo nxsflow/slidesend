@@ -1,5 +1,13 @@
 # @slidesend/agent
 
+## 0.3.4
+
+### Patch Changes
+
+- 6b4147f: The name is written lowercase everywhere: "slidesend" in the READMEs, the docs, the package descriptions, the starter talk, its AGENTS.md section and the desk link the dev server prints.
+- Updated dependencies [6b4147f]
+  - @slidesend/core@0.3.4
+
 ## 0.3.3
 
 ### Patch Changes

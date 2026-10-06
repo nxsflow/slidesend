@@ -1,6 +1,6 @@
 {
   "name": "@slidesend/core",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "The core of slidesend: decks in TypeScript, plugins, designs, sessions, the stage, phone and desk views, and the slidesend command.",
   "license": "Apache-2.0",
   "type": "module",
