@@ -32,8 +32,8 @@ export const agents = defineAgents({
 |---|---|
 | `systemPrompt` | What the agent is told before the first message. Required. The tool never adds to it. |
 | `model` | `"fast"` (default) or `"smart"`; the platform maps the tier to a model, see [Models and cost](#models-and-cost). |
-| `label` | A display name; defaults to the key. Phone and desk do not show it yet: the desk tile names the key. |
-| `showPrompt` | Whether the phone's "What is this agent told?" reveals the system prompt; when off, the button shows nothing. Off by default: a prompt can carry names, instructions and a tone nobody meant to publish. |
+| `label` | The name above the chat on the phone and on the desk's tile; defaults to the key. |
+| `showPrompt` | Whether the phone offers "What is this agent told?", which reveals the system prompt; when off, the phone has no such button and the server does not hand the prompt out. Off by default: a prompt can carry names, instructions and a tone nobody meant to publish. |
 
 An agent's name is lowercase letters, digits and dashes: it becomes part of a block id.
 
