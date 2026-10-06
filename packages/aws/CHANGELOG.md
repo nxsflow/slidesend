@@ -1,5 +1,12 @@
 # @slidesend/aws
 
+## 0.3.2
+
+### Patch Changes
+
+- f731af2: `slidesend bootstrap` imports the account's existing GitHub OIDC provider instead of creating a second one, so a second talk in the same AWS account can deploy. A provider that the talk's own bootstrap stack created stays in that stack.
+- @slidesend/core@0.3.2
+
 ## 0.3.1
 
 ### Patch Changes
