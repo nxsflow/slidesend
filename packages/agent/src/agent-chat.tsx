@@ -22,7 +22,7 @@ import {
 } from "@slidesend/core";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
-import { maxMessageChars, maxTurns } from "./agents";
+import { type Agents, labelOf, maxMessageChars, maxTurns } from "./agents";
 import {
   addOwnMessage,
   applyChunk,
@@ -232,174 +232,190 @@ function Message({ message }: { message: ChatMessage }) {
 }
 
 /**
+ * The agent chat for a talk's agents. The `agent` plugin lists this one, so phone and desk know
+ * each agent's label and whether its prompt may be shown.
+ */
+export function agentChatFor(agents: Agents = {}) {
+  return defineActivity({
+    type: "agentChat",
+    schema: z.object({
+      id: z.string(),
+      /** Which of the talk's agents answers here. */
+      agent: ref("agent"),
+      /** End the conversation after the first answer. */
+      singleTurn: z.boolean().default(false),
+      /** Questions offered as buttons, so nobody has to think of one first. */
+      suggestions: z.array(z.string().min(1)).default([]),
+      ...activityMeta,
+    }),
+    Participant: ({ data }) => {
+      const text = useText();
+      const { state, send, prompt, showPrompt, ready } = useAgentChat({
+        agent: data.agent,
+        singleTurn: data.singleTurn,
+      });
+      const [draft, setDraft] = useState("");
+      const promptShown = agents[data.agent]?.showPrompt === true;
+      const limits = { maxTurns, maxChars: maxMessageChars };
+      const sendable = canSend(state, draft, limits) && ready;
+
+      const submit = async (value: string) => {
+        if (!canSend(state, value, limits) || !ready) return;
+        setDraft("");
+        await send(value);
+      };
+
+      return (
+        <section
+          data-activity-kind="agentChat"
+          data-agent={data.agent}
+          style={{ display: "grid", gap: 12 }}
+        >
+          <h2 data-agent-label style={{ margin: 0, fontSize: 18 }}>
+            {labelOf(agents, data.agent)}
+          </h2>
+          <ul
+            data-messages
+            style={{ display: "grid", gap: 8, margin: 0, padding: 0, justifyItems: "start" }}
+          >
+            {state.messages.map((message) => (
+              <Message key={message.id} message={message} />
+            ))}
+          </ul>
+
+          {state.messages.length === 0 && data.suggestions.length > 0 && (
+            <div data-suggestions style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {data.suggestions.map((suggestion) => (
+                <button
+                  key={suggestion}
+                  type="button"
+                  data-suggestion
+                  onClick={() => submit(suggestion)}
+                  style={{
+                    font: "inherit",
+                    fontSize: 14,
+                    padding: "8px 10px",
+                    borderRadius: 999,
+                    border: `1px solid ${color("border")}`,
+                    background: "transparent",
+                    color: color("text"),
+                  }}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {state.problem && (
+            <p data-problem style={{ margin: 0, color: color("textMuted") }}>
+              {state.problem}
+            </p>
+          )}
+
+          {ready ? (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                void submit(draft);
+              }}
+              style={{ display: "flex", gap: 8 }}
+            >
+              <input
+                data-composer
+                value={draft}
+                maxLength={maxMessageChars}
+                disabled={state.busy}
+                placeholder={text("agent.chat.placeholder")}
+                aria-label={text("agent.chat.placeholder")}
+                onChange={(event) => setDraft(event.target.value)}
+                style={{
+                  font: "inherit",
+                  flex: 1,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: `1px solid ${color("border")}`,
+                  background: color("surface"),
+                  color: color("text"),
+                }}
+              />
+              <button
+                type="submit"
+                data-send
+                disabled={!sendable}
+                style={{
+                  font: "inherit",
+                  padding: "10px 14px",
+                  borderRadius: 10,
+                  border: "none",
+                  background: color("accent"),
+                  color: color("background"),
+                  opacity: sendable ? 1 : 0.5,
+                }}
+              >
+                {text("agent.chat.send")}
+              </button>
+            </form>
+          ) : (
+            <p data-finished style={{ margin: 0, color: color("textMuted") }}>
+              {text("agent.chat.finished")}
+            </p>
+          )}
+
+          {promptShown && (
+            <div>
+              <button
+                type="button"
+                data-show-prompt
+                onClick={() => void showPrompt()}
+                style={{
+                  font: "inherit",
+                  fontSize: 12,
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  color: color("textMuted"),
+                }}
+              >
+                {text("agent.chat.showPrompt")}
+              </button>
+              {prompt && (
+                <pre
+                  data-prompt
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    fontSize: 12,
+                    margin: "8px 0 0",
+                    color: color("textMuted"),
+                  }}
+                >
+                  {prompt}
+                </pre>
+              )}
+            </div>
+          )}
+        </section>
+      );
+    },
+    /** The desk's tile: how many phones are talking to this agent, and their last question. */
+    Monitor: ({ data }) => {
+      const text = useText();
+      return (
+        <div data-monitor="agentChat" style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: 13 }}>
+            {text("agent.chat.monitor", { agent: labelOf(agents, data.agent) })}
+          </span>
+        </div>
+      );
+    },
+  });
+}
+
+/**
  * The agent chat as a deck uses it: `agentChat({ id: "ask", agent: "newton" })`.
  *
  * `agent` is a reference (spec §5.2), so a deck that names an agent nobody defined fails to
  * load, with the name in the message — rather than at the moment someone in the room asks it
  * something.
  */
-export const agentChat = defineActivity({
-  type: "agentChat",
-  schema: z.object({
-    id: z.string(),
-    /** Which of the talk's agents answers here. */
-    agent: ref("agent"),
-    /** End the conversation after the first answer. */
-    singleTurn: z.boolean().default(false),
-    /** Questions offered as buttons, so nobody has to think of one first. */
-    suggestions: z.array(z.string().min(1)).default([]),
-    ...activityMeta,
-  }),
-  Participant: ({ data }) => {
-    const text = useText();
-    const { state, send, prompt, showPrompt, ready } = useAgentChat({
-      agent: data.agent,
-      singleTurn: data.singleTurn,
-    });
-    const [draft, setDraft] = useState("");
-    const limits = { maxTurns, maxChars: maxMessageChars };
-    const sendable = canSend(state, draft, limits) && ready;
-
-    const submit = async (value: string) => {
-      if (!canSend(state, value, limits) || !ready) return;
-      setDraft("");
-      await send(value);
-    };
-
-    return (
-      <section
-        data-activity-kind="agentChat"
-        data-agent={data.agent}
-        style={{ display: "grid", gap: 12 }}
-      >
-        <ul
-          data-messages
-          style={{ display: "grid", gap: 8, margin: 0, padding: 0, justifyItems: "start" }}
-        >
-          {state.messages.map((message) => (
-            <Message key={message.id} message={message} />
-          ))}
-        </ul>
-
-        {state.messages.length === 0 && data.suggestions.length > 0 && (
-          <div data-suggestions style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {data.suggestions.map((suggestion) => (
-              <button
-                key={suggestion}
-                type="button"
-                data-suggestion
-                onClick={() => submit(suggestion)}
-                style={{
-                  font: "inherit",
-                  fontSize: 14,
-                  padding: "8px 10px",
-                  borderRadius: 999,
-                  border: `1px solid ${color("border")}`,
-                  background: "transparent",
-                  color: color("text"),
-                }}
-              >
-                {suggestion}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {state.problem && (
-          <p data-problem style={{ margin: 0, color: color("textMuted") }}>
-            {state.problem}
-          </p>
-        )}
-
-        {ready ? (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              void submit(draft);
-            }}
-            style={{ display: "flex", gap: 8 }}
-          >
-            <input
-              data-composer
-              value={draft}
-              maxLength={maxMessageChars}
-              disabled={state.busy}
-              placeholder={text("agent.chat.placeholder")}
-              aria-label={text("agent.chat.placeholder")}
-              onChange={(event) => setDraft(event.target.value)}
-              style={{
-                font: "inherit",
-                flex: 1,
-                padding: "10px 12px",
-                borderRadius: 10,
-                border: `1px solid ${color("border")}`,
-                background: color("surface"),
-                color: color("text"),
-              }}
-            />
-            <button
-              type="submit"
-              data-send
-              disabled={!sendable}
-              style={{
-                font: "inherit",
-                padding: "10px 14px",
-                borderRadius: 10,
-                border: "none",
-                background: color("accent"),
-                color: color("background"),
-                opacity: sendable ? 1 : 0.5,
-              }}
-            >
-              {text("agent.chat.send")}
-            </button>
-          </form>
-        ) : (
-          <p data-finished style={{ margin: 0, color: color("textMuted") }}>
-            {text("agent.chat.finished")}
-          </p>
-        )}
-
-        <div>
-          <button
-            type="button"
-            data-show-prompt
-            onClick={() => void showPrompt()}
-            style={{
-              font: "inherit",
-              fontSize: 12,
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              color: color("textMuted"),
-            }}
-          >
-            {text("agent.chat.showPrompt")}
-          </button>
-          {prompt && (
-            <pre
-              data-prompt
-              style={{
-                whiteSpace: "pre-wrap",
-                fontSize: 12,
-                margin: "8px 0 0",
-                color: color("textMuted"),
-              }}
-            >
-              {prompt}
-            </pre>
-          )}
-        </div>
-      </section>
-    );
-  },
-  /** The desk's tile: how many phones are talking to this agent, and their last question. */
-  Monitor: ({ data }) => {
-    const text = useText();
-    return (
-      <div data-monitor="agentChat" style={{ display: "grid", gap: 4 }}>
-        <span style={{ fontSize: 13 }}>{text("agent.chat.monitor", { agent: data.agent })}</span>
-      </div>
-    );
-  },
-});
+export const agentChat = agentChatFor();

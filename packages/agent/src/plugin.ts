@@ -1,5 +1,5 @@
 import { definePlugin } from "@slidesend/core";
-import { agentChat } from "./agent-chat";
+import { agentChatFor } from "./agent-chat";
 import type { Agents } from "./agents";
 import { agentMessages } from "./messages";
 
@@ -18,7 +18,7 @@ export interface AgentPluginOptions {
 export function agent({ agents }: AgentPluginOptions) {
   return definePlugin({
     name: "agent",
-    activities: [agentChat],
+    activities: [agentChatFor(agents)],
     provides: { agent: Object.keys(agents) },
     messages: agentMessages,
   });
