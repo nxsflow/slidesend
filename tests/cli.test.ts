@@ -58,7 +58,7 @@ describe("slidesend", () => {
 
   // Only `help`: `deploy`, `open` and `destroy` reach the AWS account of whoever runs the tests.
   // Missing platform commands are covered against a fake platform in core's own tests.
-  it("lists the commands the aws platform adds", () => {
+  it("lists the commands the aws platform adds", { timeout: 30_000 }, () => {
     const result = slidesend("help");
     expect(result.status).toBe(0);
     for (const command of ["bootstrap", "deploy", "open", "destroy", "workflow"]) {

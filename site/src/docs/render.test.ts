@@ -114,7 +114,8 @@ describe("the docs on the site", () => {
     ]);
   });
 
-  it("resolves every link of the real docs on the site", async () => {
+  // Renders every real doc with Shiki: a second alone, several under a full parallel run.
+  it("resolves every link of the real docs on the site", { timeout: 30_000 }, async () => {
     const root = join(import.meta.dirname, "..", "..", "..");
     const all = await createHighlighter({
       themes: ["github-light", "github-dark"],
