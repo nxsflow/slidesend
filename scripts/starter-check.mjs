@@ -6,7 +6,8 @@
  * local variant with npm, once as the AWS variant with pnpm. The template cannot drift from the
  * packages without this failing.
  *
- * Needs the packages built (`pnpm build`) and Playwright's Chromium installed.
+ * Needs the packages built (`pnpm build`). Each talk installs the Chromium of the Playwright it
+ * resolved itself, which a fresh install can put a release ahead of this workspace's lockfile.
  */
 import { spawnSync } from "node:child_process";
 import { mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
@@ -60,6 +61,7 @@ for (const variant of variants) {
   );
   const talk = join(scratch, name);
   run(packageManager, ["run", "typecheck"], { cwd: talk });
+  run(packageManager, ["exec", "playwright", "install", "chromium"], { cwd: talk });
   run(packageManager, ["run", "check:render"], { cwd: talk });
   run(packageManager, ["run", "build"], {
     cwd: talk,
