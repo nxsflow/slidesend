@@ -24,7 +24,7 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "peerDependencies": {
-    "@aws-blocks/blocks": "^0.6.0",
+    "@aws-blocks/blocks": "^0.8.0",
     "@slidesend/core": "workspace:^",
     "react": "^19.0.0",
     "zod": "^4.0.0"

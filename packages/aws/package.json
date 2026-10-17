@@ -32,7 +32,7 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "peerDependencies": {
-    "@aws-blocks/blocks": "^0.6.0",
+    "@aws-blocks/blocks": "^0.8.0",
     "@slidesend/core": "workspace:^",
     "zod": "^4.0.0",
     "aws-cdk-lib": "^2.270.0",

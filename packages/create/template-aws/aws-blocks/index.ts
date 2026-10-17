@@ -1,7 +1,8 @@
 /**
- * The talk's backend on AWS Blocks. AWS Blocks needs the project to own this file, and it takes
- * the name of every exported variable as an API namespace: export only `slidesend`, never the
- * backend object itself.
+ * The talk's backend on AWS Blocks. AWS Blocks needs the project to own this file, and it serves
+ * every export of it to anyone, under the export's name. So export ONLY API namespaces (here
+ * `slidesend`): never the Scope, building blocks, the backend object, helpers or configuration,
+ * and no `export *`. `index.handler.ts` refuses to start otherwise, as do dev and deploy.
  */
 import { Scope } from "@aws-blocks/blocks";
 import { createAwsBackend } from "@slidesend/aws/server";

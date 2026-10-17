@@ -81,6 +81,11 @@ export const agentChat = createAgentChat(scope, {
 ```
 <!-- end snippet -->
 
+Export only the chat's `api`, never the `createAgentChat` result, the Scope or the tools: AWS
+Blocks serves every export of `aws-blocks/index.ts` to anyone, and the Lambda entry refuses to
+start when the module exports anything but API namespaces
+([the backend](../../aws/docs/deploy-aws.md#the-backend)).
+
 The talk project also needs `@aws-blocks/bb-file-bucket` as a dependency (the Agent block brings
 a bucket of its own, and the generated client imports its middleware), and the browser must hand
 **every** exported namespace to the client: `awsClient(blocks)`, where `blocks` is the whole

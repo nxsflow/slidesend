@@ -1,6 +1,9 @@
 /**
  * The example talk's backend on AWS Blocks. AWS Blocks needs the talk project to own this file,
- * and it takes the name of each exported variable as an API namespace (spec §4.1).
+ * and it serves every export of it to anyone, under the export's name (spec §4.1). So export ONLY
+ * API namespaces (here `slidesend` and `agentChat`): never the Scope, building blocks, the backend
+ * object, helpers or configuration, and no `export *`. `index.handler.ts` refuses to start
+ * otherwise, as do dev and deploy.
  */
 import { Scope } from "@aws-blocks/blocks";
 import { createAgentChat } from "@slidesend/agent/server";

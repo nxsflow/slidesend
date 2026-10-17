@@ -20,6 +20,7 @@ export {
   deskLinks,
   slidesendDev,
 } from "./server/dev-bridge";
+export { type PublicErrorClass, publicErrors } from "./server/public-errors";
 export {
   type CoreApi,
   createRuntime,
