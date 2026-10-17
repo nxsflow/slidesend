@@ -7,6 +7,7 @@ import { createRequire } from "node:module";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import type { PlatformCommandContext } from "@slidesend/core";
+import { onlyApiNamespaces } from "./server/entry-guard";
 
 function option(args: readonly string[], name: string): string | undefined {
   const index = args.indexOf(name);
@@ -43,6 +44,7 @@ export { workflow } from "./workflow/command";
 /**
  * `slidesend dev` on AWS: runs the project's `aws-blocks/index.ts` on the AWS Blocks dev server
  * with its local mocks, with Vite behind it, and prints the desk link with the control secret.
+ * It stops when that module exports anything but API namespaces (see `onlyApiNamespaces`).
  * Options: `--port <n>` (default 3000; Vite runs on n + 100).
  */
 export async function dev(context: PlatformCommandContext): Promise<void> {
@@ -53,12 +55,16 @@ export async function dev(context: PlatformCommandContext): Promise<void> {
   const { startDevServer } = await fromProject<{
     startDevServer(options: Record<string, unknown>): Promise<unknown>;
   }>(context.projectRoot, "@aws-blocks/blocks/scripts");
+  const backendPath = join(context.projectRoot, "aws-blocks", "index.ts");
   await startDevServer({
-    backendPath: join(context.projectRoot, "aws-blocks", "index.ts"),
+    backendPath,
     frontendCommand: `VITE_SLIDESEND_PLATFORM=aws npx vite --port ${frontendPort} --strictPort`,
     frontendPort,
     port,
   });
+  // The dev server imported the entry by this URL, so this is the same module, not a second one.
+  // Refused here, the mistake shows up locally instead of in the deployed Lambda.
+  onlyApiNamespaces(await import(pathToFileURL(backendPath).href));
   const url = `http://localhost:${port}`;
   const secret = localSecret(context.projectRoot);
   context.log(`  Desk   ${url}/desk${secret ? `#key=${secret}` : ""}`);

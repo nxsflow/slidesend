@@ -8,8 +8,10 @@
  * `aws-blocks/index.handler.ts` (the Lambda entry that loads it).
  */
 import { join } from "node:path";
-import { BlocksPresets, BlocksStack, Hosting } from "@aws-blocks/blocks/cdk";
+import { pathToFileURL } from "node:url";
+import { BlocksPresets, BlocksStack, Hosting, registerConfig } from "@aws-blocks/blocks/cdk";
 import { App, Aspects, RemovalPolicy } from "aws-cdk-lib";
+import { onlyApiNamespaces } from "../server/entry-guard";
 import { NodeRuntimePolicy } from "./runtime-policy";
 import { publicVariables, talkInput } from "./talk-input";
 
@@ -33,8 +35,16 @@ const stack = await BlocksStack.create(app, input.stackName, {
   env: { account: input.account, region: input.region },
 });
 
+// The deploy stops before anything ships when the backend exports more than API namespaces.
+// BlocksStack.create imported the entry by this very URL, so this is that module again, not a
+// second copy that would construct every block twice.
+const entry = pathToFileURL(join(backend, "index.ts"));
+entry.searchParams.set("stack", input.stackName);
+onlyApiNamespaces(await import(entry.href));
+
+// Loaded into `process.env` on every compute at cold start, before the backend module is imported.
 for (const [name, value] of Object.entries(publicVariables(process.env))) {
-  stack.handler.addEnvironment(name, value);
+  registerConfig(stack, name, value);
 }
 
 new Hosting(stack, "Web", {

@@ -137,6 +137,17 @@ describe("writeProject", () => {
     expect(existsSync(join(aws.target, "package.overlay.json"))).toBe(false);
   });
 
+  it("runs the backend entry through onlyApiNamespaces before AWS Blocks serves it", () => {
+    // The real module is imported by the starter check, where the generated talk is installed.
+    const aws = plan({ aws: true });
+    writeProject(aws);
+    const handler = read(join(aws.target, "aws-blocks", "index.handler.ts"));
+    expect(handler).toContain('import { onlyApiNamespaces } from "@slidesend/aws/server";');
+    expect(handler).toContain(
+      'createLambdaHandler(() => import("./index.js").then(onlyApiNamespaces))',
+    );
+  });
+
   it("links aws-blocks for pnpm, which would copy a file: folder", () => {
     const aws = plan({ aws: true, packageManager: "pnpm" });
     writeProject(aws);
