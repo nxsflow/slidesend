@@ -1,4 +1,5 @@
 import {
+  ApiError,
   ApiNamespace,
   AppSetting,
   DistributedTable,
@@ -6,7 +7,13 @@ import {
   type Scope,
 } from "@aws-blocks/blocks";
 import type { CoreApi, PlatformServer, Presentation } from "@slidesend/core";
-import { controlSecretName, createServer, open, type ServerApi } from "@slidesend/core/server";
+import {
+  controlSecretName,
+  createServer,
+  open,
+  publicErrors,
+  type ServerApi,
+} from "@slidesend/core/server";
 import { z } from "zod";
 import { type AwsBlocks, blocksPlatform, realtimeChannel, realtimeNamespace } from "./platform";
 
@@ -54,8 +61,10 @@ export interface AwsBackend {
  * export const slidesend = backend.api;
  * ```
  *
- * Export only API namespaces, never `backend` itself: every exported object becomes a public
- * API namespace. Block ids are short on purpose; S3 bucket names built from stack id and block
+ * Export only API namespaces from that module: never `backend` itself, the Scope, a block, a
+ * helper or configuration, and no `export *`. AWS Blocks serves every export to anyone, without
+ * authentication. `onlyApiNamespaces` in the Lambda entry enforces it, as do `slidesend dev` and
+ * `slidesend deploy`. Block ids are short on purpose; S3 bucket names built from stack id and block
  * id must stay within 63 characters.
  */
 export function createAwsBackend(scope: Scope, config: Presentation): AwsBackend {
@@ -91,6 +100,8 @@ export function createAwsBackend(scope: Scope, config: Presentation): AwsBackend
     ),
   } satisfies ServerApi;
 
-  const api = new ApiNamespace(scope, "slidesend", () => methods) as AwsApi;
+  // AWS Blocks sends a plain error to the client as "Internal error"; core's refusals must arrive.
+  const served = publicErrors(methods, ApiError);
+  const api = new ApiNamespace(scope, "slidesend", () => served) as AwsApi;
   return { api, methods: methods as AwsApi, platform, server, blocks, realtime, plugins: {} };
 }

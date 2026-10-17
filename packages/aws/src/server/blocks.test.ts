@@ -1,7 +1,7 @@
 import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { accessOf } from "@slidesend/core/server";
+import { accessOf, type ServerMethod } from "@slidesend/core/server";
 import { describePlatformConformance } from "@slidesend/core/testing";
 import { describe, expect, it } from "vitest";
 
@@ -54,6 +54,18 @@ describe("createAwsBackend", () => {
     expect(access.subscribe).toBe("open");
     expect(Object.values(access).every((value) => value !== undefined)).toBe(true);
     expect(Object.keys(access)).toContain("cursorGoto");
+  });
+
+  it("sends core's refusals to the client with their name, which AWS Blocks would hide", async () => {
+    const { isWireSafeError } = await import("@aws-blocks/blocks");
+    const { api, methods } = await backend();
+    const guarded = Object.entries(accessOf(methods)).find(([, access]) => access === "session");
+    const served = (api as unknown as (context: unknown) => Record<string, ServerMethod>)({});
+    const refusal = await Promise.resolve(served[guarded?.[0] ?? ""]?.("no-such-session")).catch(
+      (e: unknown) => e,
+    );
+    expect(isWireSafeError(refusal)).toBe(true);
+    expect(refusal).toMatchObject({ name: "SessionClosedError", status: 409 });
   });
 
   it("runs core's sessions on the Blocks table", async () => {

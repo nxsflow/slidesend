@@ -134,14 +134,14 @@ importers:
   examples/gravity:
     dependencies:
       '@aws-blocks/bb-file-bucket':
-        specifier: ^0.2.1
-        version: 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+        specifier: ^0.3.1
+        version: 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-blocks/bb-realtime':
-        specifier: ^0.2.1
-        version: 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+        specifier: ^0.4.0
+        version: 0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-blocks/blocks':
-        specifier: 0.6.0
-        version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
+        specifier: 0.8.0
+        version: 0.8.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
       '@slidesend/agent':
         specifier: workspace:*
         version: link:../../packages/agent
@@ -192,8 +192,8 @@ importers:
   packages/agent:
     devDependencies:
       '@aws-blocks/blocks':
-        specifier: 0.6.0
-        version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
+        specifier: 0.8.0
+        version: 0.8.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
       '@slidesend/core':
         specifier: workspace:*
         version: link:../core
@@ -222,8 +222,8 @@ importers:
   packages/aws:
     devDependencies:
       '@aws-blocks/blocks':
-        specifier: 0.6.0
-        version: 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
+        specifier: 0.8.0
+        version: 0.8.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
       '@slidesend/core':
         specifier: workspace:*
         version: link:../core
@@ -405,141 +405,147 @@ importers:
 
 packages:
 
-  '@aws-blocks/auth-common@0.1.8':
-    resolution: {integrity: sha512-UwlIk+oHNn6qjUEeIqaK+lwfDQjWhitHYgAFl8qaZB/8wOZdZg1vFsntejFXBI0y9Cn0aVLa2vGwvjiOaozOuA==}
+  '@aws-blocks/auth-common@0.2.0':
+    resolution: {integrity: sha512-NvMw0tjTOTH355b2npfkV6f7Q9TGpPun/Ccb1+zur7HwMHaZb7DW1vJQZYfN8grH4X/lS6b1pPEduQLQ8crT/g==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-agent@0.4.1':
-    resolution: {integrity: sha512-eHGGElXPsnw9IYQaX1pp247AjYpKuQ1AbQSVuvU8D/rCYgSt4pHcFTc2I9pzrq7yLTCVh+mTkorwmENlGCzk/w==}
+  '@aws-blocks/bb-agent@0.6.0':
+    resolution: {integrity: sha512-mjpgGQOZksGOKMMNDfGZ/EFDqam9gzYuWSiEzxuALcfKIxGMyYqXM3XkR+OvlJ0IJFLqUsT5WXS0e1n3F2H3RA==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-app-setting@0.3.0':
-    resolution: {integrity: sha512-VkGqxw24zxr7dw6HCkb2C/kqIF0o2rTTCWtzsnRWDllPGorXxS8Wmc+D8BRQ+25EPJpjUmT6I/RAXLgo8Apo7Q==}
+  '@aws-blocks/bb-app-setting@0.3.2':
+    resolution: {integrity: sha512-axswk1gNH0DXiOfSC8knGm2mFF4eKXgOK5JbUdBiQRKd5Ce4+SEiQVPPaaae/Q/HSMD9DgIAaXpd0eDvMJhtYg==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-async-job@0.2.1':
-    resolution: {integrity: sha512-QwLBEcyHgzajxMYcFx+itY+qNgM4QUPWFfPaNf/2VLVuqzC1ISAWZPLiCr7OQGN7dwtphmZRrV/62J++JaqrKg==}
+  '@aws-blocks/bb-async-job@0.2.3':
+    resolution: {integrity: sha512-A+Aou447e6Hv+oc+svwZJMRxVgbVVjxeEJ+f+gseLuNQo5xr/VvHTqMHqQgme+GOpu+3slWjZxWFSuAEXusr8Q==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.0.0
 
-  '@aws-blocks/bb-auth-basic@0.1.9':
-    resolution: {integrity: sha512-8u4E8tKOrMTTLm5QPXNrMNG8JCyGM5hVtbgbQbrWAW4UmlO4wYIoz1DYO1/lP4HrjQlmHJi58rTOnPipVp48/w==}
+  '@aws-blocks/bb-auth-basic@0.1.11':
+    resolution: {integrity: sha512-G/bV47mXF3oJShqNuwlKmCbbWfUmB8wgdlHn6d95ywX5jcjJ+ika+9Z8LdpJmLHAufJQCWyfFtoReQMxyfrlcQ==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-auth-cognito@0.1.10':
-    resolution: {integrity: sha512-l2c1dJOJ/N3J19UupwA9a/loRUirXI29Jex1altHBHRZDQLrV6mWRQ30fWnbrkpNt5PeHSaaDno1Kd/RMFPz7A==}
+  '@aws-blocks/bb-auth-cognito@0.1.12':
+    resolution: {integrity: sha512-cn6Uvw6s/reuOtCP0Cb5StveoCKwD8Ecbjra7gaHzyFOF60wGvMyr/8Lh0xRgAg6XeTsIOCiWogJF1uX0I7Dug==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-auth-oidc@0.2.0':
-    resolution: {integrity: sha512-yG/q0QiF6VR40STJcsjNmtDavXkgdbxOJwf0gOS/4jRKLjnHgPo+V8/VTiJ3yKMzmg5eMtjfavGl3SKqLPub4A==}
+  '@aws-blocks/bb-auth-oidc@0.2.2':
+    resolution: {integrity: sha512-VS/oQHJtFan5WP82IPjNnjHQgDvCUZocsr9K8mbvx3DIDwCuU3+9NUvf3GWaWL3upr5CgbV4qN+YkvqrEiyolA==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-cron-job@0.2.1':
-    resolution: {integrity: sha512-StEmmLJqZOO3cwffrM/2v8DU54kzb/LeyhU5llFEAv1uFyBscnzwU9ADp8Ya2azJeZ323kQHK/4jJrTbOPQ67w==}
+  '@aws-blocks/bb-cron-job@0.3.0':
+    resolution: {integrity: sha512-wkOpY2zP37Q2IeGqfBx8W3RE3N1e5KvupEDhcSI0YfQzFvFA5hkkhEzFlMYCy0jUlpY3ygYPBvKU4KE0hDi4tQ==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.0.0
 
-  '@aws-blocks/bb-dashboard@0.2.0':
-    resolution: {integrity: sha512-aRKtCWesYbNcZobLarLfzzCxiN8Rp2BPIZJ4wERHQRYzUUQ+Rfxq2HedUtzuJkzFXHHJauN95dfRfrtEG7sVzA==}
+  '@aws-blocks/bb-dashboard@0.2.2':
+    resolution: {integrity: sha512-SXSF3mAC+Axsm9J8zT2fsnXtBwSfr20LsGjijcY3MwZT5K/C2XBOGK+CMyj3yUhUr879B2MhFLcoo3+sKjt6oQ==}
     peerDependencies:
       aws-cdk-lib: ^2.245.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-data@0.3.0':
-    resolution: {integrity: sha512-xnZeu5/sZK56Sc8gmTqLW7FPZWhqprCgVSkJ6UMrWO+HMjkVkTu1gzX8JwAJMuM6kLSV5Sgu8FNlDtsVh4gdBA==}
+  '@aws-blocks/bb-data@0.4.0':
+    resolution: {integrity: sha512-VaV+KMDrV3Gy0OWznrPgBCNkPUBrsrEdqLhCCtn+sqk6Uzpu6ummDG4sSfRzAiPOSfqsIVa1hoYlRV9QAAaauA==}
     hasBin: true
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
       kysely: '>=0.28.12 <0.30.0'
 
-  '@aws-blocks/bb-distributed-data@0.2.0':
-    resolution: {integrity: sha512-wGJPXg8u+5juZPioWFFTHImsqlpu3eAG/yAr/cyxUpVbxnGTS1AxU/VSzKMAhPW+/V8GFgddcw01d9kk5xpTOA==}
+  '@aws-blocks/bb-distributed-data@0.2.2':
+    resolution: {integrity: sha512-Dz72NCp5pZndG3rkgUAL0MbWhLk9XLH94B7bpDrorRF+iZx4gN8dhC68ao9dcEa88hPe6wMWXcWjaXWfDQUsgg==}
     peerDependencies:
       aws-cdk-lib: '>=2.100.0'
       constructs: ^10.6.0
       kysely: '>=0.28.12 <0.30.0'
 
-  '@aws-blocks/bb-distributed-table@0.2.0':
-    resolution: {integrity: sha512-PlSddcdz40YvNyNpHLg/4abAPCnuv4QTo6VI7mA9xSfgpzn8N1i1cCoFmNFX8kAw5Ej0AFM5tmTohlZD77+UVg==}
+  '@aws-blocks/bb-distributed-table@0.2.2':
+    resolution: {integrity: sha512-TJAHqvweU0gX8phXR53CbR/SeBh8X8vgz9fHRRqg9jfT9Znlnp2MWoBj5hwExx+IB0JQ4KzLFN5831wvXJjn9A==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-email-client@0.1.7':
-    resolution: {integrity: sha512-QvxivS0FBEsIyCUFnwEHUKotYe48c/k6lMWo0qLiAw77Yzjkc+tSYHF8F8Qmj8t6CzloRztjr4DxRFRCHN5KOA==}
+  '@aws-blocks/bb-email-client@0.1.9':
+    resolution: {integrity: sha512-RDTBHmNcb4MuM+7z59KQuDh9lDKxMuFBMgnUDd4KjcBSObLpx3evWlqr1fIqHZysZ0Rj2XMXwYzJyFmNTfvEow==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-file-bucket@0.2.1':
-    resolution: {integrity: sha512-qPxjkCUEhFlNtuDIepJ2//6N9qbPRkhRnbkNuqZTnp2g1jQzoppGgvWUDFPqosHUBh3yMzuLCHRRXszOTdvZaQ==}
+  '@aws-blocks/bb-file-bucket@0.3.1':
+    resolution: {integrity: sha512-kkVJ1ds3ALOHSbg2i8kX+DqdbitN1x7AlHtlBjb3sZY16RTpibBI8uOonmmKZ3baab72NbWeKSj4IxrWbNcU8A==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-knowledge-base@0.2.4':
-    resolution: {integrity: sha512-OjnUkCrh4nUl0S5Yco/dSjwbSsHV87Hic53R9gfizObKcevnvlZiEgOLPNKP8wyJfbklG+YRUOuchFXy4r5CYg==}
+  '@aws-blocks/bb-knowledge-base@0.2.6':
+    resolution: {integrity: sha512-NHDSPW+W4F+Bp8ZTPWpyJGCEWELvif3Ybe1ptMF526oA7Ylwmhx088oi3g4CQBjaCPPR+0mEFql96NSG6EolgA==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-kv-store@0.2.0':
-    resolution: {integrity: sha512-YOQRHpTAxnH6ZKWncZM8O4A4D6X4ZvR1QySo+f5/PMB84bVSlhn+Gb2C2a4naJm5z6fiq35tN5QFu8q0wCMJ7g==}
+  '@aws-blocks/bb-kv-store@0.3.1':
+    resolution: {integrity: sha512-h6u5RNtG9isE6m5lcBtruqn0rKiQvP9h34LESodwDuUq/kyjPYpl4eMas6N0un5R+X8lEGDTLV0OVpzQ6modiQ==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-lambda-compute@0.5.0':
-    resolution: {integrity: sha512-9nD6rjnytKTBeeUl0HBbJopLmH5dasFSFjYyAQOZkR0RNKcxmB43CuKZgShnsSpC2oFca1O77UYtFmR0uvZX/w==}
+  '@aws-blocks/bb-lambda-compute@0.6.0':
+    resolution: {integrity: sha512-c5WGFnkTW6/YS3pJDnen7BzrTX43akBBXjqYXhMY1zDgTTCxU04ROyzncFeGQk1Y3VjkRvq89ZJMMIkcPM9IiA==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-logger@0.2.0':
-    resolution: {integrity: sha512-ci7o1xg5Hwm69RTSrffXsmfbHwChpDEHv4kNyfDBOQGM1ZKZAGVJyo6louFiXrPVvYWRVh9tSO9+LXzP+lk1xg==}
+  '@aws-blocks/bb-logger@0.2.2':
+    resolution: {integrity: sha512-ndzF6weCVk81iLIdEuIkeRjgg61P4rY41oZsWq4ySucYCbD+GwZ0yhbf0xC1Me+kVVQQHCdHiY7QGdO6rieLXQ==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-metrics@0.1.7':
-    resolution: {integrity: sha512-9cVoxRU0zQ3mYkJZRBWKVKeaMJ9cdc9oaI7Ubxwe5IbyA28Q+jAf2oANXMB0Fz7jdYa4Apo6+7pteKihqbfo4w==}
+  '@aws-blocks/bb-metrics@0.1.9':
+    resolution: {integrity: sha512-j2WAeA2f8d0MVGdGnoZZ5FzufDqoI6l52PwqP9ke1FTyrHtqM3/2ybzXzBzEfQ+zhLZYQ5UZOC+fxROlvS5YYA==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-realtime@0.2.1':
-    resolution: {integrity: sha512-c6k6w40VRteJwtXqhohclqW9FsKK1fUQDJLYmnxA2qG0w/jdFdMt3Al8tf2Trkfs2/vHmnQrYphCAlo2RjZyfA==}
+  '@aws-blocks/bb-realtime@0.4.0':
+    resolution: {integrity: sha512-W4W55KZoFvTTEvL42H4ciFm53gLImNFZ5taH9KXHTfk0cGafC6UIuSHfYv/LWSLYJOzfCRJgdMhi4eczsbWSHw==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/bb-tracer@0.2.0':
-    resolution: {integrity: sha512-oMyu5FeqSAIwr/J9dGfheVsdlcxipGhBbY6x8PPF3g89EZVW4FW3yr0XfzL4hlOWZoeXWo2nVKAV0uPdglf1pg==}
+  '@aws-blocks/bb-secret@0.2.0':
+    resolution: {integrity: sha512-Zp55n1WwONnfZrP8yVTQGQAOAjpGRlTcc3LXmOPhFxrSZz+XshVPqz/DoPP/vuU65YsQK07q0Whz/RUHMtWrUQ==}
     peerDependencies:
       aws-cdk-lib: ^2.257.0
       constructs: ^10.6.0
 
-  '@aws-blocks/blocks@0.6.0':
-    resolution: {integrity: sha512-msy+J314IQXixMbzSxh+bNI9kHnXdS5NJrnxtwaAKdItIGjViTr0FCMI+L+5ibbsS7Xeysz6UTsn9lhEWc9f3Q==}
+  '@aws-blocks/bb-tracer@0.2.2':
+    resolution: {integrity: sha512-qwDLZ5obfYSSuv4Yr7pdwP8WgFEgvLpYZWiuQ8E/6d5SMsRCGxL7I8HU541P3oxDD3XKTicNWfguRGYQyyVNOw==}
+    peerDependencies:
+      aws-cdk-lib: ^2.257.0
+      constructs: ^10.6.0
+
+  '@aws-blocks/blocks@0.8.0':
+    resolution: {integrity: sha512-dvllbY3ZUcPR3DvOkZc+RxZcjZIHibW3LnAxSSjjCllYFv1EonTSH8R/oEEPpkACzlpBRwg0j/WTfRhYloHzig==}
     hasBin: true
 
-  '@aws-blocks/core@0.5.0':
-    resolution: {integrity: sha512-H75oyVXhfOlaGu88qH6SYI67fb6jF0jUe8/zST1z0fZZdS7fyPVGIjufLZ2MvucnNfrWOlsztWmLw4MTirzozA==}
+  '@aws-blocks/core@0.7.0':
+    resolution: {integrity: sha512-ZWQyizFa09D/lYoA9F+NcvkcDrBulc8xod8py2XHalwL4unkI7Wl9W9Ig3X/lKj6eyF3PkUDS1jHILugCoxo0Q==}
     hasBin: true
     peerDependencies:
       aws-cdk-lib: ^2.257.0
@@ -552,11 +558,25 @@ packages:
       unctx:
         optional: true
 
-  '@aws-blocks/data-common@0.1.5':
-    resolution: {integrity: sha512-piXjHaYaHh/w10rGMRRpcecSbYr/JgNg3YM2R0aDfcBiuJZYzX9f29ujq7f0DckZ2ywrQy4mWEKUOu6+NT+N+g==}
+  '@aws-blocks/data-common@0.1.6':
+    resolution: {integrity: sha512-Rkvl2O50gEx9jSp/mZtA76ESguv0S3HjuUOxCz8JUjfjv8Fgh1MNFfqIR9eDD9T3ncvflICHEDlGFiz47UHiaw==}
 
   '@aws-blocks/hosting@0.3.1':
     resolution: {integrity: sha512-chrh3ID2OhOlHQf/IOTdeT1taTUoojRs5LM6tjIdz0JXJH/sr1uBgjLblntWx3879ko9CtVkbePzc3u76lJZTg==}
+    hasBin: true
+    peerDependencies:
+      '@opennextjs/aws': '>=3.10.0'
+      aws-cdk-lib: ^2.257.0
+      constructs: ^10.6.0
+      typescript: '>=5.3.0'
+    peerDependenciesMeta:
+      '@opennextjs/aws':
+        optional: true
+      typescript:
+        optional: true
+
+  '@aws-blocks/hosting@0.4.1':
+    resolution: {integrity: sha512-BrjMWA9PFvs0ZgfHbKp+uMUIalC5IdfhwYDtgfUTxa239+oKeiIvdSKNL0zPxEM9xgKStcJ5UXtM8MKCasBOgQ==}
     hasBin: true
     peerDependencies:
       '@opennextjs/aws': '>=3.10.0'
@@ -641,6 +661,10 @@ packages:
     resolution: {integrity: sha512-1ANDLLCNjk9c97GbW+Zi0sBCq562/96XHQNXbF4zcADJziqPTdDuKncfQx26NWFAE4cjqWjF5Qoya4K05aK7fg==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/client-cloudfront@3.1152.0':
+    resolution: {integrity: sha512-yipc/1Q+JFNF+EOpx9H93ReTtFj0Kyj3IsfFoPgyHT7L/I1a7vEAr9EVNaB1frnVHjB7ZXY41wi59tyj+rB/yg==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/client-cognito-identity-provider@3.1136.0':
     resolution: {integrity: sha512-oXbu972e8xeeGkyK/7Wvpuok2gZfGqx0JBwwaO5R2UZEJKIW1l4q4inp00Yl/Gbdh0RlYmJSFH77QjS6rDa55A==}
     engines: {node: '>=20.0.0'}
@@ -681,6 +705,10 @@ packages:
     resolution: {integrity: sha512-2yX9LUmxPklVjSGTb8dfnWRJSiFQ3TeH2nn7G1mdKHTfnabzF0+gfrS8rYfLWmZrQ8A3mEcxMJjRc51dL5KWaA==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/core@3.978.3':
+    resolution: {integrity: sha512-nslpzUCTI9b2IQMWSd6mSAXldBexPc8rr0d3dXUutXYFLFaTdsHa2GD7sJdsn3PhyjK0O5K8ypd6zi+RXXPVlg==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/credential-provider-cognito-identity@3.972.70':
     resolution: {integrity: sha512-KlU89w6Hmb4oZB5zFz/MNIhPOBQGVE7KrDr3BTPCwC4W+q566YH8tGNsAML781LKATtqmNCGFry8XvsJ2XPusg==}
     engines: {node: '>=20.0.0'}
@@ -689,32 +717,64 @@ packages:
     resolution: {integrity: sha512-JN+JHruYZw3GUZB8YGAlDk4wTDPOEAEEdEzj5nS0xodWR4smzHsN7PnK2j6IeOsDIj2aqua5DSbhXl9Gtf90FQ==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/credential-provider-env@3.972.74':
+    resolution: {integrity: sha512-rsRJcW2iFUhCgclyD6OSbMEaPl8Eu0qSeRZb2uuCK1ViZ66hl5wOe/p6Vr6MO3b+ydyKgFeqza2p6tZThvILlw==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/credential-provider-http@3.972.73':
     resolution: {integrity: sha512-uyYYnJOnlis8uQzaYGPd7N1JoioCoNpXgnkXYixsWJXHXgXyYi8WXJSDfofxJeWfQIGWLe2Nwyq60Uc7MZdVOg==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/credential-provider-http@3.972.76':
+    resolution: {integrity: sha512-pnKdh0Br7OJPj+7qKjzgTfDTFW0RhEMKXNDR2jv9CAM4oHuG/4z3hRh8KtutLfpmItuRtDbKBmwWkDqHwwAWXw==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/credential-provider-ini@3.973.16':
     resolution: {integrity: sha512-i++ly+0Uxa+u3ebSSyr0S/3CFhFJDxCXT3+Zj+mW2bXenEx5bKGCdTIKFu39SgXBNhWDjex/8cXUx9MUTMCrTw==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/credential-provider-ini@3.973.19':
+    resolution: {integrity: sha512-kcjvAxqQEV8yuwkX58RelNn3ne65o7JgRWf3Z/gVvbi7Xuw1qSDLJlatrLD76+40cmRxmNkLxBoyp/vAQChQ5g==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/credential-provider-login@3.972.78':
     resolution: {integrity: sha512-eUtswnXu0+Ii9ieRK+0L7aPFV3Z/dnW2VntJzjBP9xs8s+8p5nBNuymIXtXwZ+5r5+XJP3e32nMkuZ/r0HozEA==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/credential-provider-login@3.972.81':
+    resolution: {integrity: sha512-CeQHSbE2CnVdaHIJ/NayRaCecIER+Pm9faUPkmRATO54rCoMTEPSbVieGHzEwvm1dZM2HIs6qQZCznhayNTWJQ==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/credential-provider-node@3.972.83':
     resolution: {integrity: sha512-jdso7ejzfRnatxMUZK4S/U6KbaDPCvfIV4XL+IQAPFDBt5rj5Fq595euqlK8Le4lNCMFR9oUpt+1l0aMgaayOQ==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/credential-provider-node@3.972.86':
+    resolution: {integrity: sha512-WNttSyr6e8innPtBSty//CdnqJcgZN6eAbtw3v/CR2IObz6MYZEo8eusdtuCHJ2ujwFqC2bSPHVyhXGHx8HruQ==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/credential-provider-process@3.972.71':
     resolution: {integrity: sha512-lYmXJa4gvq4xN1lrT5NiP5vIYYKcGWAdj8y+8o6dlcateB5eF3Dn8DtmjjHKfMBrTPAMr2pebIiX/UOj8c1/UA==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/credential-provider-process@3.972.74':
+    resolution: {integrity: sha512-Yj6kZFJQdbR+PygTkqdVLPHHpdDpOS9GCYVcDCuweCRRig9LF24ELQBMfyUw1vspvrZJUfnOGVyMjhaL094ahw==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/credential-provider-sso@3.973.15':
     resolution: {integrity: sha512-6Jhcf4v0pSFdjk1EW2kvzuEBKD+UZ2uNcHUIglKKLndD20YhvkL2kdmDOV5/j4mYuWWwe/a1FQ1aomU86/Cg5Q==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/credential-provider-sso@3.973.18':
+    resolution: {integrity: sha512-FnpPhdY4qUGtX/8X6eKxh+uD+9Y19i9FYibgk4SBe0M935s9vocHkHzaxaMNk+YkHmvzgdu8cHA5SCoeU+kkew==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/credential-provider-web-identity@3.972.77':
     resolution: {integrity: sha512-uylIQSUWpfLuH2LovxEEfwzJGM/SabLOfLMg6YXu/E8jJEKUdpdILCVCQCdFvHyu/7dLJOHPMfrSwduxO56NkQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/credential-provider-web-identity@3.972.80':
+    resolution: {integrity: sha512-TJF25Ndwy2HxcVj6oxMgp8qVlJAawlExHYBXqhuC6Zt2m+A7WpdkjBD6QglNbiArlteYljZHEY3R7KKmno6ISA==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/credential-providers@3.1136.0':
@@ -767,6 +827,10 @@ packages:
     resolution: {integrity: sha512-mooq9Q+jLa18VoM7HouczmslZU60iiB0aKc/Ztnq/luIL1ud0z4DnYprLR/ZO1gp331S9tJctM1HZr7u6YKBXQ==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/nested-clients@3.997.48':
+    resolution: {integrity: sha512-B01jdXJtAW/XOiUzGdI2mz67WyEHbGEc9X6Euzw3bjLAa+txTqdZDER4X2FsIEcXzV2ABqudVZ5thali8tCCzQ==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/protocol-http@3.374.0':
     resolution: {integrity: sha512-9WpRUbINdGroV3HiZZIBoJvL2ndoWk39OfwxWs2otxByppJZNN14bg/lvCx5e8ggHUti7IBk5rb0nqQZ4m05pg==}
     engines: {node: '>=14.0.0'}
@@ -778,6 +842,10 @@ packages:
 
   '@aws-sdk/signature-v4-multi-region@3.996.46':
     resolution: {integrity: sha512-L+2xZTye/2T96f3lwCws0Zw6GG2JHZW9e8FpVgGBeeExSKyeoZ6CWRpBml/7DNiK/O26jrgPM9F+Ay8VkgzUWQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/signature-v4-multi-region@3.996.48':
+    resolution: {integrity: sha512-cFDXfEbXaGwbnpvR/DyqfxfjxpjXVRVthQLgkwvcfDS5u3+8G9WSj1X1Ag/pTRg/QOeOno1Tq3ycEdrKsCUcOA==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/signature-v4@3.374.0':
@@ -797,8 +865,16 @@ packages:
     resolution: {integrity: sha512-CHjdpFszuNTUEQ2z1F85pOiHxpLe0fDyvTUoNAZ7YczdTMEfU6TSA7FVZelAM67L/g6xcS31U64HuBl42dSKCA==}
     engines: {node: '>=20.0.0'}
 
+  '@aws-sdk/token-providers@3.1150.0':
+    resolution: {integrity: sha512-wDU36ofhabZYu+d2KSriyDbwzxNoaOp+4dG0p3qkabk7HeALR5nIWyQbjoyJZLn3iqWkv/xNdyUfbfevDVDzzg==}
+    engines: {node: '>=20.0.0'}
+
   '@aws-sdk/types@3.974.5':
     resolution: {integrity: sha512-LkwLL2BLbC6wNNm4JaH9mbEqBMdOZCct6VAYqhdN4U1xrWM+fUJQEfbHwQgDypapOWTRtlk25akb5afM0P8CIQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/types@3.974.6':
+    resolution: {integrity: sha512-v/clNZzZnDxGyvpHMOGpJKVXFAExJzUNAAjaWGdcx8QAcXLGwTaOkw33p5SHAi0YAioK32xB3hWwOekRVfmfKg==}
     engines: {node: '>=20.0.0'}
 
   '@aws-sdk/util-dynamodb@3.996.9':
@@ -813,6 +889,44 @@ packages:
   '@aws-sdk/xml-builder@3.972.40':
     resolution: {integrity: sha512-wlFmCIGUlwF4zx/kncw+bmxTQh1HeSJq4mYV/V5cZUSJadDP3kXvGW8Rn21cimj/7y9ju+47oYWXi97vF7czaA==}
     engines: {node: '>=20.0.0'}
+
+  '@aws-sdk/xml-builder@3.972.41':
+    resolution: {integrity: sha512-ctjVSyCMegrWfXlx6VqzSBFI6UqmQ5ZlnfMhdLIiWmhoH8UAQxSCP5N3OpG7X3k4LnS7ou74C4mt20+bfTW2aQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@aws/dsql-lint-darwin-arm64@0.2.20':
+    resolution: {integrity: sha512-Ni6xQ2+QA+inR+0/28BZfOUdLMrwGMymUtDpBHpfzQJsBAfNhkAcOgabEmEPIdovnfdybuyT27TEr+kQY4O75g==}
+    cpu: [arm64]
+    os: [darwin]
+    hasBin: true
+
+  '@aws/dsql-lint-darwin-x64@0.2.20':
+    resolution: {integrity: sha512-RLuuoIVLp3xoolN0nC8YMVp4BmBNcvn1sRc2b6EoaMI16fzDd/YvDTkYcASJJud/v6U7abT0w7e+iC7oiJHjug==}
+    cpu: [x64]
+    os: [darwin]
+    hasBin: true
+
+  '@aws/dsql-lint-linux-arm64@0.2.20':
+    resolution: {integrity: sha512-lmq3oeQ1m4VdWXY7vEWKTjvQUsSD+7zTLqYY05dmukIcV7jeuhuqf3iNvdQw7MPZZhz49KZdIZXUTOmriF1Ccw==}
+    cpu: [arm64]
+    os: [linux]
+    hasBin: true
+
+  '@aws/dsql-lint-linux-x64@0.2.20':
+    resolution: {integrity: sha512-rBK0qQKEjYObyoouiHY7ZjMWhspqES0wtm1j9bRUdAEXZLLjlK9joo5e25qrbGiHYkayYOh0fcMy9ySL3Qe9Wg==}
+    cpu: [x64]
+    os: [linux]
+    hasBin: true
+
+  '@aws/dsql-lint-win32-x64@0.2.20':
+    resolution: {integrity: sha512-erfKgcFW60sSj7JQQHKaKyyEs62mC1vQdGPdooBYtZ1G1adv6qi+6XIgEGyRI7cnKKVtLYbnYo/wscMXm2CsOg==}
+    cpu: [x64]
+    os: [win32]
+    hasBin: true
+
+  '@aws/dsql-lint@0.2.20':
+    resolution: {integrity: sha512-t3wdAl5yYuh+gVoQi/kT0jaLaDIx9TxNhWgirB/Zmemr3HxuYI9wwmEhMgDDkl4K4parEN1jG7VdVadU/HyNjA==}
+    hasBin: true
 
   '@aws/lambda-invoke-store@0.3.0':
     resolution: {integrity: sha512-sl4Bm6yiMNYrZKkqqDFWN0UfnWhlS8ivKxrYl+6t0gCLrqr8y3B2IqZZbFRkfaVVp7C/baApyh71P+LeE1A2sQ==}
@@ -944,8 +1058,8 @@ packages:
     resolution: {integrity: sha512-dlT1m5e/0yUL0kRNcQn7yGLVThkgbB0Ga/1AmfDDC/8ik6AIiSf2QLQO2zPYvefsHP0aFgxO93cVLCCfDp7kzQ==}
     engines: {node: '>= 20.12.0'}
 
-  '@electric-sql/pglite@0.2.17':
-    resolution: {integrity: sha512-qEpKRT2oUaWDH6tjRxLHjdzMqRUGYDnGZlKrnL4dJ77JVMcP2Hpo3NYnOSPKdZdeec57B6QPprCUFg0picx5Pw==}
+  '@electric-sql/pglite@0.5.10':
+    resolution: {integrity: sha512-tXc/25U3ulOkiRQuTFdwIv+JhBqtMdAF7Gvo6CfZZWtSB4+hgC4Wr2vwK5ngvvN5PJfAAEGIsfyCVy1JhCOBYw==}
 
   '@esbuild/aix-ppc64@0.27.7':
     resolution: {integrity: sha512-EKX3Qwmhz1eMdEJokhALr0YiD0lhQNwDqkPYyPhiSwKrh7/4KRjQc04sZ8db+5DVVnZ1LmbNDI1uAMPEUBnQPg==}
@@ -1646,6 +1760,10 @@ packages:
     resolution: {integrity: sha512-dLcOUxz8YCv1RZUMKq6GbyUf95pLbrqh34bPvpCZ1+CByFF31BEAFewZjsGCnVsZTKdThNENfGyAgk2TJqVwSw==}
     engines: {node: '>=18.0.0'}
 
+  '@smithy/core@3.36.0':
+    resolution: {integrity: sha512-3hJiwG1F5t1SoXqp/yOCmYXziyx7ZVqF63S5W6YU201e/qwVaHPex+E/3vvyY9a3ORq/b+BydeNZpP2saQ9X2g==}
+    engines: {node: '>=18.0.0'}
+
   '@smithy/credential-provider-imds@4.5.2':
     resolution: {integrity: sha512-A9uSdn72ozbRUSit0eib0TW7nXuNPlaeM0zcGkJ+nE6tFcSDbnmtwoxbTCFBukVQcszDAyvsd7+rTduPTXpygg==}
     engines: {node: '>=18.0.0'}
@@ -1681,12 +1799,20 @@ packages:
     resolution: {integrity: sha512-uBDTIBBEdAQryvHdc5W8sS5YX7RQzF683XrHePVdFmAgKiMofU15FLSM0/HU03hKTnazdNRFa0YHS7+ArwoUSQ==}
     engines: {node: '>=14.0.0'}
 
+  '@smithy/shared-ini-file-loader@4.7.2':
+    resolution: {integrity: sha512-XsIDj5gVG4YRxGS4n4TiBDAogPWRHXKZyor6JW/sEuaa/7BvKADe9j45jI2dPYCnYbKkLBmbZ4qN9ns0sH+kMQ==}
+    engines: {node: '>=18.0.0'}
+
   '@smithy/signature-v4@1.1.0':
     resolution: {integrity: sha512-fDo3m7YqXBs7neciOePPd/X9LPm5QLlDMdIC4m1H6dgNLnXfLMFNIxEfPyohGA8VW9Wn4X8lygnPSGxDZSmp0Q==}
     engines: {node: '>=14.0.0'}
 
   '@smithy/signature-v4@5.7.3':
     resolution: {integrity: sha512-7ImGm+FkHRLcBaRttIAMZ6bzJZWb2cJGoYjq46F2UjycujWzrL9GEN9h4w7eQyXJYnltrUhxbbieBAIRrdqpow==}
+    engines: {node: '>=18.0.0'}
+
+  '@smithy/signature-v4@5.7.4':
+    resolution: {integrity: sha512-tHy0K0VtqNd5Y7Y41h0a0Lhh0L1GzC08dTWg0F7vRJWFtTENg7IZikf3wQkanYIRdb7ngoIPMTmqgUi401fEeQ==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/signature-v4a@3.6.2':
@@ -1703,6 +1829,10 @@ packages:
 
   '@smithy/types@4.18.0':
     resolution: {integrity: sha512-CgB6HHWer/vrKps24ulRIbpcpb7K4xAU7SkZ7YHzBPlwHsvsrCJFEXK421s+cJzX+ZrqtA/TuU5w1HzI7k9N8A==}
+    engines: {node: '>=18.0.0'}
+
+  '@smithy/types@4.19.0':
+    resolution: {integrity: sha512-r7jh49VJxGerfAcTQA6gXcKc+98zOp/tqRwzYjgOE+iSQsP6cEU1hq2QzbuipmP68QtYdY9wKEhiCQZIzHgZ4Q==}
     engines: {node: '>=18.0.0'}
 
   '@smithy/util-buffer-from@1.1.0':
@@ -2076,6 +2206,10 @@ packages:
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
+
+  ci-info@4.4.0:
+    resolution: {integrity: sha512-77PSwercCZU2Fc4sX94eF8k8Pxte6JAwL4/ICZLFjJLqegs7kCuAsqqj/70NQF6TvDpgFjkubQB2FW2ZZddvQg==}
+    engines: {node: '>=8'}
 
   cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
@@ -3473,9 +3607,9 @@ packages:
 
 snapshots:
 
-  '@aws-blocks/auth-common@0.1.8(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/auth-common@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3485,13 +3619,13 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-agent@0.4.1(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)':
+  '@aws-blocks/bb-agent@0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)':
     dependencies:
-      '@aws-blocks/bb-distributed-table': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-file-bucket': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-realtime': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-distributed-table': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-file-bucket': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-realtime': 0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-bedrock': 3.1136.0
       '@aws-sdk/client-bedrock-agentcore': 3.1136.0
       '@opentelemetry/api': 1.9.1
@@ -3541,10 +3675,10 @@ snapshots:
       - utf-8-validate
       - ws
 
-  '@aws-blocks/bb-app-setting@0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-app-setting@0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-ssm': 3.1136.0
       '@standard-schema/spec': 1.1.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3556,12 +3690,12 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-async-job@0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-async-job@0.2.3(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-distributed-table': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-lambda-compute': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-distributed-table': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-lambda-compute': 0.6.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-sqs': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
@@ -3572,13 +3706,13 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-auth-basic@0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-auth-basic@0.1.11(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/auth-common': 0.1.8(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-kv-store': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/auth-common': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-kv-store': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@types/bcryptjs': 2.4.6
       '@types/jsonwebtoken': 9.0.10
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3592,13 +3726,13 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-auth-cognito@0.1.10(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-auth-cognito@0.1.12(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/auth-common': 0.1.8(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-kv-store': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/auth-common': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-kv-store': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-cognito-identity-provider': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       aws-jwt-verify: 5.2.1
@@ -3610,13 +3744,13 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-auth-oidc@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-auth-oidc@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/auth-common': 0.1.8(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-kv-store': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/auth-common': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-kv-store': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-cognito-identity-provider': 3.1136.0
       '@aws-sdk/client-ssm': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3630,11 +3764,11 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-cron-job@0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-cron-job@0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-lambda-compute': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-lambda-compute': 0.6.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3644,9 +3778,9 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-dashboard@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-dashboard@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3656,14 +3790,14 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-data@0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)':
+  '@aws-blocks/bb-data@0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/data-common': 0.1.5(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/data-common': 0.1.6(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-rds-data': 3.1136.0
-      '@electric-sql/pglite': 0.2.17
+      '@electric-sql/pglite': 0.5.10
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
       kysely: 0.28.17
@@ -3677,13 +3811,14 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-distributed-data@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)':
+  '@aws-blocks/bb-distributed-data@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/data-common': 0.1.5(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/data-common': 0.1.6(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/dsql-signer': 3.1136.0
-      '@electric-sql/pglite': 0.2.17
+      '@aws/dsql-lint': 0.2.20
+      '@electric-sql/pglite': 0.5.10
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
       kysely: 0.28.17
@@ -3696,10 +3831,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-distributed-table@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-distributed-table@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-dynamodb': 3.1136.0
       '@aws-sdk/lib-dynamodb': 3.1136.0(@aws-sdk/client-dynamodb@3.1136.0)
       '@standard-schema/spec': 1.1.0
@@ -3713,10 +3848,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-email-client@0.1.7(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-email-client@0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-sesv2': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
@@ -3727,10 +3862,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-file-bucket@0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-file-bucket@0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-s3': 3.1136.0
       '@aws-sdk/s3-request-presigner': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3742,10 +3877,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-knowledge-base@0.2.4(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-knowledge-base@0.2.6(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-bedrock-agent': 3.1136.0
       '@aws-sdk/client-bedrock-agent-runtime': 3.1136.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3757,10 +3892,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-kv-store@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-kv-store@0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-dynamodb': 3.1136.0
       '@aws-sdk/lib-dynamodb': 3.1136.0(@aws-sdk/client-dynamodb@3.1136.0)
       '@standard-schema/spec': 1.1.0
@@ -3773,9 +3908,9 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-lambda-compute@0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-lambda-compute@0.6.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3785,9 +3920,9 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-logger@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-logger@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3797,10 +3932,10 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-metrics@0.1.7(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-metrics@0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       constructs: 10.8.1
     transitivePeerDependencies:
@@ -3810,13 +3945,13 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/bb-realtime@0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-realtime@0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-distributed-table': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-lambda-compute': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-distributed-table': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-lambda-compute': 0.6.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       '@aws-sdk/client-apigatewaymanagementapi': 3.1136.0
       '@standard-schema/spec': 1.1.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
@@ -3831,10 +3966,25 @@ snapshots:
       - unctx
       - utf-8-validate
 
-  '@aws-blocks/bb-tracer@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/bb-secret@0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-sdk/client-secrets-manager': 3.1136.0
+      '@standard-schema/spec': 1.1.0
+      aws-cdk-lib: 2.270.0(constructs@10.8.1)
+      constructs: 10.8.1
+    transitivePeerDependencies:
+      - '@opennextjs/aws'
+      - debug
+      - next
+      - typescript
+      - unctx
+
+  '@aws-blocks/bb-tracer@0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+    dependencies:
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
       aws-xray-sdk-core: 3.12.0
       constructs: 10.8.1
@@ -3845,31 +3995,32 @@ snapshots:
       - typescript
       - unctx
 
-  '@aws-blocks/blocks@0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)':
+  '@aws-blocks/blocks@0.8.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(kysely@0.28.17)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)':
     dependencies:
-      '@aws-blocks/auth-common': 0.1.8(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-agent': 0.4.1(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
-      '@aws-blocks/bb-app-setting': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-async-job': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-auth-basic': 0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-auth-cognito': 0.1.10(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-auth-oidc': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-cron-job': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-dashboard': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-data': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)
-      '@aws-blocks/bb-distributed-data': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)
-      '@aws-blocks/bb-distributed-table': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-email-client': 0.1.7(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-file-bucket': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-knowledge-base': 0.2.4(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-kv-store': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-lambda-compute': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-metrics': 0.1.7(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-realtime': 0.2.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/bb-tracer': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/core': 0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
-      '@aws-blocks/hosting': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)
+      '@aws-blocks/auth-common': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-agent': 0.6.0(@aws-sdk/client-bedrock-agent-runtime@3.1136.0)(@aws-sdk/client-bedrock-agent@3.1136.0)(@aws-sdk/client-s3@3.1136.0)(@aws-sdk/credential-provider-node@3.972.83)(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(@smithy/signature-v4@5.7.3)(@smithy/types@4.18.0)(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(express@5.2.1)(playwright@1.63.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@6.0.3)(ws@8.21.3)
+      '@aws-blocks/bb-app-setting': 0.3.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-async-job': 0.2.3(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-auth-basic': 0.1.11(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-auth-cognito': 0.1.12(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-auth-oidc': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-cron-job': 0.3.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-dashboard': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-data': 0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)
+      '@aws-blocks/bb-distributed-data': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(kysely@0.28.17)(typescript@6.0.3)
+      '@aws-blocks/bb-distributed-table': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-email-client': 0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-file-bucket': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-knowledge-base': 0.2.6(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-kv-store': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-lambda-compute': 0.6.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-metrics': 0.1.9(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-realtime': 0.4.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-secret': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-tracer': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/core': 0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/hosting': 0.4.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)
     transitivePeerDependencies:
       - '@a2a-js/sdk'
       - '@ai-sdk/provider'
@@ -3912,15 +4063,20 @@ snapshots:
       - utf-8-validate
       - ws
 
-  '@aws-blocks/core@0.5.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/core@0.7.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
       '@aws-blocks/hosting': 0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)
       '@aws-blocks/pipeline': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)
       '@aws-sdk/client-cloudformation': 3.1136.0
+      '@aws-sdk/client-cloudfront': 3.1152.0
       '@aws-sdk/client-s3': 3.1136.0
       '@aws-sdk/client-ssm': 3.1136.0
       '@aws-sdk/client-sts': 3.1136.0
+      '@smithy/protocol-http': 5.6.2
+      '@smithy/shared-ini-file-loader': 4.7.2
+      '@smithy/types': 4.18.0
       aws-cdk-lib: 2.270.0(constructs@10.8.1)
+      ci-info: 4.4.0
       constructs: 10.8.1
       cross-spawn: 7.0.6
       http-proxy: 1.18.1(debug@4.4.3)
@@ -3929,9 +4085,9 @@ snapshots:
       - debug
       - typescript
 
-  '@aws-blocks/data-common@0.1.5(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
+  '@aws-blocks/data-common@0.1.6(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)':
     dependencies:
-      '@aws-blocks/bb-logger': 0.2.0(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
+      '@aws-blocks/bb-logger': 0.2.2(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(debug@4.4.3)(typescript@6.0.3)
       kysely: 0.28.17
     transitivePeerDependencies:
       - '@opennextjs/aws'
@@ -3943,6 +4099,26 @@ snapshots:
       - unctx
 
   '@aws-blocks/hosting@0.3.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)':
+    dependencies:
+      '@aws-sdk/client-cloudfront-keyvaluestore': 3.1136.0
+      '@aws-sdk/client-s3': 3.1136.0
+      '@aws-sdk/client-secrets-manager': 3.1136.0
+      '@aws-sdk/client-ssm': 3.1136.0
+      '@aws-sdk/signature-v4a': 3.1111.0
+      '@standard-schema/spec': 1.1.0
+      aws-cdk-lib: 2.270.0(constructs@10.8.1)
+      constructs: 10.8.1
+      cross-spawn: 7.0.6
+      fast-glob: 3.3.3
+      jiti: 2.7.0
+      local-pkg: 0.5.1
+      parse-cache-control: 1.0.1
+      semver: 7.8.5
+      zod: 3.25.76
+    optionalDependencies:
+      typescript: 6.0.3
+
+  '@aws-blocks/hosting@0.4.1(aws-cdk-lib@2.270.0(constructs@10.8.1))(constructs@10.8.1)(typescript@6.0.3)':
     dependencies:
       '@aws-sdk/client-cloudfront-keyvaluestore': 3.1136.0
       '@aws-sdk/client-s3': 3.1136.0
@@ -4114,6 +4290,17 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/client-cloudfront@3.1152.0':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/credential-provider-node': 3.972.86
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/fetch-http-handler': 5.8.0
+      '@smithy/node-http-handler': 4.12.1
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/client-cognito-identity-provider@3.1136.0':
     dependencies:
       '@aws-sdk/core': 3.978.0
@@ -4232,6 +4419,17 @@ snapshots:
       bowser: 2.14.1
       tslib: 2.8.1
 
+  '@aws-sdk/core@3.978.3':
+    dependencies:
+      '@aws-sdk/types': 3.974.6
+      '@aws-sdk/xml-builder': 3.972.41
+      '@aws/lambda-invoke-store': 0.3.0
+      '@smithy/core': 3.36.0
+      '@smithy/signature-v4': 5.7.4
+      '@smithy/types': 4.19.0
+      bowser: 2.14.1
+      tslib: 2.8.1
+
   '@aws-sdk/credential-provider-cognito-identity@3.972.70':
     dependencies:
       '@aws-sdk/nested-clients': 3.997.45
@@ -4248,6 +4446,14 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/credential-provider-env@3.972.74':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/credential-provider-http@3.972.73':
     dependencies:
       '@aws-sdk/core': 3.978.0
@@ -4256,6 +4462,16 @@ snapshots:
       '@smithy/fetch-http-handler': 5.8.0
       '@smithy/node-http-handler': 4.12.1
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/credential-provider-http@3.972.76':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/fetch-http-handler': 5.8.0
+      '@smithy/node-http-handler': 4.12.1
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/credential-provider-ini@3.973.16':
@@ -4274,6 +4490,22 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/credential-provider-ini@3.973.19':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/credential-provider-env': 3.972.74
+      '@aws-sdk/credential-provider-http': 3.972.76
+      '@aws-sdk/credential-provider-login': 3.972.81
+      '@aws-sdk/credential-provider-process': 3.972.74
+      '@aws-sdk/credential-provider-sso': 3.973.18
+      '@aws-sdk/credential-provider-web-identity': 3.972.80
+      '@aws-sdk/nested-clients': 3.997.48
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/credential-provider-imds': 4.5.2
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/credential-provider-login@3.972.78':
     dependencies:
       '@aws-sdk/core': 3.978.0
@@ -4281,6 +4513,15 @@ snapshots:
       '@aws-sdk/types': 3.974.5
       '@smithy/core': 3.34.1
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/credential-provider-login@3.972.81':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/nested-clients': 3.997.48
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/credential-provider-node@3.972.83':
@@ -4297,12 +4538,34 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/credential-provider-node@3.972.86':
+    dependencies:
+      '@aws-sdk/credential-provider-env': 3.972.74
+      '@aws-sdk/credential-provider-http': 3.972.76
+      '@aws-sdk/credential-provider-ini': 3.973.19
+      '@aws-sdk/credential-provider-process': 3.972.74
+      '@aws-sdk/credential-provider-sso': 3.973.18
+      '@aws-sdk/credential-provider-web-identity': 3.972.80
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/credential-provider-imds': 4.5.2
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/credential-provider-process@3.972.71':
     dependencies:
       '@aws-sdk/core': 3.978.0
       '@aws-sdk/types': 3.974.5
       '@smithy/core': 3.34.1
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/credential-provider-process@3.972.74':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/credential-provider-sso@3.973.15':
@@ -4315,6 +4578,16 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/credential-provider-sso@3.973.18':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/nested-clients': 3.997.48
+      '@aws-sdk/token-providers': 3.1150.0
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/credential-provider-web-identity@3.972.77':
     dependencies:
       '@aws-sdk/core': 3.978.0
@@ -4322,6 +4595,15 @@ snapshots:
       '@aws-sdk/types': 3.974.5
       '@smithy/core': 3.34.1
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/credential-provider-web-identity@3.972.80':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/nested-clients': 3.997.48
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/credential-providers@3.1136.0':
@@ -4432,6 +4714,17 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/nested-clients@3.997.48':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/signature-v4-multi-region': 3.996.48
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/fetch-http-handler': 5.8.0
+      '@smithy/node-http-handler': 4.12.1
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/protocol-http@3.374.0':
     dependencies:
       '@smithy/protocol-http': 1.2.0
@@ -4451,6 +4744,13 @@ snapshots:
       '@aws-sdk/types': 3.974.5
       '@smithy/signature-v4': 5.7.3
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/signature-v4-multi-region@3.996.48':
+    dependencies:
+      '@aws-sdk/types': 3.974.6
+      '@smithy/signature-v4': 5.7.4
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/signature-v4@3.374.0':
@@ -4481,9 +4781,23 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@aws-sdk/token-providers@3.1150.0':
+    dependencies:
+      '@aws-sdk/core': 3.978.3
+      '@aws-sdk/nested-clients': 3.997.48
+      '@aws-sdk/types': 3.974.6
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@aws-sdk/types@3.974.5':
     dependencies:
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@aws-sdk/types@3.974.6':
+    dependencies:
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@aws-sdk/util-dynamodb@3.996.9(@aws-sdk/client-dynamodb@3.1136.0)':
@@ -4499,6 +4813,34 @@ snapshots:
     dependencies:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
+
+  '@aws-sdk/xml-builder@3.972.41':
+    dependencies:
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
+  '@aws/dsql-lint-darwin-arm64@0.2.20':
+    optional: true
+
+  '@aws/dsql-lint-darwin-x64@0.2.20':
+    optional: true
+
+  '@aws/dsql-lint-linux-arm64@0.2.20':
+    optional: true
+
+  '@aws/dsql-lint-linux-x64@0.2.20':
+    optional: true
+
+  '@aws/dsql-lint-win32-x64@0.2.20':
+    optional: true
+
+  '@aws/dsql-lint@0.2.20':
+    optionalDependencies:
+      '@aws/dsql-lint-darwin-arm64': 0.2.20
+      '@aws/dsql-lint-darwin-x64': 0.2.20
+      '@aws/dsql-lint-linux-arm64': 0.2.20
+      '@aws/dsql-lint-linux-x64': 0.2.20
+      '@aws/dsql-lint-win32-x64': 0.2.20
 
   '@aws/lambda-invoke-store@0.3.0': {}
 
@@ -4653,7 +4995,7 @@ snapshots:
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
 
-  '@electric-sql/pglite@0.2.17': {}
+  '@electric-sql/pglite@0.5.10': {}
 
   '@esbuild/aix-ppc64@0.27.7':
     optional: true
@@ -5103,6 +5445,11 @@ snapshots:
       '@smithy/types': 4.18.0
       tslib: 2.8.1
 
+  '@smithy/core@3.36.0':
+    dependencies:
+      '@smithy/types': 4.19.0
+      tslib: 2.8.1
+
   '@smithy/credential-provider-imds@4.5.2':
     dependencies:
       '@smithy/core': 3.34.1
@@ -5150,6 +5497,11 @@ snapshots:
     dependencies:
       '@smithy/types': 2.12.0
 
+  '@smithy/shared-ini-file-loader@4.7.2':
+    dependencies:
+      '@smithy/core': 3.34.1
+      tslib: 2.8.1
+
   '@smithy/signature-v4@1.1.0':
     dependencies:
       '@smithy/eventstream-codec': 1.1.0
@@ -5165,6 +5517,12 @@ snapshots:
     dependencies:
       '@smithy/core': 3.34.1
       '@smithy/types': 4.18.0
+      tslib: 2.8.1
+
+  '@smithy/signature-v4@5.7.4':
+    dependencies:
+      '@smithy/core': 3.36.0
+      '@smithy/types': 4.19.0
       tslib: 2.8.1
 
   '@smithy/signature-v4a@3.6.2':
@@ -5183,6 +5541,10 @@ snapshots:
       tslib: 2.8.1
 
   '@smithy/types@4.18.0':
+    dependencies:
+      tslib: 2.8.1
+
+  '@smithy/types@4.19.0':
     dependencies:
       tslib: 2.8.1
 
@@ -5473,6 +5835,8 @@ snapshots:
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
+
+  ci-info@4.4.0: {}
 
   cliui@6.0.0:
     dependencies:

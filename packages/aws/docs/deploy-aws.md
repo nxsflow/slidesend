@@ -60,7 +60,7 @@ adds AWS to a talk that was created without it.
 ### Packages
 
 ```sh
-pnpm add @slidesend/aws @aws-blocks/blocks@0.6.0 @aws-blocks/bb-realtime aws-blocks@link:./aws-blocks
+pnpm add @slidesend/aws @aws-blocks/blocks@0.8.0 @aws-blocks/bb-realtime aws-blocks@link:./aws-blocks
 pnpm add -D aws-cdk@~2.1143.0 tsx esbuild
 ```
 
@@ -95,8 +95,13 @@ const backend = createAwsBackend(new Scope("my-talk"), config);
 export const slidesend = backend.api;
 ```
 
-Export only API namespaces, never `backend` itself: every exported object becomes a publicly
-callable namespace. The example talk's backend, with the agent chat next to core:
+This module exports **only API namespaces**: the `api` of `createAwsBackend` and of
+`createAgentChat`, and any `ApiNamespace` of your own. Never the Scope, a building block, the
+`backend` object, a helper or configuration, and no `export *`. AWS Blocks answers
+`POST /aws-blocks/api` for any export of this module without authentication, so anything else
+exported becomes callable by anyone. The Lambda entry below enforces it: it refuses to start
+(and `slidesend dev` and `slidesend deploy` stop) naming every export that is not an API
+namespace. The example talk's backend, with the agent chat next to core:
 
 <!-- snippet: examples/gravity/aws-blocks/index.ts#aws-backend -->
 ```ts
@@ -115,12 +120,13 @@ export const agentChat = createAgentChat(scope, {
 ```
 <!-- end snippet -->
 
-`aws-blocks/index.handler.ts` is the Lambda entry that loads it:
+`aws-blocks/index.handler.ts` is the Lambda entry that loads it, through the guard:
 
 ```ts fragment
 import { createLambdaHandler } from "@aws-blocks/blocks/lambda-handler";
+import { onlyApiNamespaces } from "@slidesend/aws/server";
 
-export const handler = createLambdaHandler(() => import("./index.js"));
+export const handler = createLambdaHandler(() => import("./index.js").then(onlyApiNamespaces));
 ```
 
 `aws-blocks/package.json` makes the folder importable as `aws-blocks`: the browser gets the

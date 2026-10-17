@@ -24,13 +24,13 @@
     "typecheck": "tsc --project tsconfig.json"
   },
   "peerDependencies": {
-    "@aws-blocks/blocks": "^0.6.0",
+    "@aws-blocks/blocks": "^0.8.0",
     "@slidesend/core": "workspace:^",
     "react": "^19.0.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
-    "@aws-blocks/blocks": "0.6.0",
+    "@aws-blocks/blocks": "0.8.0",
     "@slidesend/core": "workspace:*",
     "@types/node": "^24.0.0",
     "@types/react": "^19.3.0",

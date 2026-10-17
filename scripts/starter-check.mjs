@@ -25,6 +25,14 @@ const scratch = mkdtempSync(join(tmpdir(), "sd-starter-"));
 const packs = join(scratch, "packs");
 mkdirSync(packs);
 
+/** Imports the talk's `aws-blocks/index.ts` and runs it through `onlyApiNamespaces`. */
+const entryGuardCheck = `
+import { pathToFileURL } from "node:url";
+const { onlyApiNamespaces } = await import("@slidesend/aws/server");
+const entry = onlyApiNamespaces(await import(pathToFileURL("aws-blocks/index.ts").href));
+console.log("aws-blocks/index.ts exports only API namespaces:", Object.keys(entry).join(", "));
+`;
+
 /** Runs a command, prints it, and stops everything if it fails. */
 function run(command, args, options = {}) {
   console.log(`\n$ ${[command, ...args].join(" ")}${options.cwd ? `   (in ${options.cwd})` : ""}`);
@@ -63,6 +71,13 @@ for (const variant of variants) {
   run(packageManager, ["run", "typecheck"], { cwd: talk });
   run(packageManager, ["exec", "playwright", "install", "chromium"], { cwd: talk });
   run(packageManager, ["run", "check:render"], { cwd: talk });
+  if (aws) {
+    // AWS Blocks serves every export of the backend entry to anyone: the generated one must pass
+    // the guard its Lambda entry runs.
+    run(process.execPath, ["--import", "tsx", "--input-type=module", "-e", entryGuardCheck], {
+      cwd: talk,
+    });
+  }
   run(packageManager, ["run", "build"], {
     cwd: talk,
     // What `slidesend deploy` sets for the AWS build.

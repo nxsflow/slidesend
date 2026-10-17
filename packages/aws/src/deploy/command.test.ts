@@ -120,6 +120,7 @@ describe("the tools a deploy needs", () => {
       message = String(error);
     }
     expect(message).toContain("aws-blocks/index.handler.ts with: import { createLambdaHandler }");
+    expect(message).toContain('import("./index.js").then(onlyApiNamespaces)');
     expect(message).toContain("pnpm add -D aws-cdk");
     expect(message).toContain("pnpm add -D tsx");
     expect(message).not.toContain("aws-blocks/index.ts,");

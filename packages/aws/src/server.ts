@@ -5,6 +5,7 @@
 export const packageName = "@slidesend/aws";
 
 export { type AwsApi, type AwsBackend, createAwsBackend } from "./server/backend";
+export { onlyApiNamespaces } from "./server/entry-guard";
 export {
   type AwsBlocks,
   blocksPlatform,

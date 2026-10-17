@@ -22,4 +22,10 @@ again. The region is set in `presentation.config.ts`, the stack name in `.blocks
 `npm run check:render` and `npm run pdf` use a browser: run `npx playwright install chromium`
 once before.
 
+`aws-blocks/index.ts` is the talk's backend. Export only API namespaces from it (`slidesend`,
+and `agentChat` with an agent): never the Scope, building blocks, the backend object, helpers or
+configuration, and no `export *`. AWS Blocks serves every export to anyone, so the Lambda entry
+`aws-blocks/index.handler.ts` refuses to start, and `npm run dev` and `npm run deploy` stop,
+when it exports anything else.
+
 The documentation ships with the packages: `node_modules/@slidesend/core/docs/README.md`.

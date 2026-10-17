@@ -10,13 +10,14 @@
  */
 import {
   Agent,
+  ApiError,
   ApiNamespace,
   BedrockModels,
   type Scope,
   type ToolsConfig,
 } from "@aws-blocks/blocks";
 import type { PlatformServer, Store } from "@slidesend/core";
-import { type Guards, session } from "@slidesend/core/server";
+import { type Guards, publicErrors, session } from "@slidesend/core/server";
 import { z } from "zod";
 import { type Agents, maxMessageChars, maxTurns } from "./agents";
 import type { ChatMessage } from "./chat";
@@ -77,6 +78,10 @@ export interface AgentChatBackend {
  *   tools: { advisor: advisorTools },
  * }).api;
  * ```
+ *
+ * Export only `api`, never the result itself, the Scope, the blocks or the tools: AWS Blocks
+ * serves every export of `aws-blocks/index.ts` to anyone, and `onlyApiNamespaces` from
+ * `@slidesend/aws/server` refuses the module otherwise.
  *
  * The agents are passed explicitly rather than discovered: the deck's references were checked
  * against this very object (spec §5.2), and a registry that guessed could disagree with it.
@@ -227,6 +232,8 @@ export function createAgentChat(scope: Scope, options: AgentChatOptions): AgentC
     }),
   };
 
-  const api = new ApiNamespace(scope, "agentChat", () => methods);
+  // AWS Blocks sends a plain error to the client as "Internal error"; core's refusals must arrive.
+  const served = publicErrors(methods, ApiError);
+  const api = new ApiNamespace(scope, "agentChat", () => served);
   return { api, methods: methods as AgentChatBackend["methods"], blocks };
 }
