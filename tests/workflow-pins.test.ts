@@ -55,7 +55,12 @@ describe("the pins of the generated workflow", () => {
     it(`match the repository's own workflows for ${action}`, () => {
       // An action the repository does not use itself has nothing to be compared with.
       if (!repositoryPins.has(action)) return;
-      expect({ [key]: pin }).toEqual({ [key]: repositoryPins.get(action) });
+      expect(
+        { [key]: pin },
+        `Dependabot bumped ${action} in .github/workflows; bump pinnedActions.${key} in ` +
+          "packages/aws/src/workflow/template.ts and the workflow in " +
+          "packages/aws/docs/continuous-deployment.md to the same pin.",
+      ).toEqual({ [key]: repositoryPins.get(action) });
     });
   }
 
@@ -66,6 +71,13 @@ describe("the pins of the generated workflow", () => {
     );
     const shown = usesOf(doc).map((line) => line.slice("uses: ".length));
     expect(shown.length).toBeGreaterThan(0);
-    for (const pin of shown) expect(Object.values(pinnedActions)).toContain(pin);
+    for (const pin of shown) {
+      expect(
+        Object.values(pinnedActions),
+        `${pin} in packages/aws/docs/continuous-deployment.md is not a pin of ` +
+          "pinnedActions in packages/aws/src/workflow/template.ts; bump the doc's workflow " +
+          "to the template's pin (and the template to .github/workflows).",
+      ).toContain(pin);
+    }
   });
 });
