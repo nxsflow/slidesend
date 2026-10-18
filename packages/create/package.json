@@ -1,6 +1,6 @@
 {
   "name": "@slidesend/create",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "npm create @slidesend: a new slidesend talk that explains how it is made.",
   "license": "Apache-2.0",
   "type": "module",
