@@ -60,7 +60,7 @@ adds AWS to a talk that was created without it.
 ### Packages
 
 ```sh
-pnpm add @slidesend/aws @aws-blocks/blocks@0.8.0 @aws-blocks/bb-realtime aws-blocks@link:./aws-blocks
+pnpm add @slidesend/aws @aws-blocks/blocks@0.9.0 @aws-blocks/bb-realtime aws-blocks@link:./aws-blocks
 pnpm add -D aws-cdk@~2.1143.0 tsx esbuild
 ```
 
@@ -256,9 +256,9 @@ over DNS.
 ## Runtimes
 
 Everything runs on Node.js 24: your machine and CI (`.nvmrc`, `engines`), and every Lambda of
-the stack. `@slidesend/aws` moves each Node.js function to `nodejs24.x`, whatever runtime AWS
-Blocks or the CDK would pick, and names every exception in a warning when the stack is
-synthesized. There are two, both from libraries:
+the stack. AWS Blocks puts its own functions on `nodejs24.x`, and `@slidesend/aws` moves every
+other Node.js function, such as the CDK's custom resources, to the same runtime, and names every
+exception in a warning when the stack is synthesized. There are two, both from libraries:
 
 | What | Runtime | Why |
 |---|---|---|

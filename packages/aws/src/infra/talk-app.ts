@@ -52,7 +52,13 @@ new Hosting(stack, "Web", {
   buildCommand: input.buildCommand,
   buildOutputDir: "dist",
   api: stack,
-  ...(input.domain ? { domain: { domainName: input.domain, hostedZone: input.domain } } : {}),
+  // The default front door, CloudFront; a custom domain is one of its features since AWS Blocks
+  // 0.9.0, which deprecated the top-level `domain` that synthesized the same template.
+  ...(input.domain
+    ? {
+        frontDoor: { features: { domain: { domainName: input.domain, hostedZone: input.domain } } },
+      }
+    : {}),
 });
 
 // Every Lambda on Node.js 24, whatever the libraries default to.

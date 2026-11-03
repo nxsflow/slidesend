@@ -1,3 +1,4 @@
+import { DEFAULT_NODE_RUNTIME } from "@aws-blocks/blocks/cdk";
 import { App, Aspects, Stack } from "aws-cdk-lib";
 import { Annotations, Match, Template } from "aws-cdk-lib/assertions";
 import { CfnRuntime } from "aws-cdk-lib/aws-bedrockagentcore";
@@ -21,6 +22,11 @@ function stackWith(...runtimes: Runtime[]) {
 }
 
 describe("the Node.js runtime policy", { timeout: 30_000 }, () => {
+  it("is the runtime AWS Blocks gives its own functions, so the two never disagree", () => {
+    expect(nodeRuntime).toBe(DEFAULT_NODE_RUNTIME.name);
+    expect(nodeRuntime).toBe("nodejs24.x");
+  });
+
   it("moves every Node.js function to Node.js 24, whatever it was given", () => {
     const template = Template.fromStack(stackWith(Runtime.NODEJS_20_X, Runtime.NODEJS_22_X));
     const runtimes = Object.values(template.findResources("AWS::Lambda::Function")).map(
