@@ -54,14 +54,26 @@ new Hosting(stack, "Web", {
   api: stack,
   // The default front door, CloudFront; a custom domain is one of its features since AWS Blocks
   // 0.9.0, which deprecated the top-level `domain` that synthesized the same template.
-  ...(input.domain
-    ? {
-        frontDoor: { features: { domain: { domainName: input.domain, hostedZone: input.domain } } },
-      }
-    : {}),
+  //
+  // No monitoring: its alarms go to an SNS topic nobody subscribes to, and since AWS Blocks 0.9.0
+  // the CloudFront alarm of a stack outside us-east-1 needs a second stack in us-east-1. A talk
+  // stays one stack in one region, which `slidesend deploy` and `slidesend destroy` rely on.
+  frontDoor: {
+    features: {
+      monitoring: { enabled: false },
+      ...(input.domain ? { domain: { domainName: input.domain, hostedZone: input.domain } } : {}),
+    },
+  },
 });
 
 // Every Lambda on Node.js 24, whatever the libraries default to.
 Aspects.of(app).add(new NodeRuntimePolicy());
 
-app.synth();
+// `slidesend deploy` and `slidesend destroy` name no stack, so the CDK refuses an app with two.
+// Say why here, at synth, instead of leaving the CDK's "specify which stacks to use".
+const { stacks } = app.synth();
+if (stacks.length !== 1) {
+  throw new Error(
+    `A talk deploys as one stack, but this app has ${stacks.length}: ${stacks.map((s) => s.stackName).join(", ")}. A library added a stack; turn off the feature that adds it in @slidesend/aws.`,
+  );
+}
