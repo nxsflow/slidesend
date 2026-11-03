@@ -2,9 +2,9 @@
  * The slidesend product page. The copy comes from the brand's copy deck
  * (nxsflow/brand, copy/slidesend-landing.md); see site/BRAND.md for the commit.
  *
- * Brand rules that shape it: the wordmark in the header and the icon only as the favicon; the
- * name always lowercase; violet as the spotlight, one lit element per view — here the install
- * command — never a fill for whole sections.
+ * Brand rules that shape it: the wordmark in the header and the symbol only as the favicon; the
+ * name always lowercase; spotlight as the one lit element per view — here the install command —
+ * never a fill for whole sections.
  */
 import { Fragment, type ReactNode, useState } from "react";
 import { links, SiteFooter, SiteHeader } from "./chrome";

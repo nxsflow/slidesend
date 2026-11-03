@@ -6,18 +6,23 @@
 /* (300, 400, 700), @fontsource/jetbrains-mono (400, 700), latin subset.                     */
 
 :root {
+  /* Logo colours: ink #17151F, paper #F7F5F2, spotlight #F04E23 (graphics only, 3.6:1 on white) */
+  --slidesend-ink: #17151F;
+  --slidesend-paper: #F7F5F2;
+  --slidesend-spotlight: #F04E23;
+
   /* Colours — light */
   --slidesend-bg: #FFFFFF;
-  --slidesend-surface: #FAF9F7;
-  --slidesend-tint: #F5F3FF;
-  --slidesend-text: #1C1C1C;
+  --slidesend-surface: #F7F5F2;
+  --slidesend-tint: #FFF5F1;
+  --slidesend-text: #17151F;
   --slidesend-text-muted: #6B6B6B;
-  --slidesend-border: #E5E5E0;
-  --slidesend-accent: #7C3AED;
-  --slidesend-accent-hover: #6D28D9;
-  --slidesend-accent-pressed: #5B21B6;
+  --slidesend-border: #E7E3DE;
+  --slidesend-accent: #CC3510;
+  --slidesend-accent-hover: #B02E0D;
+  --slidesend-accent-pressed: #93260B;
   --slidesend-on-accent: #FFFFFF;
-  --slidesend-focus-ring: #7C3AED;
+  --slidesend-focus-ring: #CC3510;
 
   /* Focus ring: outline: var(--slidesend-focus-width) solid var(--slidesend-focus-ring) */
   --slidesend-focus-width: 2px;
@@ -67,30 +72,30 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --slidesend-bg: #141317;
-    --slidesend-surface: #1F1D24;
-    --slidesend-tint: #2A2140;
-    --slidesend-text: #FAF9F7;
+    --slidesend-bg: #17151F;
+    --slidesend-surface: #211E2B;
+    --slidesend-tint: #3A1F1A;
+    --slidesend-text: #F7F5F2;
     --slidesend-text-muted: #A1A1AA;
-    --slidesend-border: #34313B;
-    --slidesend-accent: #A78BFA;
-    --slidesend-accent-hover: #C4B5FD;
-    --slidesend-accent-pressed: #DDD6FE;
-    --slidesend-on-accent: #1C1C1C;
-    --slidesend-focus-ring: #C4B5FD;
+    --slidesend-border: #36323F;
+    --slidesend-accent: #F04E23;
+    --slidesend-accent-hover: #FF6B4A;
+    --slidesend-accent-pressed: #FF8D73;
+    --slidesend-on-accent: #17151F;
+    --slidesend-focus-ring: #FF8D73;
   }
 }
 
 :root[data-theme="dark"] {
-  --slidesend-bg: #141317;
-  --slidesend-surface: #1F1D24;
-  --slidesend-tint: #2A2140;
-  --slidesend-text: #FAF9F7;
+  --slidesend-bg: #17151F;
+  --slidesend-surface: #211E2B;
+  --slidesend-tint: #3A1F1A;
+  --slidesend-text: #F7F5F2;
   --slidesend-text-muted: #A1A1AA;
-  --slidesend-border: #34313B;
-  --slidesend-accent: #A78BFA;
-  --slidesend-accent-hover: #C4B5FD;
-  --slidesend-accent-pressed: #DDD6FE;
-  --slidesend-on-accent: #1C1C1C;
-  --slidesend-focus-ring: #C4B5FD;
+  --slidesend-border: #36323F;
+  --slidesend-accent: #F04E23;
+  --slidesend-accent-hover: #FF6B4A;
+  --slidesend-accent-pressed: #FF8D73;
+  --slidesend-on-accent: #17151F;
+  --slidesend-focus-ring: #FF8D73;
 }

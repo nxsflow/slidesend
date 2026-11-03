@@ -24,7 +24,7 @@ export function SiteHeader() {
             <img
               src={`${base}brand/slidesend-wordmark-dark.svg`}
               alt="slidesend"
-              width={140}
+              width={114}
               height={30}
             />
           </picture>

@@ -20,9 +20,9 @@ describe("the product page", () => {
     expect(text).toContain("slidesend is a presentation tool");
   });
 
-  it("shows the wordmark in the header and never the icon", () => {
+  it("shows the wordmark in the header and never the symbol", () => {
     expect(html).toContain("slidesend-wordmark-dark.svg");
-    expect(html).not.toContain("slidesend-icon");
+    expect(html).not.toContain("slidesend-symbol");
   });
 
   it("links to the code, the packages, the docs and nxsflow's legal pages", () => {

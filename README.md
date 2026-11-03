@@ -1,4 +1,9 @@
-# slidesend
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="site/public/brand/slidesend-wordmark-light.svg">
+    <img src="site/public/brand/slidesend-wordmark-dark.svg" alt="slidesend" height="48">
+  </picture>
+</h1>
 
 slidesend is a presentation tool for talks in which the audience takes part on their phones. A
 deck is written in TypeScript; the design, the hosting platform and every slide type come from
