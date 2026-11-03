@@ -1,6 +1,6 @@
 /**
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
- * colours are literal here: slidesend-allow-literal-styles.
+ * styles are literal here, its colours from `./palette`: slidesend-allow-literal-styles.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { chapterAccent } from "../../design/css";
@@ -20,6 +20,7 @@ import {
 import { usePresentation, useText } from "../context";
 import { deviceId } from "../device";
 import { PresentTab } from "./Present";
+import { palette } from "./palette";
 import { ReviewTab } from "./Review";
 import { type Desk, deskWarnings, sortSessions, useDesk } from "./useDesk";
 
@@ -29,27 +30,13 @@ export interface DeskViewProps {
   platform?: PlatformClient;
 }
 
-/** The light palette of the start page and the review; presenting has its own, dark one. */
-const light = {
-  page: "#f6f5f1",
-  card: "#ffffff",
-  line: "#e2e0d9",
-  text: "#1c1d21",
-  muted: "#62656e",
-  primary: "#1c1d21",
-  onPrimary: "#ffffff",
-  good: "#1f8a5b",
-  warn: "#fdf1d6",
-  bad: "#c2372b",
-};
-
 const button = {
   fontSize: 15,
   padding: "9px 14px",
   borderRadius: 10,
-  border: `1px solid ${light.line}`,
-  background: light.card,
-  color: light.text,
+  border: `1px solid ${palette.line}`,
+  background: palette.panel,
+  color: palette.text,
   cursor: "pointer",
 } as const;
 
@@ -57,9 +44,9 @@ const field = {
   fontSize: 15,
   padding: "9px 10px",
   borderRadius: 10,
-  border: `1px solid ${light.line}`,
-  background: light.card,
-  color: light.text,
+  border: `1px solid ${palette.line}`,
+  background: palette.panel,
+  color: palette.text,
 } as const;
 
 /** The view the desk shows: where to begin, the talk itself, or what a session measured. */
@@ -84,7 +71,7 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
         alignItems: "center",
         flexWrap: "wrap",
         paddingBottom: 16,
-        borderBottom: `1px solid ${light.line}`,
+        borderBottom: `1px solid ${palette.line}`,
       }}
     >
       {back && (
@@ -94,7 +81,7 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
       )}
       <div style={{ display: "grid", gap: 2, flex: 1, minWidth: 220 }}>
         <h1 style={{ margin: 0, fontSize: 22 }}>{presentation.meta.title}</h1>
-        <span data-meta style={{ color: light.muted, fontSize: 14 }}>
+        <span data-meta style={{ color: palette.muted, fontSize: 14 }}>
           {text("core.desk.meta", {
             minutes: Math.round(presentation.plannedMinutes),
             steps: presentation.steps.length,
@@ -107,8 +94,8 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
           fontSize: 14,
           padding: "5px 10px",
           borderRadius: 999,
-          background: desk.inControl ? "#e5f3ec" : light.warn,
-          color: desk.inControl ? light.good : light.text,
+          background: desk.inControl ? palette.goodWash : palette.warnWash,
+          color: desk.inControl ? palette.good : palette.text,
         }}
       >
         {desk.inControl
@@ -138,9 +125,9 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
               gap: 12,
               padding: 16,
               borderRadius: 12,
-              border: `1px solid ${light.line}`,
-              background: light.card,
-              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
+              border: `1px solid ${palette.line}`,
+              background: palette.panel,
+              boxShadow: "0 8px 24px rgba(0, 0, 0, 0.5)",
               zIndex: 5,
             }}
           >
@@ -154,7 +141,7 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
                 }}
                 style={field}
               />
-              <span style={{ color: light.muted, fontSize: 13 }}>
+              <span style={{ color: palette.muted, fontSize: 13 }}>
                 {text("core.desk.menu.deviceHint")}
               </span>
             </label>
@@ -171,7 +158,7 @@ function Header({ desk, onRelease, back }: { desk: Desk; onRelease(): void; back
                 >
                   {text("core.desk.menu.release")}
                 </button>
-                <span style={{ color: light.muted, fontSize: 13 }}>
+                <span style={{ color: palette.muted, fontSize: 13 }}>
                   {text("core.desk.menu.releaseHint")}
                 </span>
               </div>
@@ -196,13 +183,13 @@ function TakeControl({ desk }: { desk: Desk }) {
         gap: 12,
         padding: 24,
         borderRadius: 16,
-        border: `1px solid ${light.line}`,
-        background: light.card,
+        border: `1px solid ${palette.line}`,
+        background: palette.panel,
         maxWidth: 640,
       }}
     >
       <h2 style={{ margin: 0, fontSize: 20 }}>{text("core.desk.control.title")}</h2>
-      <p style={{ margin: 0, color: light.muted }}>{text("core.desk.control.explain")}</p>
+      <p style={{ margin: 0, color: palette.muted }}>{text("core.desk.control.explain")}</p>
       <form
         style={{ display: "flex", gap: 8, flexWrap: "wrap" }}
         onSubmit={async (event) => {
@@ -219,13 +206,13 @@ function TakeControl({ desk }: { desk: Desk }) {
         />
         <button
           type="submit"
-          style={{ ...button, background: light.primary, color: light.onPrimary }}
+          style={{ ...button, background: palette.primary, color: palette.onPrimary }}
         >
           {text("core.desk.control.save")}
         </button>
       </form>
       {wrong && (
-        <p data-wrong style={{ margin: 0, color: light.bad }}>
+        <p data-wrong style={{ margin: 0, color: palette.bad }}>
           {text("core.desk.control.wrong")}
         </p>
       )}
@@ -261,9 +248,9 @@ function Choice({
         padding: 24,
         minHeight: 150,
         borderRadius: 16,
-        border: `1px solid ${kind === "live" ? light.primary : light.line}`,
-        background: kind === "live" ? light.primary : light.card,
-        color: kind === "live" ? light.onPrimary : light.text,
+        border: `1px solid ${kind === "live" ? palette.primary : palette.line}`,
+        background: palette.panel,
+        color: palette.text,
         cursor: busy ? "wait" : "pointer",
       }}
     >
@@ -283,9 +270,9 @@ function PlanLater({ desk }: { desk: Desk }) {
   const [start, setStart] = useState("");
   const [name, setName] = useState("");
   return (
-    <details data-plan-later style={{ borderTop: `1px solid ${light.line}`, paddingTop: 12 }}>
+    <details data-plan-later style={{ borderTop: `1px solid ${palette.line}`, paddingTop: 12 }}>
       <summary style={{ cursor: "pointer", fontSize: 16 }}>{text("core.desk.plan.title")}</summary>
-      <p style={{ margin: "8px 0", color: light.muted }}>{text("core.desk.plan.hint")}</p>
+      <p style={{ margin: "8px 0", color: palette.muted }}>{text("core.desk.plan.hint")}</p>
       <form
         style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "end" }}
         onSubmit={(event) => {
@@ -355,7 +342,7 @@ function History({
   const ordered = sortSessions(desk.sessions);
   if (ordered.length === 0) return null;
   return (
-    <details data-history style={{ borderTop: `1px solid ${light.line}`, paddingTop: 12 }}>
+    <details data-history style={{ borderTop: `1px solid ${palette.line}`, paddingTop: 12 }}>
       <summary style={{ cursor: "pointer", fontSize: 16 }}>
         {text("core.desk.history.title", { count: ordered.length })}
       </summary>
@@ -372,13 +359,13 @@ function History({
               flexWrap: "wrap",
               padding: "10px 12px",
               borderRadius: 12,
-              border: `1px solid ${light.line}`,
-              background: light.card,
+              border: `1px solid ${palette.line}`,
+              background: palette.panel,
             }}
           >
             <span style={{ flex: 1, minWidth: 200 }}>
               <strong>{session.name}</strong>
-              <span style={{ color: light.muted }}>
+              <span style={{ color: palette.muted }}>
                 {" · "}
                 {text(`core.desk.sessions.${session.kind}`)} ·{" "}
                 {session.state === "armed" && session.opensAt
@@ -464,8 +451,8 @@ function Start({
           data-open-stage
           style={{
             ...button,
-            background: light.primary,
-            color: light.onPrimary,
+            background: palette.primary,
+            color: palette.onPrimary,
             justifySelf: "start",
           }}
           onClick={openStage}
@@ -490,7 +477,7 @@ function Start({
         <p
           key={warning.key}
           data-warning
-          style={{ margin: 0, padding: 12, borderRadius: 12, background: light.warn }}
+          style={{ margin: 0, padding: 12, borderRadius: 12, background: palette.warnWash }}
         >
           {text(warning.key, {
             ...warning.values,
@@ -510,8 +497,8 @@ function Start({
             flexWrap: "wrap",
             padding: 24,
             borderRadius: 16,
-            background: light.primary,
-            color: light.onPrimary,
+            border: `1px solid ${palette.primary}`,
+            background: palette.panel,
           }}
         >
           <span style={{ flex: 1, minWidth: 220, fontSize: 18 }}>
@@ -520,7 +507,14 @@ function Start({
           <button
             type="button"
             data-continue
-            style={{ ...button, fontSize: 17, fontWeight: 600 }}
+            style={{
+              ...button,
+              fontSize: 17,
+              fontWeight: 600,
+              border: "none",
+              background: palette.primary,
+              color: palette.onPrimary,
+            }}
             onClick={() => onPresent(running.id)}
           >
             {text("core.desk.start.continue")} →
@@ -555,7 +549,7 @@ function Start({
         </div>
       </section>
       {desk.problem && (
-        <p data-problem style={{ margin: 0, color: light.bad }}>
+        <p data-problem style={{ margin: 0, color: palette.bad }}>
           {desk.problem}
         </p>
       )}
@@ -647,8 +641,8 @@ export function DeskView({ platform }: DeskViewProps) {
       data-control={desk.inControl || undefined}
       style={{
         fontFamily: "system-ui, -apple-system, 'Segoe UI', sans-serif",
-        color: light.text,
-        background: light.page,
+        color: palette.text,
+        background: palette.page,
         minHeight: "100dvh",
         // The desk takes only the chapter accents from the design (spec §7).
         ...({
