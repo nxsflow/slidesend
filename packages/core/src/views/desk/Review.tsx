@@ -2,7 +2,7 @@
  * The review (spec §12): what a rehearsal was worth, per session.
  *
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
- * colours are literal here: slidesend-allow-literal-styles.
+ * styles are literal here, its colours from `./palette`: slidesend-allow-literal-styles.
  *
  * Two exits, both deliberate: adopt the measurement as the plan, or copy a prompt an agent can
  * read. Nothing is adopted by itself. This tab also holds the only destructive function in the
@@ -15,6 +15,7 @@ import type { CoreApi } from "../../server/runtime";
 import type { AdoptedPlan, StepTiming } from "../../sessions/runtime-types";
 import type { Session } from "../../sessions/types";
 import { usePresentation, useText } from "../context";
+import { palette } from "./palette";
 import {
   adoptPlan,
   analysisPrompt,
@@ -25,8 +26,8 @@ import {
   reviewTotals,
 } from "./timings";
 
-const border = "1px solid #d8d9d4";
-const muted = "#5d616b";
+const border = `1px solid ${palette.line}`;
+const muted = palette.muted;
 
 const button = {
   font: "inherit",
@@ -34,7 +35,8 @@ const button = {
   padding: "8px 10px",
   borderRadius: 8,
   border,
-  background: "#ffffff",
+  background: palette.panel,
+  color: palette.text,
   cursor: "pointer",
 } as const;
 
@@ -199,7 +201,7 @@ export function ReviewTab({ platform, secret, session, onChanged }: ReviewTabPro
             <button
               type="button"
               data-delete-confirm
-              style={{ ...button, borderColor: "#c2372b", color: "#c2372b" }}
+              style={{ ...button, borderColor: palette.bad, color: palette.bad }}
               onClick={deleteData}
             >
               {text("core.desk.review.deleteConfirm", { session: session.name })}
@@ -217,7 +219,7 @@ export function ReviewTab({ platform, secret, session, onChanged }: ReviewTabPro
           <button
             type="button"
             data-delete
-            style={{ ...button, color: "#c2372b" }}
+            style={{ ...button, color: palette.bad }}
             onClick={() => setConfirming(true)}
           >
             {text("core.desk.review.delete")}

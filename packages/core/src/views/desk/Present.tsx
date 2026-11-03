@@ -1,6 +1,6 @@
 /**
  * The desk is deliberately not themeable beyond the chapter accents (spec §2), so its own
- * colours are literal here: slidesend-allow-literal-styles.
+ * styles are literal here, its colours from `./palette`: slidesend-allow-literal-styles.
  */
 import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { typedClient } from "../../client/client";
@@ -19,23 +19,13 @@ import { useNavigation } from "../hooks";
 import { StageSurface, stageSurfaceStyle } from "../Stage";
 import { SessionContext } from "../session-context";
 import { formatDuration, talkClock } from "./clock";
+import { palette, toneColor } from "./palette";
 import { startMinutesAt } from "./timings";
 
 /**
  * Presenting happens in a dark room, so this view is dark: quiet surfaces, hairlines instead of
  * cards, and the large type reserved for what the speaker reads aloud.
  */
-const dark = {
-  page: "#0f141a",
-  panel: "#151b23",
-  line: "#252d39",
-  text: "#f3f3f7",
-  soft: "#b4b4bb",
-  muted: "#8c8c94",
-  cue: "#ffbb45",
-  danger: "#ff6a3d",
-};
-const toneColor = { ahead: "#00e582", onTime: "#ffbb45", behind: "#ff9a3d", late: "#ff6a3d" };
 const accent = `var(${accentVariable})`;
 
 const label = {
@@ -43,7 +33,7 @@ const label = {
   fontSize: 11,
   letterSpacing: "0.14em",
   textTransform: "uppercase",
-  color: dark.muted,
+  color: palette.muted,
   fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace",
 } as const;
 
@@ -51,9 +41,9 @@ const button = {
   fontSize: 15,
   padding: "10px 16px",
   borderRadius: 10,
-  border: `1px solid ${dark.line}`,
-  background: dark.panel,
-  color: dark.text,
+  border: `1px solid ${palette.line}`,
+  background: palette.panel,
+  color: palette.text,
   cursor: "pointer",
 } as const;
 
@@ -103,7 +93,7 @@ function Preview({ index, label: name }: { index: number; label: string }) {
         overflow: "hidden",
         aspectRatio: "16 / 9",
         borderRadius: 8,
-        border: `1px solid ${dark.line}`,
+        border: `1px solid ${palette.line}`,
         ...stageSurfaceStyle(presentation, index),
       }}
     >
@@ -133,8 +123,8 @@ function Jump({
       style={{
         position: "fixed",
         inset: "5vh 5vw",
-        background: dark.panel,
-        border: `1px solid ${dark.line}`,
+        background: palette.panel,
+        border: `1px solid ${palette.line}`,
         borderRadius: 14,
         padding: 24,
         overflow: "auto",
@@ -169,7 +159,7 @@ function Jump({
                     onClick={() => onJump(slide.firstStep)}
                     style={{
                       ...button,
-                      borderColor: here ? accent : dark.line,
+                      borderColor: here ? accent : palette.line,
                       fontWeight: here ? 650 : 400,
                     }}
                   >
@@ -197,7 +187,11 @@ function Join({ path }: { path: string }) {
     import("qrcode").then(
       ({ default: qrcode }) =>
         qrcode
-          .toDataURL(url, { margin: 1, width: 160, color: { dark: "#0f141a", light: "#f3f3f7" } })
+          .toDataURL(url, {
+            margin: 1,
+            width: 160,
+            color: { dark: palette.page, light: palette.text },
+          })
           .then((image) => current && setQr(image))
           .catch(() => {}),
       () => {},
@@ -211,7 +205,11 @@ function Join({ path }: { path: string }) {
       {qr && <img src={qr} alt="" width={80} height={80} style={{ borderRadius: 6 }} />}
       <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
         <p style={label}>{text("core.desk.present.join")}</p>
-        <a data-join href={url} style={{ color: dark.soft, wordBreak: "break-all", fontSize: 14 }}>
+        <a
+          data-join
+          href={url}
+          style={{ color: palette.soft, wordBreak: "break-all", fontSize: 14 }}
+        >
           {url}
         </a>
       </div>
@@ -229,7 +227,7 @@ function HeaderGroup({ label: name, children }: { label: string; children: React
   return (
     <div
       data-header-group
-      style={{ display: "grid", gap: 4, paddingLeft: 20, borderLeft: `1px solid ${dark.line}` }}
+      style={{ display: "grid", gap: 4, paddingLeft: 20, borderLeft: `1px solid ${palette.line}` }}
     >
       <span style={{ ...label, fontSize: 11 }}>{name}</span>
       {children}
@@ -360,8 +358,8 @@ export function PresentTab({
       data-session-id={session.id}
       style={{
         minHeight: "100dvh",
-        background: dark.page,
-        color: dark.text,
+        background: palette.page,
+        color: palette.text,
         display: "grid",
         gridTemplateRows: "auto auto 1fr auto",
       }}
@@ -373,7 +371,7 @@ export function PresentTab({
           alignItems: "center",
           flexWrap: "wrap",
           padding: "14px 24px",
-          borderBottom: `1px solid ${dark.line}`,
+          borderBottom: `1px solid ${palette.line}`,
         }}
       >
         <button type="button" data-back onClick={onBack} style={{ ...button, padding: "6px 12px" }}>
@@ -387,7 +385,7 @@ export function PresentTab({
             {chapter?.title}
           </span>
           {step?.label && step.label !== chapter?.title && (
-            <span data-slide-label style={{ color: dark.muted }}>
+            <span data-slide-label style={{ color: palette.muted }}>
               · {step.label}
             </span>
           )}
@@ -401,7 +399,7 @@ export function PresentTab({
                   total: presentation.steps.length,
                 })}
               </span>{" "}
-              <span style={{ color: dark.muted, fontSize: 12 }}>
+              <span style={{ color: palette.muted, fontSize: 12 }}>
                 {text("core.desk.present.stepUnit")}
               </span>
             </span>
@@ -409,7 +407,7 @@ export function PresentTab({
               <span data-elapsed style={{ ...mono, fontSize: 22 }}>
                 {formatDuration(clock.elapsedMs)}
               </span>{" "}
-              <span style={{ color: dark.muted, fontSize: 12 }}>
+              <span style={{ color: palette.muted, fontSize: 12 }}>
                 {text("core.desk.present.elapsed")}
               </span>
             </span>
@@ -425,12 +423,12 @@ export function PresentTab({
                     {text(`core.desk.present.tone.${clock.tone}`)}
                   </span>
                 </span>
-                <span style={{ color: dark.muted, fontSize: 12 }}>
+                <span style={{ color: palette.muted, fontSize: 12 }}>
                   {text("core.desk.present.planned", { time: formatDuration(clock.plannedMs) })}
                 </span>
               </>
             ) : (
-              <span style={{ color: dark.muted, fontSize: 13, maxWidth: 220 }}>
+              <span style={{ color: palette.muted, fontSize: 13, maxWidth: 220 }}>
                 {text("core.desk.present.notStarted")}
               </span>
             )}
@@ -442,14 +440,14 @@ export function PresentTab({
               <span
                 style={{
                   ...label,
-                  color: session.kind === "live" ? dark.danger : dark.cue,
+                  color: session.kind === "live" ? palette.bad : palette.cue,
                   fontSize: 12,
                 }}
               >
                 {session.kind === "live" ? "● " : ""}
                 {text(`core.desk.sessions.${session.kind}`)}
               </span>
-              <span style={{ color: dark.soft }}>
+              <span style={{ color: palette.soft }}>
                 {text("core.desk.presence.stages", { count: stages })} ·{" "}
                 {text("core.desk.presence.phones", { count: phones })}
                 {session.closesAt
@@ -481,8 +479,8 @@ export function PresentTab({
             gap: 16,
             alignItems: "center",
             padding: "10px 24px",
-            background: "#3a2a12",
-            borderBottom: `1px solid ${dark.line}`,
+            background: palette.warnWash,
+            borderBottom: `1px solid ${palette.line}`,
           }}
         >
           <span style={{ flex: 1 }}>{text("core.desk.present.noStage")}</span>
@@ -492,8 +490,8 @@ export function PresentTab({
             onClick={openStage}
             style={{
               ...button,
-              background: dark.cue,
-              color: dark.page,
+              background: palette.cue,
+              color: palette.page,
               border: "none",
               fontWeight: 650,
             }}
@@ -545,7 +543,7 @@ export function PresentTab({
             <div style={{ display: "grid", gap: 6, maxWidth: "60%" }}>
               <p style={label}>{text("core.desk.present.next")}</p>
               {last ? (
-                <p style={{ margin: 0, color: dark.muted }}>{text("core.desk.present.last")}</p>
+                <p style={{ margin: 0, color: palette.muted }}>{text("core.desk.present.last")}</p>
               ) : (
                 <Preview index={navigation.index + 1} label={text("core.desk.present.next")} />
               )}
@@ -557,8 +555,8 @@ export function PresentTab({
                 gap: 8,
                 padding: 14,
                 borderRadius: 10,
-                border: `1px solid ${dark.line}`,
-                background: dark.panel,
+                border: `1px solid ${palette.line}`,
+                background: palette.panel,
               }}
             >
               <p style={label}>{text("core.desk.present.phones", { count: phones })}</p>
@@ -579,7 +577,7 @@ export function PresentTab({
                   )}
                 </div>
               ) : (
-                <p style={{ margin: 0, color: dark.muted }}>
+                <p style={{ margin: 0, color: palette.muted }}>
                   {text("core.desk.present.noActivity")}
                 </p>
               )}
@@ -599,12 +597,12 @@ export function PresentTab({
                 alignItems: "baseline",
                 padding: "12px 16px",
                 borderRadius: 10,
-                border: `1px solid ${dark.cue}`,
-                color: dark.cue,
+                border: `1px solid ${palette.cue}`,
+                color: palette.cue,
                 fontSize: 20,
               }}
             >
-              <span style={{ ...label, color: dark.cue }}>{text("core.desk.present.cue")}</span>
+              <span style={{ ...label, color: palette.cue }}>{text("core.desk.present.cue")}</span>
               {step.cue}
             </p>
           )}
@@ -614,7 +612,7 @@ export function PresentTab({
             style={{ fontSize: 28, lineHeight: 1.45, whiteSpace: "pre-wrap", maxWidth: "48ch" }}
           >
             {step?.notes ?? (
-              <span style={{ color: dark.muted, fontSize: 20 }}>
+              <span style={{ color: palette.muted, fontSize: 20 }}>
                 {text("core.desk.present.noNotes")}
               </span>
             )}
@@ -631,8 +629,8 @@ export function PresentTab({
           alignItems: "center",
           flexWrap: "wrap",
           padding: "12px 24px",
-          borderTop: `1px solid ${dark.line}`,
-          background: dark.page,
+          borderTop: `1px solid ${palette.line}`,
+          background: palette.page,
         }}
       >
         <button
@@ -660,7 +658,7 @@ export function PresentTab({
             data-ending
             style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}
           >
-            <span style={{ color: dark.soft }}>
+            <span style={{ color: palette.soft }}>
               {session.kind === "rehearsal"
                 ? text("core.desk.review.timed", { session: session.name })
                 : text("core.desk.present.endLive")}
@@ -688,7 +686,7 @@ export function PresentTab({
               <button
                 type="button"
                 data-close-confirm
-                style={{ ...button, borderColor: dark.danger, color: dark.danger }}
+                style={{ ...button, borderColor: palette.bad, color: palette.bad }}
                 onClick={() => void onEnd(true)}
               >
                 {text("core.desk.present.endConfirm")}
@@ -711,8 +709,8 @@ export function PresentTab({
             ...button,
             fontSize: 18,
             padding: "12px 28px",
-            background: dark.text,
-            color: dark.page,
+            background: palette.primary,
+            color: palette.onPrimary,
             border: "none",
             fontWeight: 650,
           }}
@@ -738,8 +736,8 @@ export function PresentTab({
             bottom: 80,
             padding: 14,
             borderRadius: 10,
-            border: `1px solid ${dark.line}`,
-            background: dark.panel,
+            border: `1px solid ${palette.line}`,
+            background: palette.panel,
             zIndex: 10,
           }}
         >
