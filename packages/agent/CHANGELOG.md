@@ -1,5 +1,12 @@
 # @slidesend/agent
 
+## 0.6.0
+
+### Patch Changes
+
+- Updated dependencies [e4bcb12]
+  - @slidesend/core@0.6.0
+
 ## 0.5.1
 
 ### Patch Changes
