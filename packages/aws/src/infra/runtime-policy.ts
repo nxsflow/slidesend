@@ -1,6 +1,7 @@
 /**
- * Every Lambda a talk deploys runs on Node.js 24, whatever runtime a library picks by default:
- * AWS Blocks and the CDK choose their own, and a default can change under a minor release.
+ * Every Lambda a talk deploys runs on the Node.js runtime AWS Blocks gives its own functions
+ * (Node.js 24), whatever runtime another library picks: the CDK's custom resources choose their
+ * own, and a default can change under a minor release.
  *
  * Applied to both CDK apps of this package as an aspect, so it reaches functions created deep
  * inside constructs we do not own. A function on another language is left alone — the CDK's
@@ -8,13 +9,14 @@
  * named in a warning, so an exception is visible in every synth instead of being found later.
  * The same holds for the AgentCore runtime of an agent: AgentCore offers no Node.js 24 yet.
  */
+import { DEFAULT_NODE_RUNTIME } from "@aws-blocks/blocks/cdk";
 import { Annotations, type IAspect, Token } from "aws-cdk-lib";
 import { CfnRuntime } from "aws-cdk-lib/aws-bedrockagentcore";
 import { CfnFunction } from "aws-cdk-lib/aws-lambda";
 import type { IConstruct } from "constructs";
 
-/** The Lambda runtime every Node.js function gets. */
-export const nodeRuntime = "nodejs24.x";
+/** The Lambda runtime every Node.js function gets: AWS Blocks' own default. */
+export const nodeRuntime = DEFAULT_NODE_RUNTIME.name;
 
 export class NodeRuntimePolicy implements IAspect {
   visit(node: IConstruct): void {
