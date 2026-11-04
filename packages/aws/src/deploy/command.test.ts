@@ -35,7 +35,7 @@ const modules: Record<string, string> = {
 };
 
 const answers: Record<string, string> = {
-  "sts get-caller-identity": '{"Account":"314201982767"}',
+  "sts get-caller-identity": '{"Account":"123456789012"}',
   "describe-stacks":
     '{"Stacks":[{"Outputs":[{"OutputKey":"ApiUrl","OutputValue":"https://x.execute-api"},{"OutputKey":"WebHostingUrlAB12","OutputValue":"https://d1.cloudfront.net/"}]}]}',
   "describe-parameters":
@@ -182,7 +182,7 @@ describe("slidesend deploy", () => {
     expect(input).toEqual({
       stackName: "sd-gravity-prod",
       projectRoot: root,
-      account: "314201982767",
+      account: "123456789012",
       region: "eu-central-1",
       buildCommand: "npm run build",
     });
